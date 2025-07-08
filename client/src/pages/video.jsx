@@ -67,21 +67,6 @@ const Video = () => {
     return (
         <div className="main-container">
                     <div className="box-container">
-                        <div className="profile-top">
-                            <p>{user.firstname} {user.lastname}</p>
-                            <div className="profile-pic" onClick={() => navigate('/profile')}>
-                                <button>
-                                    <img
-                                        src={`/uploads/images/user_profile/${user.user_id}.png`}
-                                        alt="Profile"
-                                        onError={(e) => {
-                                        e.target.onerror = null;
-                                        e.target.src = 'uploads/images/default-profile.jpg';
-                                        }}
-                                    />
-                                </button>
-                            </div>
-                        </div>
                         <div className="search-box">
                             <div class="search-container">
                                 <FaSearch className="search-icon" />

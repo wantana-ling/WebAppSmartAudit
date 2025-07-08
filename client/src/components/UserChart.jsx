@@ -49,11 +49,22 @@ const UserChart = ({ month, year }) => {
   }
 
   if (!data.length || totalUsage === 0) {
-    return (
-      <div style={{ textAlign: 'center', fontSize: '18px', color: '#999' }}>
-        No data found
-      </div>
-    );
+  return (
+    <div
+      className="user-chart"
+      style={{
+        width: 300,
+        height: 300,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#999',
+        fontSize: '18px',
+      }}
+    >
+      No data found
+    </div>
+  );
   }
 
   return (

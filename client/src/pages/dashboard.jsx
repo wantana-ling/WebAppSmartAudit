@@ -64,14 +64,10 @@ const Dashboard = () => {
           <h1>WELCOME<span> , {user.firstname}</span></h1>
           <div className="profile-pic" onClick={() => navigate('/profile')}>
             <button>
-              {/*<img
-                src={`/uploads/images/user_profile/${user.user_id}.png`}
+              <img
+                src={process.env.PUBLIC_URL + "/img/default-profile.jpg"}
                 alt="Profile"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = 'uploads/images/default-profile.jpg';
-                }}
-              />*/}
+              />
             </button>
           </div>
         </div>
@@ -107,7 +103,7 @@ const Dashboard = () => {
 
           <div className="cards">
             <div className="card">
-              <div className="card-header">
+              <div className="card-header-graph">
                 <h3>User</h3>
                 <div className="filter-month">
                   <select value={month} onChange={e => setMonth(Number(e.target.value))}>

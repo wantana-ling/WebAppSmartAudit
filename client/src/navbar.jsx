@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaChartBar, FaUserEdit, FaVideo, FaDesktop, FaSignOutAlt, FaUsers } from "react-icons/fa";
+import { FaChartBar, FaUserEdit, FaVideo, FaDesktop, FaSignOutAlt, FaUsers, FaUser, FaCog } from "react-icons/fa";
 const Navbar = () => {
 
   const location = useLocation();
@@ -9,7 +9,7 @@ const Navbar = () => {
     <div className="navbar-box">
       <div className="navbar">
         <div className="navbar-logo">
-          <img src="/img/Logo-SmartAudit.png" alt="smartAudit-logo" />
+          <img className="logo-img" src="/img/Logo-SmartAudit.png" alt="smartAudit-logo" />
         </div>
         <div className="menu">
           <ul>
@@ -17,6 +17,12 @@ const Navbar = () => {
               <Link to="/dashboard">
                 <FaChartBar  className="icon" />
                 <span className="menu-label">Dashboard</span>
+              </Link>
+            </li>
+            <li className={`main-menu ${location.pathname === "/acticveVisitor" ? "active" : ""}`}>
+              <Link to="/acticveVisitor">
+                <FaUser  className="icon" />
+                <span className="menu-label">Active Visitor</span>
               </Link>
             </li>
             <li className={`main-menu ${location.pathname === "/userManagement" ? "active" : ""}`}>
@@ -41,6 +47,12 @@ const Navbar = () => {
               <Link to="/video">
                 <FaVideo className="icon" />
                 <span className="menu-label">Activity Video</span>
+              </Link>
+            </li>
+            <li className={`main-menu ${location.pathname === "/setting" ? "active" : ""}`}>
+              <Link to="/setting">
+                <FaCog className="icon" />
+                <span className="menu-label">Setting</span>
               </Link>
             </li>
           </ul>

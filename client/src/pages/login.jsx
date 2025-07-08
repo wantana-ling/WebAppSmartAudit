@@ -29,14 +29,20 @@ const Login = () => {
         }
       );
 
-      // ✅ รองรับชื่อ key ที่ API ส่งกลับมา (user_info)
-      const user = response.data.user || response.data.user_info;
+      const userData = response.data.user || response.data.user_info;
       const token = response.data.token || '';
 
-      if (!user) {
+      if (!userData) {
         setError('Invalid response from server');
         return;
       }
+
+      // ✅ Extract name fields and store them
+      const user = {
+        firstName: userData.first_name || userData.firstname || '',
+        lastName: userData.last_name || userData.lastname || '',
+        ...userData
+      };
 
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', token);

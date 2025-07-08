@@ -154,6 +154,10 @@ body {
     margin: -10px 0px -40px 0px;
 }
 
+.logo-img {
+    width: 100px;
+    height: 100px;
+}
 
 .menu li{
     list-style-type: none;

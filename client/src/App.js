@@ -6,7 +6,12 @@ import Dashboard from "./pages/dashboard";
 import Profile from "./pages/profile";
 import Permission from "./pages/permission";
 import Video from "./pages/video";
-import PasswordEdit from "./pages/passwordEdit";
+import EditUser from "./pages/editUser";
+import UserManagement from "./pages/userManagement";
+import DeviceManagement from "./pages/deviceManagement";
+import Department from "./pages/department";
+import Setting from "./pages/setting";
+import ActiveVisitor from "./pages/activevisitor"; 
 
 const App = () => {
   return (
@@ -19,7 +24,12 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/permission" element={<Permission />} />
           <Route path="/video" element={<Video />} />
-          <Route path="/passwordEdit" element={<PasswordEdit />} />
+          <Route path="/passwordEdit" element={<EditUser />} />
+          <Route path="/userManagement" element={<UserManagement />} />
+          <Route path="/deviceManagement" element={<DeviceManagement />} />
+          <Route path="/department" element={<Department />} />
+          <Route path="/setting" element={<Setting />} />
+          <Route path="/acticveVisitor" element={<ActiveVisitor />} />
         </Route>
       </Routes>
   );

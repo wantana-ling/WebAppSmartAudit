@@ -38,7 +38,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    border: 2px solid var(--primary-color);
+    border: 2px solid #D7D7D7;
 }
 
 .edit-icon {
@@ -184,4 +184,25 @@
         font-size: 13px;
         text-align: center;
     }
+}
+
+.back-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.back-button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 30px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #d32f2f;
 }

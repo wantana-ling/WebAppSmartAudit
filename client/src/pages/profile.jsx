@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaCamera } from "react-icons/fa";
+import { FaCamera, FaEdit } from "react-icons/fa";
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -22,12 +22,8 @@ const Profile = () => {
                     <div className="profile-picture-container">
                         <div className="profile-picture">
                             <img
-                                // src={`/uploads/images/user_profile/${user.user_id}.png`}
+                                src={process.env.PUBLIC_URL + "/img/default-profile.jpg"}
                                 alt="Profile"
-                                onError={(e) => {
-                                    e.target.onerror = null;
-                                    // e.target.src = 'uploads/images/default-profile.jpg';
-                                }}
                             />
                         </div>
                         <label htmlFor="upload-edit-image" className="edit-icon">
@@ -44,7 +40,7 @@ const Profile = () => {
                     <div className="profile-card">
                         <div className="edit-button-container">
                             <button id="edit-password-desktop" onClick={() => navigate("/passwordEdit")}>
-                                EDIT
+                                <FaEdit  className="icon" />  EDIT
                             </button>
                         </div>
                         <table>
@@ -67,9 +63,14 @@ const Profile = () => {
                                 </tr>
                             </tbody>
                         </table>
-                        <button id="edit-password-moblie" onClick={() => navigate("/passwordEdit")}>
+                        <button id="edit-password-moblie" onClick={() => navigate("/editUser")}>
                             EDIT
                         </button>
+                        <div className="back-button-container">
+                            <button className="back-button" onClick={() => navigate(-1)}>
+                                BACK
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
