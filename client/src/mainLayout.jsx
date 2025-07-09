@@ -8,7 +8,7 @@ const MainLayout = () => {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user")) || {};
-  const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+  const fullName = `${user.firstname || ""} ${user.midname || ""} ${user.lastname || ""}`.trim();
 
   const hideProfileBar = ["/profile", "/dashboard"].includes(location.pathname);
 
