@@ -33,13 +33,11 @@ const UserManagement = () => {
 
   const handleEdit = (user) => {
     console.log("🖊️ Edit user:", user);
-    // ใส่ logic เปิด modal หรือไปหน้า edit ได้ที่นี่
   };
 
   const handleDelete = (userId) => {
     if (window.confirm("❗แน่ใจว่าจะลบผู้ใช้นี้?")) {
       console.log("🗑️ Delete user ID:", userId);
-      // ใส่ logic ลบ เช่น axios.delete(`${apiBase}/api/users/${userId}`) ได้ที่นี่
     }
   };
 

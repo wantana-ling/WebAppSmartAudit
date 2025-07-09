@@ -94,21 +94,28 @@ td:nth-child(4) {
 
 th:nth-child(5),
 td:nth-child(5) {
-  width: 100px;  /* Status */
-  text-align: center;
+  width: 50px;  /* Status */
+  text-align: left;
 }
 
 th:nth-child(6),
 td:nth-child(6),
-th:nth-child(7),
-td:nth-child(7) {
-  width: 60px;  /* Edit / Delete */
-  display: flex;
-  text-align: center;
+th:nth-child(7) {
+  width: 40px;  /* Edit / Delete */
+  text-align: left;
   vertical-align: middle;
 }
 
+th:nth-child(6),
+th:nth-child(7) {
+    padding-left: 0px;
+}
 
+td:nth-child(7) {
+    width: 40px;
+    text-align: center;
+    vertical-align: middle;
+}
 /* === Status Labels === */
 .status-active {
   background-color: #4cd964;
@@ -138,8 +145,11 @@ td:nth-child(7) {
 
 /* === Scroll Table === */
 .table-container {
-  max-height: calc(40px * 10);
+  max-height: calc(51px * 10);
   overflow-y: auto;
+  border: 1px solid #ddd;        /* ✅ ขอบนอกสุด */
+  border-radius: 12px;           /* ✅ มุมมน */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .scroll-table thead,
@@ -156,7 +166,7 @@ td:nth-child(7) {
 
 .scroll-table tbody {
   display: block;
-  max-height: 355px;
+  max-height: none;
   overflow-y: auto;
 }
 
