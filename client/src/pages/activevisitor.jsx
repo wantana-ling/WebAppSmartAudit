@@ -18,8 +18,36 @@ const ActiveVisitor = () => {
           />
         </div>
         <div className="filter-box-def">
-          
+          <div className="filter-item">
+            <label>Show row</label>
+            <select>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+
+          <div className="filter-item">
+            <label>Department</label>
+            <select>
+              <option value="front">Front-IT Infrastructure</option>
+              <option value="back">Back-IT Infrastructure</option>
+            </select>
+          </div>
+
+          <div className="filter-item">
+            <label>Status</label>
+            <select>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+        
+          <button>+ Add</button>
+        
         </div>
+
 
         
       </div>

@@ -16,7 +16,7 @@
   }
 }
 .box-container-def {
-  padding: 40px 20px;
+  padding: 10px 20px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   background: #fff;
@@ -28,8 +28,8 @@
   box-sizing: border-box;
   
   /* Responsive width */
-  max-width: 900px;
-  width: 100%;
+  
+  width: 90%;
   margin: 0 10px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -68,3 +68,61 @@
     padding: 5px;
 }
 
+.filter-box-def {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;           /* ระยะห่างระหว่าง items */
+  margin-top: 16px;    /* เว้นจากด้านบน */
+  align-items: center;
+}
+.filter-box-def button {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.filter-item{
+  
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.filter-box-def label{
+  font-size: 14px;
+  color: #000000;
+  margin-right: 8px;
+}
+
+.filter-box-def select:focus,
+.filter-box-def button:focus {
+  outline: none;
+  border-color: #4d90fe;
+}
+
+.filter-box-def button {
+  background-color: #4d90fe;
+  color: black;
+  border: none;
+}
+
+.filter-box-def button:hover {
+  background-color: #357ae8;
+}
+.filter-item select {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 4px 8px;
+  color: #000000;
+}
