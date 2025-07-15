@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "../css/addDepartment.css";
+import "../css/editDepartment.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const AddDepartment = () => {
+const EditDepartment = () => {
   const [departmentName, setDepartmentName] = useState("");
   const navigate = useNavigate();
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
@@ -34,7 +34,7 @@ const AddDepartment = () => {
           />
         </div>
         <div className="button-group">
-          <button className="save-btn" onClick={handleSave}>ADD</button>
+          <button className="save-btn" onClick={handleSave}>SAVE</button>
           <button className="cancel-btn" onClick={() => navigate("/department")}>CANCEL</button>
         </div>
       </div>
@@ -42,4 +42,4 @@ const AddDepartment = () => {
   );
 };
 
-export default AddDepartment;
+export default EditDepartment;

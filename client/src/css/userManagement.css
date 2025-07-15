@@ -26,6 +26,12 @@
   margin-bottom: 20px;
 }
 
+.user-search-input {
+  width: 50%;
+  max-width: 400px;
+  min-width: 200px;
+}
+
 .search-filter-row input[type="text"],
 .search-filter-row select {
   padding: 8px 12px;

@@ -1,10 +1,13 @@
-.device-form-wrapper {
-  margin-top: 120px;
-  display: flex;
-  justify-content: center;
+.main-container {
+  margin-left: 21vw;
+  width: 79vw;
+  padding: 40px;
+  box-sizing: border-box;
+  font-family: 'Prompt', sans-serif;
 }
 
 .device-form-container {
+  margin: 0 auto;
   background: #fff;
   padding: 40px;
   border-radius: 12px;
@@ -53,7 +56,7 @@
   gap: 20px;
 }
 
-.checkbox-item {
+.checkbox-inline {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -87,8 +90,16 @@
   background-color: #00cc66;
 }
 
+.btn-save:hover {
+  background-color: #16a34a;
+}
+
 .btn-cancel {
   background-color: #ff4d4d;
+}
+
+.btn-cancel:hover {
+  background-color: #dc2626;
 }
 
 @media (max-width: 768px) {

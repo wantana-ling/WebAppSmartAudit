@@ -51,6 +51,12 @@
   font-size: 14px;
 }
 
+.user-search-input {
+  width: 50%;
+  max-width: 400px;
+  min-width: 200px;
+}
+
 /* === Table === */
 .table-container {
   max-height: calc(51px * 10);

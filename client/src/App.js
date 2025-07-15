@@ -19,6 +19,8 @@ import AddDevice from "./pages/addDevice";
 import DeleteDevice from "./pages/deleteDevice";
 import EditDevice from "./pages/editDevice";
 import AddDepartment from "./pages/addDepartment";
+import EditDepartment from "./pages/editDepartment";
+import DeleteDepartment from "./pages/deleteDepartment";
 
 const App = () => {
   return (
@@ -44,6 +46,8 @@ const App = () => {
           <Route path="/deleteDevice" element={<DeleteDevice />} />
           <Route path="/editDevice" element={<EditDevice />} />
           <Route path="/addDepartment" element={<AddDepartment />} />
+          <Route path="/editDepartment" element={<EditDepartment />} />
+          <Route path="/deleteDepartment" element={<DeleteDepartment />} />
         </Route>
       </Routes>
   );

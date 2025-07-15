@@ -51,7 +51,6 @@ input[type="text"] {
 }
 
 .save-btn {
-  width: 120px;
   background-color: #22c55e;
   color: white;
   padding: 10px 30px;
@@ -67,7 +66,6 @@ input[type="text"] {
 }
 
 .cancel-btn {
-  width: 120px;
   background-color: #ef4444;
   color: white;
   padding: 10px 30px;

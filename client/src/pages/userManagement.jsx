@@ -66,6 +66,7 @@ const UserManagement = () => {
             <input
               type="text"
               placeholder="🔍 search..."
+              className="user-search-input"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
@@ -91,7 +92,7 @@ const UserManagement = () => {
           </div>
 
           <div className="add-button-row">
-            <button className="add-user-btn" onClick={() => navigate("/addUser")}> <FaPlus className="icon" />ADD </button>
+            <button className="add-user-btn" onClick={() => navigate("/addUser")}> <FaPlus className="icon" /> ADD </button>
           </div>
         </div>
 

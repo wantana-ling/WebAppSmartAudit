@@ -65,6 +65,7 @@ const DeviceManagement = () => {
             <input
               type="text"
               placeholder="🔍 search..."
+              className="user-search-input"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

@@ -48,7 +48,7 @@ const EditDevice = () => {
 
   return (
     <div className="main-container">
-      <div className="device-form-wrapper">
+      <div className="device-form-container">
         <form className="device-form" onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
