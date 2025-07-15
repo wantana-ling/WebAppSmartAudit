@@ -59,7 +59,7 @@ const DeviceManagement = () => {
 
   return (
     <div className="main-container">
-      <div className="user-management-wrapper">
+      <div className="device-management-wrapper">
         <div className="top-row">
           <div className="search-filter-row">
             <input

@@ -6,8 +6,8 @@
   box-sizing: border-box;
 }
 
-/* === Wrapper กลาง + ขนาดจำกัด === */
-.device-management-wrapper {
+/* === Wrapper สำหรับ Department === */
+.department-wrapper {
   width: 100%;
   max-width: 1100px;
   background-color: #ffffff;
@@ -18,7 +18,7 @@
   margin-bottom: auto;
 }
 
-/* === กล่องควบคุมด้านบน === */
+/* === Top controls === */
 .top-row {
   display: flex;
   justify-content: space-between;
@@ -42,7 +42,7 @@
   flex-shrink: 0;
 }
 
-/* === Input + Select === */
+/* === Input & Select === */
 .search-filter-row input[type="text"],
 .search-filter-row select {
   padding: 8px 12px;
@@ -97,17 +97,18 @@ td {
   border-top: 1px solid #eee;
 }
 
-/* === Column Widths === */
-th:nth-child(1), td:nth-child(1) { width: 50px; text-align: center; }
-th:nth-child(2), td:nth-child(2) { width: 80px; text-align: left; }
-th:nth-child(3), td:nth-child(3) { width: 180px; text-align: left; }
-th:nth-child(4), td:nth-child(4) { width: 150px; text-align: left; }
-th:nth-child(5), td:nth-child(5) { width: 100px; text-align: center; }
-th:nth-child(6), td:nth-child(6),
-th:nth-child(7), td:nth-child(7) {
-  width: 40px;
+/* === Column Widths for Department Table === */
+th:nth-child(1), td:nth-child(1) {
+  width: 60px;
   text-align: center;
-  vertical-align: middle;
+}
+th:nth-child(2), td:nth-child(2) {
+  text-align: center;
+}
+th:nth-child(3), td:nth-child(3),
+th:nth-child(4), td:nth-child(4) {
+  width: 60px;
+  text-align: center;
 }
 
 /* === ปุ่ม Edit/Delete === */
@@ -120,8 +121,12 @@ th:nth-child(7), td:nth-child(7) {
   transition: 0.2s ease;
 }
 
-.edit-btn:hover { color: #007bff; }
-.delete-btn:hover { color: #ff3b30; }
+.edit-btn:hover {
+  color: #007bff;
+}
+.delete-btn:hover {
+  color: #ff3b30;
+}
 
 /* === ปุ่ม Add === */
 .add-user-btn {
@@ -139,3 +144,5 @@ th:nth-child(7), td:nth-child(7) {
 .add-user-btn:hover {
   background-color: #16a34a;
 }
+
+
