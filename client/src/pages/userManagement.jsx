@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../css/userManagement.css";
+import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
+import DeleteUserManagement from "./deleteUserManagement";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -8,7 +11,10 @@ const UserManagement = () => {
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
+  const navigate = useNavigate();
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   useEffect(() => {
@@ -31,45 +37,62 @@ const UserManagement = () => {
   const paddedRows = Math.max(0, rowsPerPage - filteredUsers.length);
   const visibleUsers = filteredUsers.slice(0, rowsPerPage);
 
-  const handleEdit = (user) => {
-    console.log("🖊️ Edit user:", user);
+  const handleDelete = (userId) => {
+    setSelectedUserId(userId);
+    setShowDeleteModal(true);
   };
 
-  const handleDelete = (userId) => {
-    if (window.confirm("❗แน่ใจว่าจะลบผู้ใช้นี้?")) {
-      console.log("🗑️ Delete user ID:", userId);
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`${apiBase}/api/user/${selectedUserId}`);
+      setUsers(users.filter(user => user.user_id !== selectedUserId));
+      setShowDeleteModal(false);
+      setSelectedUserId(null);
+    } catch (err) {
+      console.error("❌ ลบไม่สำเร็จ:", err);
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setSelectedUserId(null);
   };
 
   return (
     <div className="main-container">
       <div className="user-management-wrapper">
-        <div className="search-filter-row">
-          <input
-            type="text"
-            placeholder="🔍 search..."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
+        <div className="top-row">
+          <div className="search-filter-row">
+            <input
+              type="text"
+              placeholder="🔍 search..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
 
-          <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
-            <option value={5}>5 rows</option>
-            <option value={10}>10 rows</option>
-            <option value={50}>50 rows</option>
-            <option value={100}>100 rows</option>
-          </select>
+            <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
+              <option value={5}>5 rows</option>
+              <option value={10}>10 rows</option>
+              <option value={50}>50 rows</option>
+              <option value={100}>100 rows</option>
+            </select>
 
-          <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
-            <option value="">Department</option>
-            <option value="Front">Front-IT Infrastructure</option>
-            <option value="Back">Back-IT Infrastructure</option>
-          </select>
+            <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
+              <option value="">Department</option>
+              <option value="Front">Front-IT Infrastructure</option>
+              <option value="Back">Back-IT Infrastructure</option>
+            </select>
 
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option value="">Status</option>
-            <option value="active">ACTIVE</option>
-            <option value="inactive">INACTIVE</option>
-          </select>
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <option value="">Status</option>
+              <option value="active">ACTIVE</option>
+              <option value="inactive">INACTIVE</option>
+            </select>
+          </div>
+
+          <div className="add-button-row">
+            <button className="add-user-btn" onClick={() => navigate("/addUser")}> <FaPlus className="icon" />ADD </button>
+          </div>
         </div>
 
         <div className="table-container">
@@ -98,10 +121,10 @@ const UserManagement = () => {
                     </span>
                   </td>
                   <td>
-                    <button className="edit-btn" onClick={() => handleEdit(user)}>✏️</button>
+                    <button className="edit-btn" onClick={() => navigate("/editManageUser")}><FaEdit /></button>
                   </td>
                   <td>
-                    <button className="delete-btn" onClick={() => handleDelete(user.user_id)}>🗑️</button>
+                    <button className="delete-btn" onClick={() => handleDelete(user.user_id)}><FaTrash /></button>
                   </td>
                 </tr>
               ))}
@@ -114,6 +137,13 @@ const UserManagement = () => {
           </table>
         </div>
       </div>
+
+      {showDeleteModal && (
+        <DeleteUserManagement
+          onCancel={cancelDelete}
+          onConfirm={confirmDelete}
+        />
+      )}
     </div>
   );
 };

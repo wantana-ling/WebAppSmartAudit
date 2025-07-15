@@ -11,7 +11,13 @@ import UserManagement from "./pages/userManagement";
 import DeviceManagement from "./pages/deviceManagement";
 import Department from "./pages/department";
 import Setting from "./pages/setting";
-import ActiveVisitor from "./pages/activevisitor"; 
+import ActiveVisitor from "./pages/activevisitor";
+import AddUser from "./pages/addUser";
+import EditMagnageUser from "./pages/editManageUser"; 
+import DeleteUserManagement from "./pages/deleteUserManagement";
+import AddDevice from "./pages/addDevice";
+import DeleteDevice from "./pages/deleteDevice";
+import EditDevice from "./pages/editDevice";
 
 const App = () => {
   return (
@@ -30,6 +36,12 @@ const App = () => {
           <Route path="/department" element={<Department />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/acticveVisitor" element={<ActiveVisitor />} />
+          <Route path="/addUser" element={<AddUser />} />
+          <Route path="/editManageUser" element={<EditMagnageUser />} />
+          <Route path="/deleteUserManagement" element={<DeleteUserManagement />} />
+          <Route path="/addDevice" element={<AddDevice />} />
+          <Route path="/deleteDevice" element={<DeleteDevice />} />
+          <Route path="/editDevice" element={<EditDevice />} />
         </Route>
       </Routes>
   );

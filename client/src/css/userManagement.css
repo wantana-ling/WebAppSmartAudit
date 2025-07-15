@@ -1,8 +1,9 @@
 /* === Layout ครอบกลางแนวนอน === */
 .main-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  margin-left: 21vw;           /* 👈 ต้องตรงกับ sidebar */
+  width: 79vw;                 /* 👈 100 - 21 = เหลือที่ใช้ */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 /* === Wrapper กลาง + ขนาดจำกัด === */
@@ -11,7 +12,7 @@
   max-width: 1100px;
   background-color: #ffffff;
   font-family: 'Prompt', sans-serif;
-  margin-top: 20px;
+  margin-top: 50px;
   margin-left: 0;
   margin-right: 0;
   margin-bottom: auto;
@@ -102,7 +103,7 @@ th:nth-child(6),
 td:nth-child(6),
 th:nth-child(7) {
   width: 40px;  /* Edit / Delete */
-  text-align: left;
+  text-align: center;
   vertical-align: middle;
 }
 
@@ -186,4 +187,45 @@ td:nth-child(7) {
 
 .delete-btn:hover {
   color: #ff3b30;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.add-button-row {
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  margin-top: 40px;
+  margin-bottom: -10px;
+}
+
+.add-user-btn {
+  background-color: var(--green-color);
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-user-btn:hover {
+  background-color: #16a34a;
 }
