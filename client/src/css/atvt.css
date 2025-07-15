@@ -16,10 +16,10 @@
   }
 }
 .box-container-def {
-  padding: 10px 20px;
+  /* padding: 10px 20px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  background: #fff;
+  background: #fff; */
 
   /* จัดกล่องตรงกลาง column */
   display: flex;
@@ -124,5 +124,4 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   padding: 4px 8px;
-  color: #000000;
 }
