@@ -7,6 +7,7 @@ import DeleteUserManagement from "./deleteUserManagement";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -19,12 +20,12 @@ const UserManagement = () => {
 
   useEffect(() => {
     axios.get(`${apiBase}/api/users`)
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        console.error("❌ ไม่สามารถดึงข้อมูล user:", err);
-      });
+      .then((res) => setUsers(res.data))
+      .catch((err) => console.error("❌ ไม่สามารถดึงข้อมูล user:", err));
+
+    axios.get(`${apiBase}/api/departments`)
+      .then((res) => setDepartments(res.data))
+      .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
 
   const filteredUsers = users.filter((user) => {
@@ -80,8 +81,9 @@ const UserManagement = () => {
 
             <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
               <option value="">Department</option>
-              <option value="Front">Front-IT Infrastructure</option>
-              <option value="Back">Back-IT Infrastructure</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.department_name}>{d.department_name}</option>
+              ))}
             </select>
 
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
@@ -92,7 +94,9 @@ const UserManagement = () => {
           </div>
 
           <div className="add-button-row">
-            <button className="add-user-btn" onClick={() => navigate("/addUser")}> <FaPlus className="icon" /> ADD </button>
+            <button className="add-user-btn" onClick={() => navigate("/addUser")}>
+              <FaPlus className="icon" /> ADD
+            </button>
           </div>
         </div>
 
@@ -122,10 +126,14 @@ const UserManagement = () => {
                     </span>
                   </td>
                   <td>
-                    <button className="edit-btn" onClick={() => navigate("/editManageUser")}><FaEdit /></button>
+                    <button className="edit-btn" onClick={() => navigate(`/editManageUser/${user.user_id}`)}>
+                      <FaEdit />
+                    </button>
                   </td>
                   <td>
-                    <button className="delete-btn" onClick={() => handleDelete(user.user_id)}><FaTrash /></button>
+                    <button className="delete-btn" onClick={() => handleDelete(user.user_id)}>
+                      <FaTrash />
+                    </button>
                   </td>
                 </tr>
               ))}

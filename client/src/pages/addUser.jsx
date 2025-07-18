@@ -1,5 +1,4 @@
-// src/pages/AddUser.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/addUser.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -18,6 +17,14 @@ const AddUser = () => {
     confirmPassword: "",
   });
 
+  const [departments, setDepartments] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${apiBase}/api/departments`)
+      .then((res) => setDepartments(res.data))
+      .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -34,7 +41,7 @@ const AddUser = () => {
     }
 
     try {
-      const res = await axios.post(`${apiBase}/api/user`, {
+      await axios.post(`${apiBase}/api/user`, {
         firstname: formData.firstName,
         midname: formData.midName,
         lastname: formData.lastName,
@@ -75,9 +82,9 @@ const AddUser = () => {
                 <label>Department <span className="required">*</span></label>
                 <select name="department" value={formData.department} onChange={handleChange} required>
                   <option value="">-- เลือกแผนก --</option>
-                  <option value="ITfront">ITfront</option>
-                  <option value="ITback">ITback</option>
-                  <option value="admin">admin</option>
+                  {departments.map((d) => (
+                    <option key={d.id} value={d.department_name}>{d.department_name}</option>
+                  ))}
                 </select>
               </div>
             </div>

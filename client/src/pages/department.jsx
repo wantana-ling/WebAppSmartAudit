@@ -106,7 +106,7 @@ const Department = () => {
                   <td>
                     <button
                       className="edit-btn"
-                      onClick={() => navigate("/editDepartment")}
+                      onClick={() => navigate(`/editDepartment/${d.id}`)}
                     >
                       <FaEdit />
                     </button>

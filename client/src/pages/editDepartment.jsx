@@ -1,16 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/editDepartment.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const EditDepartment = () => {
   const [departmentName, setDepartmentName] = useState("");
   const navigate = useNavigate();
+  const { id } = useParams(); // ดึง id จาก URL
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
+
+  useEffect(() => {
+    // โหลดข้อมูลแผนกจาก backend
+    axios.get(`${apiBase}/api/departments/${id}`)
+      .then((res) => {
+        setDepartmentName(res.data.department_name || "");
+      })
+      .catch((err) => {
+        console.error("❌ โหลด department ล้มเหลว:", err);
+        alert("ไม่พบข้อมูลแผนก");
+        navigate("/department");
+      });
+  }, [id, apiBase, navigate]);
 
   const handleSave = () => {
     if (!departmentName.trim()) return alert("กรุณากรอกชื่อแผนก");
-    axios.post(`${apiBase}/api/departments`, { name: departmentName })
+
+    axios.put(`${apiBase}/api/departments/${id}`, { name: departmentName })
       .then(() => {
         alert("✅ บันทึกสำเร็จ");
         navigate("/department");

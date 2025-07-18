@@ -7,6 +7,7 @@ import ConfirmModal from "./deleteDevice";
 
 const DeviceManagement = () => {
   const [devices, setDevices] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [search, setSearch] = useState("");
   const [filterDept, setFilterDept] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -19,12 +20,19 @@ const DeviceManagement = () => {
 
   useEffect(() => {
     fetchDevices();
+    fetchDepartments();
   }, []);
 
   const fetchDevices = () => {
     axios.get(`${apiBase}/api/devices`)
       .then((res) => setDevices(res.data))
       .catch((err) => console.error("❌ โหลด devices ไม่ได้", err));
+  };
+
+  const fetchDepartments = () => {
+    axios.get(`${apiBase}/api/departments`)
+      .then((res) => setDepartments(res.data))
+      .catch((err) => console.error("❌ โหลด departments ไม่ได้", err));
   };
 
   const filteredDevices = devices.filter(d =>
@@ -75,10 +83,11 @@ const DeviceManagement = () => {
             </select>
             <select onChange={(e) => setFilterDept(e.target.value)} value={filterDept}>
               <option value="">Department</option>
-              <option value="Accounting">Accounting</option>
-              <option value="Sales">Sales</option>
-              <option value="IT Support">IT Support</option>
-              <option value="Development">Development</option>
+              {departments.map((dept) => (
+                <option key={dept.id} value={dept.department_name}>
+                  {dept.department_name}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -111,10 +120,12 @@ const DeviceManagement = () => {
                   <td>{d.department}</td>
                   <td>{d.active_users}</td>
                   <td>
-                    <button className="edit-btn" onClick={() => navigate("/editDevice")}><FaEdit /></button>
+                    <button className="edit-btn" onClick={() => navigate(`/editDevice/${d.id}`)}><FaEdit /></button>
                   </td>
                   <td>
-                    <button className="delete-btn" onClick={() => handleDeleteClick(d.id)}><FaTrash /></button>
+                    <button className="delete-btn" onClick={() => handleDeleteClick(d.id)}>
+                      <FaTrash />
+                    </button>
                   </td>
                 </tr>
               ))}

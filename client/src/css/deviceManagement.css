@@ -104,14 +104,14 @@ td {
 }
 
 /* === Column Widths === */
-th:nth-child(1), td:nth-child(1) { width: 50px; text-align: center; }
-th:nth-child(2), td:nth-child(2) { width: 80px; text-align: left; }
-th:nth-child(3), td:nth-child(3) { width: 180px; text-align: left; }
-th:nth-child(4), td:nth-child(4) { width: 150px; text-align: left; }
-th:nth-child(5), td:nth-child(5) { width: 100px; text-align: center; }
-th:nth-child(6), td:nth-child(6),
+th:nth-child(1), td:nth-child(1) { width: 20px; text-align: center; }
+th:nth-child(2), td:nth-child(2) { width: 50px; text-align: left; }
+th:nth-child(3), td:nth-child(3) { width: 100px; text-align: left; }
+th:nth-child(4), td:nth-child(4) { width: 200px; text-align: left; }
+th:nth-child(5), td:nth-child(5) { width: 20px; text-align: center; }
+th:nth-child(6), td:nth-child(6) { width: 20px;}
 th:nth-child(7), td:nth-child(7) {
-  width: 40px;
+  width: 20px;
   text-align: center;
   vertical-align: middle;
 }

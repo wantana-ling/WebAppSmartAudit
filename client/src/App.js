@@ -40,13 +40,13 @@ const App = () => {
           <Route path="/setting" element={<Setting />} />
           <Route path="/acticveVisitor" element={<ActiveVisitor />} />
           <Route path="/addUser" element={<AddUser />} />
-          <Route path="/editManageUser" element={<EditMagnageUser />} />
+          <Route path="/editManageUser/:id" element={<EditMagnageUser />} />
           <Route path="/deleteUserManagement" element={<DeleteUserManagement />} />
           <Route path="/addDevice" element={<AddDevice />} />
           <Route path="/deleteDevice" element={<DeleteDevice />} />
-          <Route path="/editDevice" element={<EditDevice />} />
+          <Route path="/editDevice/:id" element={<EditDevice />} />
           <Route path="/addDepartment" element={<AddDepartment />} />
-          <Route path="/editDepartment" element={<EditDepartment />} />
+          <Route path="/editDepartment/:id" element={<EditDepartment />} />
           <Route path="/deleteDepartment" element={<DeleteDepartment />} />
         </Route>
       </Routes>
