@@ -125,3 +125,13 @@
   -moz-appearance: none;
   padding: 4px 8px;
 }
+.table-def {
+  width: 100%;
+  max-height: 500px;        /* 👈 สูงสุดที่ต้องการให้แสดง */
+  overflow-y: auto;         /* 👈 เปิดการ scroll แนวตั้ง */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+
+
