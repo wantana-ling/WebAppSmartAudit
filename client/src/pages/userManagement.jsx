@@ -12,6 +12,7 @@ const UserManagement = () => {
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
@@ -35,8 +36,9 @@ const UserManagement = () => {
     return matchSearch && matchDept && matchStatus;
   });
 
-  const paddedRows = Math.max(0, rowsPerPage - filteredUsers.length);
-  const visibleUsers = filteredUsers.slice(0, rowsPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const visibleUsers = filteredUsers.slice(startIndex, startIndex + rowsPerPage);
 
   const handleDelete = (userId) => {
     setSelectedUserId(userId);
@@ -59,6 +61,10 @@ const UserManagement = () => {
     setSelectedUserId(null);
   };
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
   return (
     <div className="main-container">
       <div className="user-management-wrapper">
@@ -72,8 +78,10 @@ const UserManagement = () => {
               onChange={(e) => setSearchText(e.target.value)}
             />
 
-            <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
-              <option value={5}>5 rows</option>
+            <select value={rowsPerPage} onChange={(e) => {
+              setRowsPerPage(Number(e.target.value));
+              setCurrentPage(1);
+            }}>
               <option value={10}>10 rows</option>
               <option value={50}>50 rows</option>
               <option value={100}>100 rows</option>
@@ -94,7 +102,7 @@ const UserManagement = () => {
           </div>
 
           <div className="add-button-row">
-            <button className="add-user-btn" onClick={() => navigate("/addUser")}>
+            <button className="add-user-btn" onClick={() => navigate("/addUser")}> 
               <FaPlus className="icon" /> ADD
             </button>
           </div>
@@ -116,7 +124,7 @@ const UserManagement = () => {
             <tbody>
               {visibleUsers.map((user, index) => (
                 <tr key={user.user_id}>
-                  <td>{index + 1}</td>
+                  <td>{startIndex + index + 1}</td>
                   <td>{user.user_id}</td>
                   <td>{user.department}</td>
                   <td>{[user.firstname, user.midname, user.lastname].filter(Boolean).join(" ")}</td>
@@ -137,13 +145,31 @@ const UserManagement = () => {
                   </td>
                 </tr>
               ))}
-              {Array.from({ length: paddedRows }).map((_, idx) => (
+              {Array.from({ length: Math.max(0, rowsPerPage - visibleUsers.length) }).map((_, idx) => (
                 <tr key={`empty-${idx}`}>
                   <td colSpan={7} style={{ height: "40px" }}></td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="pagination">
+          <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+            &lt;
+          </button>
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i + 1}
+              className={currentPage === i + 1 ? "active" : ""}
+              onClick={() => handlePageChange(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+            &gt;
+          </button>
         </div>
       </div>
 

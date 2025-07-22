@@ -18,7 +18,7 @@ const Login = () => {
     console.log("Password:", password);
 
     try {
-      const response = await axios.post(`${apiBase}/login`,
+      const response = await axios.post(`${apiBase}/api/login`,
         {
           user_id: user_id,
           password: password
