@@ -17,23 +17,23 @@ const EditManageUser = () => {
   });
 
   const [departments, setDepartments] = useState([]);
-  const [invalidId, setInvalidId] = useState(false); // ✅ flag แทน early return
+  const [invalidId, setInvalidId] = useState(false);
 
-  // ✅ โหลด department
+  // โหลด department
   useEffect(() => {
     axios.get(`${apiBase}/api/departments`)
       .then((res) => setDepartments(res.data))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
 
-  // ✅ โหลดข้อมูล user เดิม
+  // โหลด user เดิม
   useEffect(() => {
     if (!id || id === "undefined") {
-      setInvalidId(true); // ✅ ตั้ง flag ถ้า id หาย
+      setInvalidId(true);
       return;
     }
 
-    axios.get(`${apiBase}/api/user-manage/${id}`)
+    axios.get(`${apiBase}/api/users/${id}`)
       .then((res) => {
         const u = res.data;
         setFormData({
@@ -68,7 +68,18 @@ const EditManageUser = () => {
 
     try {
       console.log("📦 ส่งข้อมูล:", formData);
-      await axios.put(`${apiBase}/api/user-manage/${id}`, formData);
+
+      await axios.put(`${apiBase}/api/users/${id}`, {
+        firstname: formData.firstName,
+        midname: formData.midName,
+        lastname: formData.lastName,
+        email: "",
+        phone: "",
+        password: "",
+        department: formData.department,
+        status: formData.status,
+      });
+
       alert("✅ อัปเดตผู้ใช้สำเร็จ");
       navigate("/userManagement");
     } catch (err) {
@@ -77,7 +88,6 @@ const EditManageUser = () => {
     }
   };
 
-  // ✅ เงื่อนไขหลัง hook: ถ้า id ไม่ valid
   if (invalidId) {
     return (
       <div style={{ padding: 30, color: "red" }}>

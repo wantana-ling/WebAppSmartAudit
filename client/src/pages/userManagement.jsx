@@ -47,7 +47,7 @@ const UserManagement = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${apiBase}/api/user/${selectedUserId}`);
+      await axios.delete(`${apiBase}/api/users/${selectedUserId}`);
       setUsers(users.filter(user => user.user_id !== selectedUserId));
       setShowDeleteModal(false);
       setSelectedUserId(null);
