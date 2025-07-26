@@ -12,6 +12,7 @@ import DeviceManagement from "./pages/deviceManagement";
 import Department from "./pages/department";
 import Setting from "./pages/setting";
 import ActiveVisitor from "./pages/activevisitor"; 
+import LiveScreen from "./pages/livescreen";
 
 const App = () => {
   return (
@@ -29,7 +30,8 @@ const App = () => {
           <Route path="/deviceManagement" element={<DeviceManagement />} />
           <Route path="/department" element={<Department />} />
           <Route path="/setting" element={<Setting />} />
-          <Route path="/acticveVisitor" element={<ActiveVisitor />} />
+          <Route path="acticveVisitor/*" element={<ActiveVisitor />} />
+          <Route path="acticveVisitor/liveScreen" element={<LiveScreen />} />
         </Route>
       </Routes>
   );
