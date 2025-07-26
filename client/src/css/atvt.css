@@ -1,0 +1,322 @@
+.main-container-def {
+  width: 80vw;
+  height: 100vh;
+  margin-left: 20vw;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  /* padding-right: 0.5vw;  */
+}
+@media (max-width: 768px) {
+  .main-container-def {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+.box-container-def {
+
+  /* จัดกล่องตรงกลาง column */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  
+  /* Responsive width */
+  
+  width: 90%;
+  margin: 0 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1;
+  min-height: 80%;
+}
+.search-box-def {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 60%;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.search-input-def {
+    all: unset;
+    width: 100%;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+.size-6{
+    height: 2rem;
+    color: #b4b4b4;
+    padding-right: 5px;
+}
+.search-box-def {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 60%;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.filter-box-def {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.filter-box-def button {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.filter-item{
+  
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.filter-box-def label{
+  font-size: 14px;
+  color: #000000;
+  margin-right: 8px;
+}
+
+.filter-box-def select:focus,
+.filter-box-def button:focus {
+  outline: none;
+  border-color: #4d90fe;
+}
+
+.filter-box-def button {
+  background-color: #4d90fe;
+  color: black;
+  border: none;
+}
+
+.filter-box-def button:hover {
+  background-color: #357ae8;
+}
+.filter-item select {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 4px 8px;
+}
+.table-def {
+  width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.table-def table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Fixed header */
+.table-def table thead,
+.table-def table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-def table thead {
+  background-color: #f5f5f5;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-bottom: 1px solid #ccc;
+}
+
+.table-def table tbody {
+  display: block;
+  max-height: 440px;
+  overflow-y: scroll; /* ใช้ scroll ไม่ใช่ auto เพื่อให้ scrollbar อยู่ใน DOM เสมอ */
+  scrollbar-width: none;             /* Firefox */
+  -ms-overflow-style: none;          /* IE 10+ */
+  position: relative;
+}
+
+/* Cell spacing & alignment */
+.table-def th,
+.table-def td {
+  padding: 10px 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #eee;
+}
+
+/* Column width (customized) */
+.table-def th:nth-child(1),
+.table-def td:nth-child(1) {
+  width: 50px;
+  text-align: center;
+}
+
+.table-def th:nth-child(2),
+.table-def td:nth-child(2) {
+  width: 80px;
+  text-align: center;
+}
+
+.table-def th:nth-child(3),
+.table-def td:nth-child(3) {
+  width: 180px;
+}
+
+.table-def th:nth-child(4),
+.table-def td:nth-child(4) {
+  width: 120px;
+}
+
+.table-def th:nth-child(5),
+.table-def td:nth-child(5) {
+  width: 100px;
+  text-align: left;
+}
+
+.table-def th:nth-child(6),
+.table-def td:nth-child(6) {
+  width: 60px;
+  text-align: center;
+}
+
+.table-def th:last-child,
+.table-def td:last-child {
+  padding-right: 20px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content.alert {
+  background: white;
+  border-radius: 16px;
+  padding: 30px 25px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  animation: pop-in 0.2s ease;
+}
+
+.modal-icon {
+  font-size: 32px;
+  color: red;
+  margin-bottom: 10px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  padding: 8px 16px;
+  background: #ddd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-confirm {
+  padding: 8px 16px;
+  background: #43a047;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover {
+  background: #ccc;
+}
+
+.btn-confirm:hover {
+  background: #2e7d32;
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.pagination-def {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pagination-def button {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  min-width: 36px;
+}
+
+.pagination-def button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+  border-color: #aaa;
+}
+
+.pagination-def button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pagination-def button.active {
+  background-color: #4caf50;   /* สีเขียว */
+  color: white;
+  font-weight: bold;
+  border: none;
+}
+
+
+
+
+
+
+
+
+
+
+

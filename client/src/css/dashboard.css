@@ -19,6 +19,7 @@ html, body {
   }
 .box-container {
     align-items: center;
+    /* margin-top: 5%; */
     padding: 40px 20px;
     display: flex;
     flex-direction: column;

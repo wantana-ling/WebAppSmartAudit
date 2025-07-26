@@ -15,12 +15,12 @@ const MainLayout = () => {
   return (
     <div className="main-layout">
       <Navbar />
-      <div className="content">
-        {/* ✅ เงื่อนไข: แสดงโปรไฟล์เฉพาะบางหน้า */}
-        {!hideProfileBar && (
-          <div className="top-right-profile">
-            <span className="username">{fullName || "Guest"}</span>
-            <div className="profile-pic" onClick={() => navigate('/profile')}>
+
+      {/* ✅ ย้ายโปรไฟล์ออกจาก .content */}
+      {!hideProfileBar && (
+        <div className="top-right-profile">
+          <span className="username">{fullName || "Guest"}</span>
+          <div className="profile-pic" onClick={() => navigate('/profile')}>
             <button>
               <img
                 className="profile-image"
@@ -29,8 +29,10 @@ const MainLayout = () => {
               />
             </button>
           </div>
-          </div>
-        )}
+        </div>
+      )}
+
+      <div className="content">
         <Outlet />
       </div>
     </div>

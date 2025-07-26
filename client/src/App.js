@@ -21,7 +21,8 @@ import EditDevice from "./pages/editDevice";
 import AddDepartment from "./pages/addDepartment";
 import EditDepartment from "./pages/editDepartment";
 import DeleteDepartment from "./pages/deleteDepartment";
-
+import ActiveVisitor from "./pages/activevisitor"; 
+import LiveScreen from "./pages/livescreen";
 const App = () => {
   return (
       <Routes>
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/deviceManagement" element={<DeviceManagement />} />
           <Route path="/department" element={<Department />} />
           <Route path="/setting" element={<Setting />} />
+<<<<<<< HEAD
           <Route path="/acticveVisitor" element={<ActiveVisitor />} />
           <Route path="/addUser" element={<AddUser />} />
           <Route path="/editManageUser/:id" element={<EditMagnageUser />} />
@@ -48,6 +50,10 @@ const App = () => {
           <Route path="/addDepartment" element={<AddDepartment />} />
           <Route path="/editDepartment/:id" element={<EditDepartment />} />
           <Route path="/deleteDepartment" element={<DeleteDepartment />} />
+=======
+          <Route path="acticveVisitor/*" element={<ActiveVisitor />} />
+          <Route path="acticveVisitor/liveScreen" element={<LiveScreen />} />
+>>>>>>> visitor-active
         </Route>
       </Routes>
   );

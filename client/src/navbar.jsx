@@ -19,7 +19,7 @@ const Navbar = () => {
                 <span className="menu-label">Dashboard</span>
               </Link>
             </li>
-            <li className={`main-menu ${location.pathname === "/acticveVisitor" ? "active" : ""}`}>
+            <li className={`main-menu ${location.pathname.startsWith("/acticveVisitor") ? "active" : ""}`}>
               <Link to="/acticveVisitor">
                 <FaUser  className="icon" />
                 <span className="menu-label">Active Visitor</span>
