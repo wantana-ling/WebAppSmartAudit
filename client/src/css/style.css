@@ -311,7 +311,7 @@ body {
     overflow: hidden;
     margin-left:21vw;
 }
-
+/*ซ้ำ*/
 @media (max-width: 768px) {
     .main-container {
         margin-left:18vw;
