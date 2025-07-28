@@ -28,7 +28,6 @@ const LiveScreen = () => {
         <button className="live-screen-exit-btn" onClick={handleExit}>EXIT</button>
       </div>
 
-      {/* CSS แบบฝังในล่างสุด */}
       <style>{`
         .main-container-def {
         width: 80vw;
