@@ -37,6 +37,12 @@ const Setting = () => {
           <button className="save-btn" onClick={handleSave}>SAVE</button>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

@@ -139,6 +139,12 @@ const Department = () => {
           onConfirm={confirmDelete}
         />
       )}
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

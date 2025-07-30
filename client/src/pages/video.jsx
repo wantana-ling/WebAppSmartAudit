@@ -203,6 +203,12 @@ const Video = () => {
           onConfirm={confirmDelete}
         />
       )}
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

@@ -84,6 +84,12 @@ const Profile = () => {
           </div>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

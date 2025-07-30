@@ -179,6 +179,12 @@ const UserManagement = () => {
           onConfirm={confirmDelete}
         />
       )}
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

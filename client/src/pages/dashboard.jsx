@@ -141,6 +141,12 @@ const Dashboard = () => {
           <small className="updated-text">Last updated: {new Date().toLocaleDateString()}</small>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>  
     </div>
   );
 };

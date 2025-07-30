@@ -144,6 +144,12 @@ const DeviceManagement = () => {
           onConfirm={confirmDelete}
         />
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

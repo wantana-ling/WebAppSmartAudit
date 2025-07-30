@@ -38,6 +38,12 @@ const AddDepartment = () => {
           <button className="cancel-btn" onClick={() => navigate("/department")}>CANCEL</button>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

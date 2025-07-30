@@ -16,6 +16,12 @@ const DeleteModal = ({ onCancel, onConfirm }) => {
           <button className="modal-btn confirm" onClick={onConfirm}>Confirm</button>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

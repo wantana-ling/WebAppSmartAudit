@@ -185,6 +185,12 @@ const EditUser = () => {
           </form>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

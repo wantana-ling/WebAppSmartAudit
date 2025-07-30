@@ -142,6 +142,12 @@ const EditManageUser = () => {
           </form>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

@@ -179,6 +179,12 @@ const AddUser = () => {
           </form>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>  
     </div>
   );
 };

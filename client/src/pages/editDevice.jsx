@@ -129,6 +129,12 @@ const EditDevice = () => {
           </div>
         </form>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

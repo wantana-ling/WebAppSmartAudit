@@ -95,6 +95,12 @@ const Login = () => {
           </div>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };

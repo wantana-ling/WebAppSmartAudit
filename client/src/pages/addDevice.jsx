@@ -117,6 +117,12 @@ const AddDevice = () => {
           <button className="btn-cancel" onClick={() => navigate("/deviceManagement")}>CANCEL</button>
         </div>
       </div>
+    <style>{`
+      
+    
+    
+    
+    `}</style>
     </div>
   );
 };
