@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../css/addDevice.css";
 
 const AddDevice = () => {
   const [form, setForm] = useState({
@@ -118,10 +117,93 @@ const AddDevice = () => {
         </div>
       </div>
     <style>{`
-      
-    
-    
-    
+    .main-container {
+      margin-left: 21vw;
+      width: 79vw;
+      padding: 40px;
+      box-sizing: border-box;
+      font-family: 'Prompt', sans-serif;
+    }
+    .add-device-wrapper {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .form-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      color: #002f6c;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .btn-add,
+    .btn-cancel {
+      width: 120px;
+      padding: 10px 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      color: white;
+      text-align: center;
+      transition: 0.2s ease;
+    }
+
+    .btn-add {
+      background-color: #22c55e;
+    }
+
+    .btn-cancel {
+      background-color: #ef4444;
+    }
+
+    .btn-add:hover,
+    .btn-cancel:hover {
+      opacity: 0.9;
+    }
+
+    .required {
+      color: red;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+      }
+
+      .btn-add,
+      .btn-cancel {
+        width: 100%;
+      }
+    }
     `}</style>
     </div>
   );
