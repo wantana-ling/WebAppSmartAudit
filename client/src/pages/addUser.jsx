@@ -199,7 +199,6 @@ const AddUser = () => {
       font-family: 'Prompt', sans-serif;
     }
 
-    /* === กล่อง input แถวแรก 3 ช่อง === */
     .form-row {
       display: flex;
       gap: 20px;
