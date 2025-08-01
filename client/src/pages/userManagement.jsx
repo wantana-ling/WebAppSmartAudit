@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../css/userManagement.css";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import DeleteUserManagement from "./deleteUserManagement";
 
@@ -180,10 +179,282 @@ const UserManagement = () => {
         />
       )}
     <style>{`
-      
-    
-    
-    
+    .main-container {
+      margin-left: 21vw;           /* 👈 ต้องตรงกับ sidebar */
+      width: 79vw;                 /* 👈 100 - 21 = เหลือที่ใช้ */
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* === Wrapper กลาง + ขนาดจำกัด === */
+    .user-management-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      background-color: #ffffff;
+      font-family: 'Prompt', sans-serif;
+      margin-top: 50px;
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: auto;
+    }
+
+    /* === Search + Filters === */
+    .search-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .user-search-input {
+      width: 50%;
+      max-width: 400px;
+      min-width: 200px;
+    }
+
+    .search-filter-row input[type="text"],
+    .search-filter-row select {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    /* === Table === */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    th, td {
+      padding: 10px 8px; /* ลด padding รวม */
+      text-align: left;
+      vertical-align: middle;
+      padding: 12px 12px;
+    }
+
+    th {
+      background-color: #f0f2fa;
+      color: #00209F;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    td {
+      font-size: 14px;
+      color: #333;
+      border-top: 1px solid #eee;
+      vertical-align: middle;
+    }
+
+    /* === Table spacing / alignment ปรับตามภาพ === */
+    th:nth-child(1),
+    td:nth-child(1) {
+      width: 50px;  /* no. */
+      text-align: center;
+      padding-left: 4px;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 80px;  /* UserID */
+      text-align: center;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+      width: 150px;
+      text-align: center;  /* Department */
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+      width: 150px;  /* Username */
+      white-space: nowrap;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    th:nth-child(5),
+    td:nth-child(5) {
+      width: 50px;  /* Status */
+      text-align: left;
+    }
+
+    th:nth-child(6),
+    td:nth-child(6),
+    th:nth-child(7) {
+      width: 40px;  /* Edit / Delete */
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th:nth-child(6),
+    th:nth-child(7) {
+        padding-left: 0px;
+    }
+
+    td:nth-child(7) {
+        width: 40px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    /* === Status Labels === */
+    .status-active {
+      background-color: #4cd964;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .status-inactive {
+      background-color: #ff3b30;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    /* === Scroll Table === */
+    .table-container {
+      max-height: calc(51px * 10);
+      overflow-y: auto;
+      border: 1px solid #ddd;        /* ✅ ขอบนอกสุด */
+      border-radius: 12px;           /* ✅ มุมมน */
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .scroll-table thead,
+    .scroll-table tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .scroll-table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .scroll-table tbody {
+      display: block;
+      max-height: none;
+      overflow-y: auto;
+    }
+
+    /* === ปุ่ม Edit/Delete === */
+    .edit-btn, .delete-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      transition: 0.2s ease;
+    }
+
+    .edit-btn:hover {
+      color: #007bff;
+    }
+
+    .delete-btn:hover {
+      color: #ff3b30;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .search-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .add-button-row {
+      display: flex;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      margin-top: 40px;
+      margin-bottom: -10px;
+    }
+
+    .add-user-btn {
+      background-color: var(--green-color);
+      color: white;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .add-user-btn:hover {
+      background-color: #16a34a;
+    }
+
+    /* === Pagination === */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .pagination button {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #ddd;
+      background-color: white;
+      color: #111;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      border-color: #aaa;
+    }
+
+    .pagination button.active {
+      background-color: #fd924c;
+      color: white;
+      border-color: #fd924c;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
     `}</style>
     </div>
   );
