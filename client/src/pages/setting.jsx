@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/setting.css"; 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,10 +8,22 @@ const Setting = () => {
   const navigate = useNavigate();
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
+  useEffect(() => {
+    axios.get(`${apiBase}/api/ad-config`)
+      .then(res => {
+        if (res.data && res.data.serverip_hostname) {
+          setAdServer(res.data.serverip_hostname);
+        }
+      })
+      .catch(err => {
+        console.error("❌ ดึงค่า AD server ล้มเหลว:", err);
+      });
+  }, []);
+
   const handleSave = () => {
     if (!adServer.trim()) return alert("กรุณากรอก AD Server IP / Host Name");
 
-    axios.post(`${apiBase}/api/settings/adserver`, { host: adServer })
+    axios.post(`${apiBase}/api/ad-config`, { serverip_hostname: adServer })
       .then(() => {
         alert("✅ บันทึกสำเร็จ");
       })
