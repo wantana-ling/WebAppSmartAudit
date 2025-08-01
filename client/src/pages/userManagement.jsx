@@ -66,7 +66,7 @@ const UserManagement = () => {
 
   return (
     <div className="main-container">
-      <div className="user-management-wrapper">
+      <div className="box-container">
         <div className="top-row">
           <div className="search-filter-row">
             <input
@@ -114,7 +114,7 @@ const UserManagement = () => {
                 <th>no.</th>
                 <th>UserID</th>
                 <th>Department</th>
-                <th>Username</th>
+                <th>Name</th>
                 <th>Status</th>
                 <th>Edit</th>
                 <th>Delete</th>

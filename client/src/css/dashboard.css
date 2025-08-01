@@ -138,12 +138,6 @@ html, body {
 
 
 @media (max-width: 768px) {
-    .box-container {
-        margin: 30px;
-        margin-top: 50px;
-        flex-direction: column;
-    }
-
     .dashboard-header {
         align-items: start;
     }

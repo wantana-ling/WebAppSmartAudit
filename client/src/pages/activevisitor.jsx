@@ -206,7 +206,7 @@ const ActiveVisitor = () => {
                 <th>No.</th>
                 <th>UserID</th>
                 <th>Department</th>
-                <th>Username</th>
+                <th>Name</th>
                 <th>Duration</th>
                 <th>View</th>
               </tr>
@@ -463,9 +463,19 @@ const ActiveVisitor = () => {
         }
 
         .modal-overlay {
+          // position: fixed;
+          // inset: 0;
+          // background-color: rgba(0, 0, 0, 0.3);
+          // display: flex;
+          // justify-content: center;
+          // align-items: center;
+          // z-index: 999;
           position: fixed;
-          inset: 0;
-          background-color: rgba(0, 0, 0, 0.3);
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.3);
           display: flex;
           justify-content: center;
           align-items: center;

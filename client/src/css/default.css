@@ -28,6 +28,13 @@
     z-index: 1;
     min-height: 80%;
     }
+@media (max-width: 768px) {
+    .box-container {
+        margin: 30px;
+        margin-top: 50px;
+        flex-direction: column;
+    }
+}
 
 /*Profile มุมขวาบน*/
 .profile-pic {

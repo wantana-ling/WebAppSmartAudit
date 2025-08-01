@@ -59,7 +59,7 @@ const Department = () => {
 
   return (
     <div className="main-container">
-      <div className="department-wrapper">
+      <div className="box-container">
         <div className="top-row">
           <div className="search-filter-row">
             <input

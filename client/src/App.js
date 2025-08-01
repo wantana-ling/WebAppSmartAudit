@@ -4,7 +4,6 @@ import MainLayout from "./mainLayout";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import Profile from "./pages/profile";
-import Permission from "./pages/permission";
 import Video from "./pages/video";
 import EditUser from "./pages/editUser";
 import UserManagement from "./pages/userManagement";
@@ -32,7 +31,6 @@ const App = () => {
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/permission" element={<Permission />} />
           <Route path="/video" element={<Video />} />
           <Route path="/passwordEdit" element={<EditUser />} />
           <Route path="/userManagement" element={<UserManagement />} />
