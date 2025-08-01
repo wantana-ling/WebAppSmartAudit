@@ -96,10 +96,77 @@ const Login = () => {
         </div>
       </div>
     <style>{`
-      
-    
-    
-    
+    .login-page {
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 0px;
+      overflow: hidden;
+    }
+
+    .login-logo {
+        min-width: 50vw;
+        text-align: center;
+    }
+
+    .login-logo img {
+        width: 60%;
+        text-align: center;
+    }
+
+    .login-background {
+        min-width: 50vw;
+        height: 100%;
+        border-radius: 60px 0px 0px 60px;
+        background: var(--background-gradient);
+        display: flex;
+        justify-content: center;
+    }
+
+    .login-input {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        gap: 20px;
+    }
+
+
+    .login-form {
+        min-width: 30vw;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        
+    }
+
+    .login-input input {
+        width: 100%;
+        border: none;
+        padding: 20px;
+        border-radius: 20px;
+        background-color: var(--input-color);
+        font-size: medium;
+    }
+
+    .login-input button {
+        width: 100%;
+        border: none;
+        padding: 20px;
+        border-radius: 20px;
+        background-color: var(--ligthblue-color);
+        font-size: large;
+        font-weight: 600;
+        color: white;
+    }
+    .container {
+      width: 100%;
+      height: 100vh;
+    }
     `}</style>
     </div>
   );

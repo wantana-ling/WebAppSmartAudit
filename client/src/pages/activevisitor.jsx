@@ -145,9 +145,9 @@ const ActiveVisitor = () => {
 
 
   return (
-    <div className="main-container-def">
-      <div className="box-container-def">
-        <div className="search-box-def">
+    <div className="main-container">
+      <div className="box-container">
+        <div className="search-box">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
@@ -155,7 +155,7 @@ const ActiveVisitor = () => {
           <input
             type="text"
             placeholder="Search..."
-            className="search-input-def"
+            className="search-input"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -164,7 +164,7 @@ const ActiveVisitor = () => {
           />
 
         </div>
-        <div className="filter-box-def">
+        <div className="filter-box">
           <div className="filter-item">
             <label>Show row</label>
             <select
@@ -199,7 +199,7 @@ const ActiveVisitor = () => {
           </div>
 
         </div>
-        <div className="table-def">
+        <div className="table-form">
           <table>
             <thead>
               <tr>
@@ -227,7 +227,7 @@ const ActiveVisitor = () => {
 
           </table>
         </div>
-        <div className="pagination-def">
+        <div className="pagination">
           <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
             {'<<'}
           </button>
@@ -282,37 +282,7 @@ const ActiveVisitor = () => {
         )}
 
           <style>{`
-          .main-container-def {
-          width: 80vw;
-          height: 100vh;
-          margin-left: 20vw;
-          
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          box-sizing: border-box;
-        }
-        @media (max-width: 768px) {
-          .main-container-def {
-            padding-left: 0;
-            padding-right: 0;
-          }
-        }
-        .box-container-def {
-
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          box-sizing: border-box;
-          
-          width: 90%;
-          margin: 0 10px;
-          overflow-y: auto;
-          overflow-x: hidden;
-          z-index: 1;
-          min-height: 80%;
-        }
-        .search-box-def {
+        .search-box {
             display: flex;
             align-items: center;
             border: 1px solid #ccc;
@@ -322,7 +292,7 @@ const ActiveVisitor = () => {
             padding: 5px;
         }
 
-        .search-input-def {
+        .search-input {
             all: unset;
             width: 100%;
             padding: 5px;
@@ -334,7 +304,7 @@ const ActiveVisitor = () => {
             color: #b4b4b4;
             padding-right: 5px;
         }
-        .search-box-def {
+        .search-box {
             display: flex;
             align-items: center;
             border: 1px solid #ccc;
@@ -344,13 +314,13 @@ const ActiveVisitor = () => {
             padding: 5px;
         }
 
-        .filter-box-def {
+        .filter-box {
           display: flex;
           flex-wrap: wrap;
           gap: 12px;
           align-items: center;
         }
-        .filter-box-def button {
+        .filter-box button {
           padding: 6px 12px;
           font-size: 14px;
           border: 1px solid #ccc;
@@ -369,25 +339,25 @@ const ActiveVisitor = () => {
           cursor: pointer;
           transition: border-color 0.2s;
         }
-        .filter-box-def label{
+        .filter-box label{
           font-size: 14px;
           color: #000000;
           margin-right: 8px;
         }
 
-        .filter-box-def select:focus,
-        .filter-box-def button:focus {
+        .filter-box select:focus,
+        .filter-box button:focus {
           outline: none;
           border-color: #4d90fe;
         }
 
-        .filter-box-def button {
+        .filter-box button {
           background-color: #4d90fe;
           color: black;
           border: none;
         }
 
-        .filter-box-def button:hover {
+        .filter-box button:hover {
           background-color: #357ae8;
         }
         .filter-item select {
@@ -400,7 +370,7 @@ const ActiveVisitor = () => {
           -moz-appearance: none;
           padding: 4px 8px;
         }
-        .table-def {
+        .table-form {
           width: 100%;
           max-height: 500px;
           overflow-y: auto;
@@ -410,20 +380,20 @@ const ActiveVisitor = () => {
           box-sizing: border-box;
         }
 
-        .table-def table {
+        .table-form table {
           width: 100%;
           border-collapse: collapse;
         }
 
         /* Fixed header */
-        .table-def table thead,
-        .table-def table tbody tr {
+        .table-form table thead,
+        .table-form table tbody tr {
           display: table;
           width: 100%;
           table-layout: fixed;
         }
 
-        .table-def table thead {
+        .table-form table thead {
           background-color: #f5f5f5;
           position: sticky;
           top: 0;
@@ -431,7 +401,7 @@ const ActiveVisitor = () => {
           border-bottom: 1px solid #ccc;
         }
 
-        .table-def table tbody {
+        .table-form table tbody {
           display: block;
           max-height: 440px;
           overflow-y: scroll;
@@ -440,8 +410,8 @@ const ActiveVisitor = () => {
           position: relative;
         }
 
-        .table-def th,
-        .table-def td {
+        .table-form th,
+        .table-form td {
           padding: 10px 12px;
           white-space: nowrap;
           overflow: hidden;
@@ -450,42 +420,45 @@ const ActiveVisitor = () => {
         }
 
 
-        .table-def th:nth-child(1),
-        .table-def td:nth-child(1) {
+        .table-form th:nth-child(1),
+        .table-form td:nth-child(1) {
           width: 50px;
           text-align: center;
         }
 
-        .table-def th:nth-child(2),
-        .table-def td:nth-child(2) {
+        .table-form th:nth-child(2),
+        .table-form td:nth-child(2) {
           width: 80px;
           text-align: center;
         }
 
-        .table-def th:nth-child(3),
-        .table-def td:nth-child(3) {
+        .table-form th:nth-child(3),
+        .table-form td:nth-child(3) {
+          text-align: center;
           width: 180px;
         }
 
-        .table-def th:nth-child(4),
-        .table-def td:nth-child(4) {
+        .table-form th:nth-child(4),
+        .table-form td:nth-child(4) {
+          
+          text-align: center;
           width: 120px;
         }
 
-        .table-def th:nth-child(5),
-        .table-def td:nth-child(5) {
+        .table-form th:nth-child(5),
+        .table-form td:nth-child(5) {
           width: 100px;
           text-align: left;
         }
 
-        .table-def th:nth-child(6),
-        .table-def td:nth-child(6) {
+        .table-form th:nth-child(6),
+        .table-form td:nth-child(6) {
           width: 60px;
           text-align: center;
         }
 
-        .table-def th:last-child,
-        .table-def td:last-child {
+        .table-form th:last-child,
+        .table-form td:last-child {
           padding-right: 20px;
         }
 
@@ -551,7 +524,7 @@ const ActiveVisitor = () => {
           to { transform: scale(1); opacity: 1; }
         }
 
-        .pagination-def {
+        .pagination {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -560,7 +533,7 @@ const ActiveVisitor = () => {
           gap: 6px;
         }
 
-        .pagination-def button {
+        .pagination button {
           padding: 6px 12px;
           border: 1px solid #ccc;
           background-color: white;
@@ -572,17 +545,17 @@ const ActiveVisitor = () => {
           min-width: 36px;
         }
 
-        .pagination-def button:hover:not(:disabled) {
+        .pagination button:hover:not(:disabled) {
           background-color: #f0f0f0;
           border-color: #aaa;
         }
 
-        .pagination-def button:disabled {
+        .pagination button:disabled {
           cursor: not-allowed;
           opacity: 0.5;
         }
 
-        .pagination-def button.active {
+        .pagination button.active {
           background-color: #4caf50;
           color: white;
           font-weight: bold;

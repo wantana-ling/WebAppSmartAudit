@@ -38,13 +38,7 @@ const AddDepartment = () => {
         </div>
       </div>
     <style>{`
-      .main-container {
-      margin-left: 21vw;
-      width: 79vw;
-      padding: 40px;
-      box-sizing: border-box;
-      font-family: 'Prompt', sans-serif;
-    }
+
 
     /* ให้ form wrapper กว้างและชิดซ้ายแบบ edit */
     .form-wrapper {

@@ -235,19 +235,6 @@ const DeviceManagement = () => {
       vertical-align: middle;
     }
 
-    th {
-      background-color: #f0f2fa;
-      color: #00209F;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    td {
-      font-size: 14px;
-      color: #333;
-      border-top: 1px solid #eee;
-    }
-
     /* === Column Widths === */
     th:nth-child(1), td:nth-child(1) { width: 20px; text-align: center; }
     th:nth-child(2), td:nth-child(2) { width: 50px; text-align: left; }
