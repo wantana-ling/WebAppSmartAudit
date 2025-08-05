@@ -30,8 +30,10 @@ const UserManagement = () => {
   }, []);
 
   const filteredUsers = users.filter((user) => {
-    const matchSearch = user.firstname?.includes(searchText) || user.user_id?.toString().includes(searchText);
-    const matchDept = departmentFilter ? user.department?.includes(departmentFilter) : true;
+    const matchSearch =
+      user.firstname?.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.user_id?.toString().includes(searchText);
+    const matchDept = departmentFilter ? user.department_name === departmentFilter : true;
     const matchStatus = statusFilter ? user.status === statusFilter : true;
     return matchSearch && matchDept && matchStatus;
   });
@@ -102,7 +104,7 @@ const UserManagement = () => {
           </div>
 
           <div className="add-button-row">
-            <button className="add-user-btn" onClick={() => navigate("/addUser")}> 
+            <button className="add-user-btn" onClick={() => navigate("/addUser")}>
               <FaPlus className="icon" /> ADD
             </button>
           </div>
@@ -115,7 +117,7 @@ const UserManagement = () => {
                 <th>no.</th>
                 <th>UserID</th>
                 <th>Department</th>
-                <th>Username</th>
+                <th>Name</th>
                 <th>Status</th>
                 <th>Edit</th>
                 <th>Delete</th>

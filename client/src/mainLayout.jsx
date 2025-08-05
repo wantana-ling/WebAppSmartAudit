@@ -7,8 +7,8 @@ const MainLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user")) || {};
-  const fullName = `${user.firstname || ""} ${user.midname || ""} ${user.lastname || ""}`.trim();
+  const admin = JSON.parse(localStorage.getItem("admin"));
+  const companyName = admin?.company || "Company";
 
   const hideProfileBar = ["/profile", "/dashboard"].includes(location.pathname);
 
@@ -16,10 +16,9 @@ const MainLayout = () => {
     <div className="main-layout">
       <Navbar />
 
-      {/* ✅ ย้ายโปรไฟล์ออกจาก .content */}
       {!hideProfileBar && (
         <div className="top-right-profile">
-          <span className="username">{fullName || "Guest"}</span>
+          <span className="username">{companyName}</span>
           <div className="profile-pic" onClick={() => navigate('/profile')}>
             <button>
               <img

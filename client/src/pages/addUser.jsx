@@ -42,12 +42,22 @@ const AddUser = () => {
       return;
     }
 
+    const selectedDept = departments.find(
+      (d) => d.department_name === formData.department
+    );
+    const department_id = selectedDept ? selectedDept.id : null;
+
+    if (!department_id) {
+      alert("❌ ไม่พบ department_id จากชื่อแผนก");
+      return;
+    }
+
     try {
       await axios.post(`${apiBase}/api/users`, {
         firstname: formData.firstName,
         midname: formData.midName,
         lastname: formData.lastName,
-        department: formData.department,
+        department_id: department_id,
         user_id: formData.userId,
         password: formData.password,
       });

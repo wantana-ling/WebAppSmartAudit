@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCamera, FaEdit } from "react-icons/fa";
+
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const storedAdmin = localStorage.getItem("admin");
+    if (storedAdmin) {
+      setAdmin(JSON.parse(storedAdmin));
     }
   }, []);
 
-  if (!user) return <div>Loading...</div>;
-
-  // รวมชื่อแบบมี midname ด้วย
-  const fullName = [user.firstname, user.midname, user.lastname]
-    .filter(Boolean)
-    .join(" ");
+  if (!admin) return <div>Loading...</div>;
 
   return (
     <div className="main-container">
@@ -35,8 +31,7 @@ const Profile = () => {
             </label>
           </div>
           <div className="profile-info">
-            <h1>{fullName}</h1>
-            <p>{user.department}</p>
+            <h1>{admin.company}</h1>
           </div>
         </div>
 
@@ -53,29 +48,23 @@ const Profile = () => {
             <table>
               <tbody>
                 <tr>
-                  <th>Name</th>
-                  <td>{fullName}</td>
+                  <th>User ID</th>
+                  <td>{admin.user_id}</td>
                 </tr>
                 <tr>
                   <th>Password</th>
                   <td>••••••••</td>
                 </tr>
-                <tr>
-                  <th>Email</th>
-                  <td>{user.email || "-"}</td>
-                </tr>
-                <tr>
-                  <th>Phone number</th>
-                  <td>{user.phone || "-"}</td>
-                </tr>
               </tbody>
             </table>
+
             <button
               id="edit-password-moblie"
               onClick={() => navigate("/editUser")}
             >
               EDIT
             </button>
+
             <div className="back-button-container">
               <button className="back-button" onClick={() => navigate(-1)}>
                 BACK

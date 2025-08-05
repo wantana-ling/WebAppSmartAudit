@@ -14,14 +14,12 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Username:", user_id);
-    console.log("Password:", password);
 
     try {
       const response = await axios.post(`${apiBase}/api/login`,
         {
-          user_id: user_id,
-          password: password
+          user_id,
+          password
         },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -29,24 +27,16 @@ const Login = () => {
         }
       );
 
-      const userData = response.data.user || response.data.user_info;
-      const token = response.data.token || '';
+      const adminData = response.data.admin_info;
 
-      if (!userData) {
+      if (!adminData) {
         setError('Invalid response from server');
         return;
       }
 
-      // ✅ Extract name fields and store them
-      const user = {
-        firstName: userData.first_name || userData.firstname || '',
-        lastName: userData.last_name || userData.lastname || '',
-        ...userData
-      };
-
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', token);
-      localStorage.setItem('user_id', userData.user_id);
+      // ✅ เก็บ user_id ไว้ใน localStorage
+      localStorage.setItem('user_id', adminData.user_id);
+      localStorage.setItem('admin', JSON.stringify(adminData));
 
       navigate('/dashboard');
     } catch (err) {

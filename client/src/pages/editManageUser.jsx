@@ -40,7 +40,7 @@ const EditManageUser = () => {
           firstName: u.firstname,
           midName: u.midname || "",
           lastName: u.lastname,
-          department: u.department,
+          department: u.department,  // ใช้ department_name
           status: u.status,
         });
       })
@@ -66,6 +66,14 @@ const EditManageUser = () => {
       }
     }
 
+    const selectedDept = departments.find((d) => d.department_name === formData.department);
+    const department_id = selectedDept ? selectedDept.id : null;
+
+    if (!department_id) {
+      alert("❌ ไม่พบ department_id จากชื่อที่เลือก");
+      return;
+    }
+
     try {
       console.log("📦 ส่งข้อมูล:", formData);
 
@@ -76,7 +84,7 @@ const EditManageUser = () => {
         email: "",
         phone: "",
         password: "",
-        department: formData.department,
+        department_id: department_id,
         status: formData.status,
       });
 

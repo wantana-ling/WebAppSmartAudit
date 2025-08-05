@@ -8,24 +8,16 @@ const EditUser = () => {
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    midName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    company: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
+    const admin = JSON.parse(localStorage.getItem("admin"));
+    if (admin) {
       setFormData({
-        firstName: user.firstname || "",
-        midName: user.midname || "",
-        lastName: user.lastname || "",
-        email: user.email || "",
-        phone: user.phone || "",
+        company: admin.company || "",
         password: "",
         confirmPassword: ""
       });
@@ -43,8 +35,8 @@ const EditUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user?.user_id;
+    const admin = JSON.parse(localStorage.getItem("admin"));
+    const userId = admin?.user_id;
 
     if (!userId) {
       alert("ไม่พบ user_id");
@@ -56,31 +48,18 @@ const EditUser = () => {
       return;
     }
 
-    console.log("🚀 ส่งข้อมูลไป backend:", formData);
-
     try {
-      await axios.put(`${apiBase}/api/user-profile/${userId}`, {
-        firstname: formData.firstName,
-        midname: formData.midName,
-        lastname: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password,
-        department: user.department,
-        status: user.status
+      await axios.put(`${apiBase}/api/admin-profile/${userId}`, {
+        company: formData.company,
+        password: formData.password
       });
 
-      const updatedUser = {
-        ...user,
-        firstname: formData.firstName,
-        midname: formData.midName,
-        lastname: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
+      const updatedAdmin = {
+        ...admin,
+        company: formData.company,
         password: formData.password
       };
-
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem("admin", JSON.stringify(updatedAdmin));
 
       alert("✅ บันทึกสำเร็จ");
       navigate(-1);
@@ -90,67 +69,18 @@ const EditUser = () => {
     }
   };
 
-  const handleCancel = () => {
-    navigate(-1);
-  };
-
   return (
     <div className="main-container">
       <div className="edit-user-wrapper">
         <div className="box-container">
           <form className="edit-form" onSubmit={handleSubmit}>
-            <div className="form-row">
-              <div className="form-group">
-                <label>First Name <span className="required">*</span></label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Mid Name</label>
-                <input
-                  type="text"
-                  name="midName"
-                  value={formData.midName}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Last Name <span className="required">*</span></label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-
             <div className="form-group">
-              <label>Email <span className="required">*</span></label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Phone number <span className="required">*</span></label>
+              <label>Company name <span className="required">*</span></label>
               <input
                 type="text"
-                name="phone"
-                value={formData.phone}
+                name="company"
+                value={formData.company}
                 onChange={handleChange}
-                pattern="\d{10}"
-                title="Phone number must be exactly 10 digits"
                 required
               />
             </div>
@@ -180,7 +110,7 @@ const EditUser = () => {
 
             <div className="button-row">
               <button type="submit" className="btn btn-save">SAVE</button>
-              <button type="button" className="btn btn-cancel" onClick={handleCancel}>CANCEL</button>
+              <button type="button" className="btn btn-cancel" onClick={() => navigate(-1)}>CANCEL</button>
             </div>
           </form>
         </div>
