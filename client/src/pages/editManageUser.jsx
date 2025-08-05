@@ -19,14 +19,12 @@ const EditManageUser = () => {
   const [departments, setDepartments] = useState([]);
   const [invalidId, setInvalidId] = useState(false);
 
-  // โหลด department
   useEffect(() => {
     axios.get(`${apiBase}/api/departments`)
       .then((res) => setDepartments(res.data))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
 
-  // โหลด user เดิม
   useEffect(() => {
     if (!id || id === "undefined") {
       setInvalidId(true);
@@ -40,7 +38,7 @@ const EditManageUser = () => {
           firstName: u.firstname,
           midName: u.midname || "",
           lastName: u.lastname,
-          department: u.department,  // ใช้ department_name
+          department: u.department || "No Department",
           status: u.status,
         });
       })
@@ -58,7 +56,7 @@ const EditManageUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const required = ["firstName", "lastName", "department", "status"];
+    const required = ["firstName", "lastName", "status"];
     for (const field of required) {
       if (!formData[field]) {
         alert(`กรุณากรอกข้อมูลให้ครบถ้วน (${field})`);
@@ -67,16 +65,9 @@ const EditManageUser = () => {
     }
 
     const selectedDept = departments.find((d) => d.department_name === formData.department);
-    const department_id = selectedDept ? selectedDept.id : null;
-
-    if (!department_id) {
-      alert("❌ ไม่พบ department_id จากชื่อที่เลือก");
-      return;
-    }
+    const department_id = formData.department === "No Department" ? null : selectedDept?.id || null;
 
     try {
-      console.log("📦 ส่งข้อมูล:", formData);
-
       await axios.put(`${apiBase}/api/users/${id}`, {
         firstname: formData.firstName,
         midname: formData.midName,
@@ -84,7 +75,7 @@ const EditManageUser = () => {
         email: "",
         phone: "",
         password: "",
-        department_id: department_id,
+        department_id,
         status: formData.status,
       });
 
@@ -125,9 +116,13 @@ const EditManageUser = () => {
             </div>
 
             <div className="form-group">
-              <label>Department <span className="required">*</span></label>
-              <select name="department" value={formData.department} onChange={handleChange} required>
-                <option value="">-- เลือกแผนก --</option>
+              <label>Department</label>
+              <select
+                name="department"
+                value={formData.department || ""}
+                onChange={handleChange}
+              >
+                <option value="No Department">No Department</option>
                 {departments.map((d) => (
                   <option key={d.id} value={d.department_name}>{d.department_name}</option>
                 ))}

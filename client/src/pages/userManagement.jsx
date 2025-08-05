@@ -128,7 +128,7 @@ const UserManagement = () => {
                 <tr key={user.user_id}>
                   <td>{startIndex + index + 1}</td>
                   <td>{user.user_id}</td>
-                  <td>{user.department}</td>
+                  <td>{user.department || "No Department"}</td>
                   <td>{[user.firstname, user.midname, user.lastname].filter(Boolean).join(" ")}</td>
                   <td>
                     <span className={user.status === "active" ? "status-active" : "status-inactive"}>
