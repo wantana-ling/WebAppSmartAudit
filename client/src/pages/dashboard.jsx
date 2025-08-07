@@ -142,6 +142,10 @@ const Dashboard = () => {
         </div>
       </div>
     <style>{`
+      .box-container{
+        align-items:center;
+        text-align:center;
+      }
       .dashboard-container {
         display: flex;
         flex-direction: column;
@@ -151,7 +155,7 @@ const Dashboard = () => {
         width: 100%;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: space-around;
         color: var(--secondary-color);
       }
 

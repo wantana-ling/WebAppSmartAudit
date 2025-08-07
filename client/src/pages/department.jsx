@@ -139,24 +139,6 @@ const Department = () => {
         />
       )}
     <style>{`
-    .main-container {
-      margin-left: 21vw;
-      width: 79vw;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .department-wrapper {
-      width: 100%;
-      max-width: 1100px;
-      background-color: #ffffff;
-      font-family: 'Prompt', sans-serif;
-      margin-top: 50px;
-      margin-left: 0;
-      margin-right: 0;
-      margin-bottom: auto;
-    }
-
     .top-row {
       display: flex;
       justify-content: space-between;

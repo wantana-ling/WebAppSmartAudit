@@ -144,12 +144,6 @@ const DeviceManagement = () => {
         />
       </div>
     <style>{`
-    .main-container {
-      margin-left: 21vw;
-      width: 79vw;
-      padding: 20px;
-      box-sizing: border-box;
-    }
 
     /* === Wrapper กลาง + ขนาดจำกัด === */
     .device-management-wrapper {

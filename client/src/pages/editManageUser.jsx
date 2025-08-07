@@ -142,13 +142,6 @@ const EditManageUser = () => {
         </div>
       </div>
     <style>{`
-    .main-container {
-      margin-left: 21vw;
-      width: 79vw;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
     .device-management-wrapper {
       width: 100%;
       max-width: 1100px;

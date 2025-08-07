@@ -89,15 +89,6 @@ const Profile = () => {
     --primary-color: #0018c7;
     --green-color: #22c55e;
     }
-
-    .main-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 40px 20px;
-        box-sizing: border-box;
-    }
     /* ซ้ำ */
     .profile-header {
         display: flex;
@@ -229,9 +220,6 @@ const Profile = () => {
     }
 
     @media (max-width: 768px) {
-        .main-container {
-            padding: 20px;
-        }
 
         .profile-header {
             flex-direction: column;

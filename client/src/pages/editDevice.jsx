@@ -129,14 +129,6 @@ const EditDevice = () => {
         </form>
       </div>
     <style>{`
-    .main-container {
-      margin-left: 21vw;
-      width: 79vw;
-      padding: 40px;
-      box-sizing: border-box;
-      font-family: 'Prompt', sans-serif;
-    }
-
     .device-form-container {
       margin: 0 auto;
       background: #fff;

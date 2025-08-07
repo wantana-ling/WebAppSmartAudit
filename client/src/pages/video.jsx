@@ -85,7 +85,7 @@ const Video = () => {
 
   return (
     <div className="main-container">
-      <div className="video-wrapper">
+      <div className="box-container">
         <div className="top-row">
           <div className="search-filter-row">
             <input
@@ -203,22 +203,6 @@ const Video = () => {
         />
       )}
     <style>{`
-    .main-container {
-      margin-left: 21vw;
-      width: 79vw;
-      padding: 20px;
-      box-sizing: border-box;
-      font-family: 'Prompt', sans-serif;
-    }
-
-    /* === Wrapper === */
-    .video-wrapper {
-      width: 100%;
-      max-width: 1100px;
-      background-color: #ffffff;
-      margin-top: 50px;
-    }
-
     /* === Top Row (Search + Filter + Delete) === */
     .top-row {
       display: flex;

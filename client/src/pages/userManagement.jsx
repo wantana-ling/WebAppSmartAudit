@@ -179,12 +179,6 @@ const UserManagement = () => {
         />
       )}
     <style>{`
-    .main-container {
-      margin-left: 21vw;           /* 👈 ต้องตรงกับ sidebar */
-      width: 79vw;                 /* 👈 100 - 21 = เหลือที่ใช้ */
-      padding: 20px;
-      box-sizing: border-box;
-    }
 
     /* === Wrapper กลาง + ขนาดจำกัด === */
     .user-management-wrapper {

@@ -11,8 +11,8 @@ const LiveScreen = () => {
   };
 
   return (
-    <div className="main-container-def">
-      <div className="box-container-def">
+    <div className="main-container">
+      <div className="box-container">
         <div className="live-screen-title">Live Screen Viewer</div>
 
         <div className="live-screen-table">
@@ -29,38 +29,6 @@ const LiveScreen = () => {
       </div>
 
       <style>{`
-        .main-container-def {
-        width: 80vw;
-        height: 100vh;
-        margin-left: 20vw;
-        
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-sizing: border-box;
-        /* padding-right: 0.5vw;  */
-            }
-        @media (max-width: 768px) {
-        .main-container-def {
-            padding-left: 0;
-            padding-right: 0;
-            }
-        }
-
-        .box-container-def {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        box-sizing: border-box;
-        width: 70%;
-        margin: 0 10px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        z-index: 1;
-        min-height: 80%;
-        text-align: center;
-        }
-
         .live-screen-container {
           padding: 40px;
           background: #f5f5f5;
