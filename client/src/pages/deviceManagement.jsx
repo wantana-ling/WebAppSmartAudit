@@ -68,34 +68,56 @@ const DeviceManagement = () => {
     <div className="main-container">
       <div className="box-container">
         <div className="top-row">
-          <div className="search-filter-row">
+          <div className="search-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+
             <input
               type="text"
-              placeholder="🔍 search..."
-              className="user-search-input"
+              placeholder="Search..."
+              className="search-input"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
+              }}
             />
-            <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
-              <option value={5}>5 rows</option>
-              <option value={10}>10 rows</option>
-            </select>
-            <select onChange={(e) => setFilterDept(e.target.value)} value={filterDept}>
-              <option value="">Department</option>
-              {departments.map((dept) => (
-                <option key={dept.id} value={dept.department_name}>
-                  {dept.department_name}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <div className="add-button-row">
-            <button className="add-user-btn" onClick={() => navigate("/addDevice")}>
-              <FaPlus /> ADD
-            </button>
           </div>
-        </div>
+          <div className="filter-box">
+            <div className="filter-item">
+              <label>Show row</label>
+              <select
+                      value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  setCurrentPage(1); // reset ไปหน้า 1
+                }}
+              >
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              
+            </div>
+
+            <div className="filter-item">
+              <label>Department</label>
+              <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
+                <option value="">Department</option>
+                {departments.map((d) => (
+                  <option key={d.id} value={d.department_name}>{d.department_name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+            <div className="add-user-container">
+                <button className="add-user-btn" onClick={() => navigate("/addUser")}> 
+                  <FaPlus className="icon" /> ADD
+                </button>
+            </div>
+          </div>
 
         <div className="table-container">
           <table className="scroll-table">
@@ -144,6 +166,7 @@ const DeviceManagement = () => {
         />
       </div>
     <style>{`
+
 
     /* === Wrapper กลาง + ขนาดจำกัด === */
     .device-management-wrapper {
@@ -270,6 +293,13 @@ const DeviceManagement = () => {
 
     .add-user-btn:hover {
       background-color: #16a34a;
+    }
+    .search-input {
+      all: unset;
+      width: 100%;
+      padding: 5px;
+      border-radius: 6px;
+      font-size: 14px;
     }
     `}</style>
     </div>
