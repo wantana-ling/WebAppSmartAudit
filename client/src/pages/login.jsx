@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from 'axios';
@@ -6,14 +6,23 @@ import axios from 'axios';
 const Login = () => {
   const [user_id, setUserId] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const [error, setError] = useState('');
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
+  useEffect(() => {
+    setError('');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('admin');
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
 
     try {
       const response = await axios.post(`${apiBase}/api/login`,
@@ -34,13 +43,20 @@ const Login = () => {
         return;
       }
 
-      // ✅ เก็บ user_id ไว้ใน localStorage
       localStorage.setItem('user_id', adminData.user_id);
       localStorage.setItem('admin', JSON.stringify(adminData));
 
       navigate('/dashboard');
     } catch (err) {
-      setError('Invalid user_id or password');
+      if (err.response?.status === 429) {
+        setError('Too many attempts. Please wait a moment.');
+      } else if (err.response?.status === 401) {
+        setError('Invalid user_id or password');
+      } else {
+        setError('Login failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,8 +93,8 @@ const Login = () => {
                   </span>
                 </div>
 
-                <button type='submit'>
-                  Login
+                <button type='submit' disabled={loading}>
+                  {loading ? 'Logging in...' : 'Login'}
                 </button>
               </div>
             </form>
