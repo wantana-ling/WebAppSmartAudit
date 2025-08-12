@@ -68,42 +68,62 @@ const UserManagement = () => {
     <div className="main-container">
       <div className="box-container">
         <div className="top-row">
-          <div className="search-filter-row">
+          <div className="search-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+
             <input
               type="text"
-              placeholder="🔍 search..."
-              className="user-search-input"
+              placeholder="Search..."
+              className="search-input"
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+                setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
+              }}
             />
 
-            <select value={rowsPerPage} onChange={(e) => {
-              setRowsPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}>
-              <option value={10}>10 rows</option>
-              <option value={50}>50 rows</option>
-              <option value={100}>100 rows</option>
-            </select>
-
-            <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
-              <option value="">Department</option>
-              {departments.map((d) => (
-                <option key={d.id} value={d.department_name}>{d.department_name}</option>
-              ))}
-            </select>
-
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="">Status</option>
-              <option value="active">ACTIVE</option>
-              <option value="inactive">INACTIVE</option>
-            </select>
           </div>
+          <div className="filter-box">
+            <div className="filter-item">
+              <label>Show row</label>
+              <select
+                      value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  setCurrentPage(1); // reset ไปหน้า 1
+                }}
+              >
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              
+            </div>
 
-          <div className="add-button-row">
-            <button className="add-user-btn" onClick={() => navigate("/addUser")}> 
-              <FaPlus className="icon" /> ADD
-            </button>
+            <div className="filter-item">
+              <label>Department</label>
+              <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
+                <option value="">Department</option>
+                {departments.map((d) => (
+                  <option key={d.id} value={d.department_name}>{d.department_name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="filter-item">
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                  <option value="">Status</option>
+                  <option value="active">ACTIVE</option>
+                  <option value="inactive">INACTIVE</option>
+              </select>
+            </div>
+          </div>
+          <div className="add-user-container">
+              <button className="add-user-btn" onClick={() => navigate("/addUser")}> 
+                <FaPlus className="icon" /> ADD
+              </button>
           </div>
         </div>
 
@@ -181,6 +201,15 @@ const UserManagement = () => {
     <style>{`
 
     /* === Wrapper กลาง + ขนาดจำกัด === */
+    .search-box {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        width: 60%;
+        box-sizing: border-box;
+        padding: 5px;
+    }
     .user-management-wrapper {
       width: 100%;
       max-width: 1100px;
@@ -375,7 +404,6 @@ const UserManagement = () => {
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 20px;
     }
 
     .search-filter-row {
@@ -392,6 +420,10 @@ const UserManagement = () => {
       flex-shrink: 0;
       margin-top: 40px;
       margin-bottom: -10px;
+    }
+    
+    .add-user-container {
+      margin-left: auto;
     }
 
     .add-user-btn {
@@ -449,6 +481,65 @@ const UserManagement = () => {
       opacity: 0.4;
       cursor: not-allowed;
     }
+    .search-box {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 60%;
+      box-sizing: border-box;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    .search-input {
+      all: unset;
+      width: 100%;
+      padding: 5px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .size-6 {
+      height: 2rem;
+      color: #b4b4b4;
+      padding-right: 5px;
+    }
+
+    .filter-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .filter-item {
+      padding: 6px 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #fff;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .filter-box label {
+      font-size: 14px;
+      color: #000000;
+      margin-right: 8px;
+    }
+
+    .filter-item select {
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding: 4px 8px;
+    }
+
     `}</style>
     </div>
   );
