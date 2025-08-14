@@ -403,7 +403,7 @@ const UserManagement = () => {
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 20px;
     }
 
     .search-filter-row {
@@ -480,16 +480,6 @@ const UserManagement = () => {
     .pagination button:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-    }
-    .search-box {
-      display: flex;
-      align-items: center;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 60%;
-      box-sizing: border-box;
-      padding: 5px;
-      margin-bottom: 10px;
     }
 
     .search-input {
