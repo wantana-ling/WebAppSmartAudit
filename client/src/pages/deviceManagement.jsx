@@ -186,31 +186,7 @@ const DeviceManagement = () => {
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .search-filter-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      flex: 1;
-    }
-
-    .add-button-row {
-      display: flex;
-      justify-content: flex-end;
-      flex-shrink: 0;
-    }
-
-    /* === Input + Select === */
-    .search-filter-row input[type="text"],
-    .search-filter-row select {
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
+      gap: 20px;
     }
 
     .user-search-input {
