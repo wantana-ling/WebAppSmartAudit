@@ -374,25 +374,7 @@ const Video = () => {
       opacity: 0.4;
       cursor: not-allowed;
     }
-
-      
-    .search-box {
-        display: flex;
-        align-items: center;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        width: 60%;
-        box-sizing: border-box;
-        padding: 5px;
-    }
     
-    .search-input {
-      all: unset;
-      width: 100%;
-      padding: 5px;
-      border-radius: 6px;
-      font-size: 14px;
-    }
     .filter-box {
       display: flex;
       flex-wrap: wrap;
@@ -403,11 +385,6 @@ const Video = () => {
       font-size: 14px;
       color: #000000;
       margin-right: 8px;
-    }
-    .size-6 {
-      height: 2rem;
-      color: #b4b4b4;
-      padding-right: 5px;
     }
     .filter-item {
       padding: 6px 12px;

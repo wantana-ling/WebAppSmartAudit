@@ -4,8 +4,6 @@ import { FaEye } from "react-icons/fa";
 import { FaUserSecret } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const mockData = [
   { no: 1, userId: '40001', department: 'Front-IT Infrastructure', username: 'James Anderson', duration: '01:10:00' },
   { no: 2, userId: '40002', department: 'Back-IT Infrastructure', username: 'Emily Johnson', duration: '02:15:22' },
@@ -162,6 +160,9 @@ const ActiveVisitor = () => {
               setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
             }}
           />
+          <div className="invis" >
+
+          </div>
 
         </div>
         <div className="filter-box">
@@ -282,94 +283,6 @@ const ActiveVisitor = () => {
         )}
 
           <style>{`
-        .search-box {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            width: 60%;
-            box-sizing: border-box;
-            padding: 5px;
-        }
-
-        .search-input {
-            all: unset;
-            width: 100%;
-            padding: 5px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .size-6{
-            height: 2rem;
-            color: #b4b4b4;
-            padding-right: 5px;
-        }
-        .search-box {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            width: 60%;
-            box-sizing: border-box;
-            padding: 5px;
-        }
-
-        .filter-box {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-          align-items: center;
-        }
-        .filter-box button {
-          padding: 6px 12px;
-          font-size: 14px;
-          border: 1px solid #ccc;
-          border-radius: 6px;
-          background-color: #fff;
-          cursor: pointer;
-          transition: border-color 0.2s;
-        }
-        .filter-item{
-          
-          padding: 6px 12px;
-          font-size: 14px;
-          border: 1px solid #ccc;
-          border-radius: 6px;
-          background-color: #fff;
-          cursor: pointer;
-          transition: border-color 0.2s;
-        }
-        .filter-box label{
-          font-size: 14px;
-          color: #000000;
-          margin-right: 8px;
-        }
-
-        .filter-box select:focus,
-        .filter-box button:focus {
-          outline: none;
-          border-color: #4d90fe;
-        }
-
-        .filter-box button {
-          background-color: #4d90fe;
-          color: black;
-          border: none;
-        }
-
-        .filter-box button:hover {
-          background-color: #357ae8;
-        }
-        .filter-item select {
-          border: none;
-          background: transparent;
-          font-size: 14px;
-          outline: none;
-          appearance: none;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          padding: 4px 8px;
-        }
         .table-form {
           width: 100%;
           max-height: 500px;

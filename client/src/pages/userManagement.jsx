@@ -235,17 +235,6 @@ const UserManagement = () => {
         />
       )}
     <style>{`
-
-    /* === Wrapper กลาง + ขนาดจำกัด === */
-    .search-box {
-        display: flex;
-        align-items: center;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        width: 60%;
-        box-sizing: border-box;
-        padding: 5px;
-    }
     .user-management-wrapper {
       width: 100%;
       max-width: 1100px;
@@ -516,20 +505,6 @@ const UserManagement = () => {
     .pagination button:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-    }
-
-    .search-input {
-      all: unset;
-      width: 100%;
-      padding: 5px;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .size-6 {
-      height: 2rem;
-      color: #b4b4b4;
-      padding-right: 5px;
     }
 
     .filter-box {

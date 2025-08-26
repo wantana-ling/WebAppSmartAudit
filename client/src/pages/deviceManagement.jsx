@@ -113,7 +113,7 @@ const DeviceManagement = () => {
             </div>
           </div>
           <div className="add-user-container">
-              <button className="add-user-btn" onClick={() => navigate("/addUser")}> 
+              <button className="add-user-btn" onClick={() => navigate("/addDevice")}> 
                 <FaPlus className="icon" /> ADD
               </button>
           </div>
@@ -270,13 +270,6 @@ const DeviceManagement = () => {
     .add-user-btn:hover {
       background-color: #16a34a;
     }
-    .search-input {
-      all: unset;
-      width: 100%;
-      padding: 5px;
-      border-radius: 6px;
-      font-size: 14px;
-    }
         .filter-box {
       display: flex;
       flex-wrap: wrap;
@@ -309,21 +302,6 @@ const DeviceManagement = () => {
       -webkit-appearance: none;
       -moz-appearance: none;
       padding: 4px 8px;
-    }
-    .search-box {
-      display: flex;
-      align-items: center;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 60%;
-      box-sizing: border-box;
-      padding: 5px;
-      margin-bottom: 10px;
-    }
-    .size-6 {
-      height: 2rem;
-      color: #b4b4b4;
-      padding-right: 5px;
     }
     `}</style>
     </div>
