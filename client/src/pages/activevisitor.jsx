@@ -412,7 +412,7 @@ const ActiveVisitor = () => {
 
         .table-form th,
         .table-form td {
-          padding: 10px 12px;
+          padding: 12px 12px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;

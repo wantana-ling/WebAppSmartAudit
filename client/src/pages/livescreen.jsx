@@ -22,7 +22,8 @@ const LiveScreen = () => {
         </div>
 
         <div className="live-screen-video">
-          <div style={{ fontSize: 40, color: '#aaa' }}>▶</div>
+          <video controls width="720" src="http://localhost:3050/video/id_001_210825"></video>
+
         </div>
 
         <button className="live-screen-exit-btn" onClick={handleExit}>EXIT</button>

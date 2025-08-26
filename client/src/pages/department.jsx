@@ -6,8 +6,9 @@ import ConfirmModal from "./deleteDepartment"; // ✅ import modal
 
 const Department = () => {
   const [departments, setDepartments] = useState([]);
-  const [search, setSearch] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedId, setSelectedId] = useState(null);
   const [showModal, setShowModal] = useState(false); // ✅ ใช้ตัวเดียวให้ตรงกัน
 
@@ -26,7 +27,7 @@ const Department = () => {
   }, []);
 
   const filtered = departments.filter((d) =>
-    (d?.department_name || "").toLowerCase().includes(search.toLowerCase())
+    (d?.department_name || "").toLowerCase().includes(searchText.toLowerCase())
   );
 
   const paddedRows = Math.max(0, rowsPerPage - filtered.length);
@@ -60,31 +61,44 @@ const Department = () => {
   return (
     <div className="main-container">
       <div className="box-container">
-        <div className="top-row">
-          <div className="search-filter-row">
+        <div className="search-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+
             <input
               type="text"
-              placeholder="🔍 search..."
-              className="user-search-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search..."
+              className="search-input"
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+                setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
+              }}
             />
-            <select
-              value={rowsPerPage}
-              onChange={(e) => setRowsPerPage(Number(e.target.value))}
-            >
-              <option value={5}>Show row 5</option>
-              <option value={10}>Show row 10</option>
-            </select>
-          </div>
-          <div className="add-button-row">
-            <button
-              className="add-user-btn"
-              onClick={() => navigate("/addDepartment")}
-            >
-              <FaPlus /> ADD
-            </button>
-          </div>
+
+        </div>
+        <div className="filter-box">
+            <div className="filter-item">
+              <label>Show row</label>
+              <select
+                      value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  setCurrentPage(1); // reset ไปหน้า 1
+                }}
+              >
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              
+            </div>
+            <div className="add-user-container">
+                <button className="add-user-btn" onClick={() => navigate("/addUser")}> 
+                  <FaPlus className="icon" /> ADD
+                </button>
+            </div>
         </div>
 
         <div className="table-container">
@@ -264,6 +278,60 @@ const Department = () => {
 
     .add-user-btn:hover {
       background-color: #16a34a;
+    }
+
+    
+    .search-box {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        width: 60%;
+        box-sizing: border-box;
+        padding: 5px;
+    }
+    
+    .search-input {
+      all: unset;
+      width: 100%;
+      padding: 5px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .filter-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .filter-box label {
+      font-size: 14px;
+      color: #000000;
+      margin-right: 8px;
+    }
+    .size-6 {
+      height: 2rem;
+      color: #b4b4b4;
+      padding-right: 5px;
+    }
+    .filter-item {
+      padding: 6px 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #fff;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .filter-item select {
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding: 4px 8px;
     }
     `}</style>
     </div>

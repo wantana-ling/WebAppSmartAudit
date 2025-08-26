@@ -4,6 +4,40 @@ import { useNavigate } from "react-router-dom";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import DeleteUserManagement from "./deleteUserManagement";
 
+const mockData = [
+  { no: 1, userId: '40001', department: 'Front-IT Infrastructure', name: 'James Anderson', status: 'Active' },
+  { no: 2, userId: '40002', department: 'Back-IT Infrastructure', name: 'Emily Johnson', status: 'Inactive' },
+  { no: 3, userId: '40003', department: 'Network Operations', name: 'William Smith', status: 'Active' },
+  { no: 4, userId: '40004', department: 'Database Management', name: 'Olivia Brown', status: 'Inactive' },
+  { no: 5, userId: '40005', department: 'Security Operations', name: 'Benjamin Lee', status: 'Active' },
+  { no: 6, userId: '40006', department: 'Cloud Services', name: 'Sophia Wilson', status: 'Active' },
+  { no: 7, userId: '40007', department: 'Technical Support', name: 'Daniel Taylor', status: 'Inactive' },
+  { no: 8, userId: '40008', department: 'Software Development', name: 'Mia Davis', status: 'Active' },
+  { no: 9, userId: '40009', department: 'Front-IT Infrastructure', name: 'Alexander Moore', status: 'Active' },
+  { no: 10, userId: '40010', department: 'Back-IT Infrastructure', name: 'Charlotte Martinez', status: 'Inactive' },
+  { no: 11, userId: '40011', department: 'Network Operations', name: 'Michael Thomas', status: 'Active' },
+  { no: 12, userId: '40012', department: 'Database Management', name: 'Amelia Garcia', status: 'Inactive' },
+  { no: 13, userId: '40013', department: 'Security Operations', name: 'Elijah Rodriguez', status: 'Active' },
+  { no: 14, userId: '40014', department: 'Cloud Services', name: 'Harper Martinez', status: 'Active' },
+  { no: 15, userId: '40015', department: 'Technical Support', name: 'Lucas Hernandez', status: 'Inactive' },
+  { no: 16, userId: '40016', department: 'Software Development', name: 'Evelyn Lopez', status: 'Active' },
+  { no: 17, userId: '40017', department: 'Front-IT Infrastructure', name: 'Henry Clark', status: 'Inactive' },
+  { no: 18, userId: '40018', department: 'Back-IT Infrastructure', name: 'Abigail Lewis', status: 'Active' },
+  { no: 19, userId: '40019', department: 'Network Operations', name: 'Sebastian Young', status: 'Inactive' },
+  { no: 20, userId: '40020', department: 'Database Management', name: 'Emily Hall', status: 'Active' },
+  { no: 21, userId: '40021', department: 'Security Operations', name: 'Jack Allen', status: 'Inactive' },
+  { no: 22, userId: '40022', department: 'Cloud Services', name: 'Lily Wright', status: 'Active' },
+  { no: 23, userId: '40023', department: 'Technical Support', name: 'Owen Scott', status: 'Active' },
+  { no: 24, userId: '40024', department: 'Software Development', name: 'Zoey Adams', status: 'Inactive' },
+  { no: 25, userId: '40025', department: 'Front-IT Infrastructure', name: 'Leo Nelson', status: 'Active' },
+  { no: 26, userId: '40026', department: 'Back-IT Infrastructure', name: 'Aria Baker', status: 'Active' },
+  { no: 27, userId: '40027', department: 'Network Operations', name: 'David Gonzalez', status: 'Inactive' },
+  { no: 28, userId: '40028', department: 'Database Management', name: 'Grace Perez', status: 'Active' },
+  { no: 29, userId: '40029', department: 'Security Operations', name: 'Nathan Hill', status: 'Inactive' },
+  { no: 30, userId: '40030', department: 'Cloud Services', name: 'Avery Rivera', status: 'Active' }
+];
+
+
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -28,16 +62,17 @@ const UserManagement = () => {
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
 
-  const filteredUsers = users.filter((user) => {
+  const filteredUsers = mockData.filter((user) => {
     const matchSearch = user.firstname?.includes(searchText) || user.user_id?.toString().includes(searchText);
     const matchDept = departmentFilter ? user.department?.includes(departmentFilter) : true;
     const matchStatus = statusFilter ? user.status === statusFilter : true;
     return matchSearch && matchDept && matchStatus;
   });
 
-  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+
+  const totalPages = Math.ceil(mockData.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const visibleUsers = filteredUsers.slice(startIndex, startIndex + rowsPerPage);
+  const visibleUsers = mockData.slice(startIndex, startIndex + rowsPerPage);
 
   const handleDelete = (userId) => {
     setSelectedUserId(userId);
@@ -142,13 +177,14 @@ const UserManagement = () => {
             </thead>
             <tbody>
               {visibleUsers.map((user, index) => (
-                <tr key={user.user_id}>
+                <tr key={user.userId}>
                   <td>{startIndex + index + 1}</td>
-                  <td>{user.user_id}</td>
+                  <td>{user.userId}</td>
                   <td>{user.department}</td>
-                  <td>{[user.firstname, user.midname, user.lastname].filter(Boolean).join(" ")}</td>
+                  <td>{user.name}</td>
+                  {/* <td>{[user.firstname, user.midname, user.lastname].filter(Boolean).join(" ")}</td> */}
                   <td>
-                    <span className={user.status === "active" ? "status-active" : "status-inactive"}>
+                    <span className={user.status === "Active" ? "status-active" : "status-inactive"}>
                       {user.status.toUpperCase()}
                     </span>
                   </td>
@@ -164,7 +200,7 @@ const UserManagement = () => {
                   </td>
                 </tr>
               ))}
-              {Array.from({ length: Math.max(0, rowsPerPage - visibleUsers.length) }).map((_, idx) => (
+              {Array.from({ length: Math.max(0, rowsPerPage - mockData.length) }).map((_, idx) => (
                 <tr key={`empty-${idx}`}>
                   <td colSpan={7} style={{ height: "40px" }}></td>
                 </tr>
