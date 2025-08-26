@@ -215,7 +215,7 @@ const ActiveVisitor = () => {
             <tbody>
               {paginatedData.map((item, index) => (
                 <tr key={item.userId}>
-                  <td>{(currentPage - 1) * rowsPerPage + index + 1}</td> {/* แสดงลำดับจริง */}
+                  <td>{(currentPage - 1) * rowsPerPage + index + 1}</td> 
                   <td>{item.userId}</td>
                   <td>{item.department}</td>
                   <td>{item.username}</td>

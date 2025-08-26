@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [year, setYear] = useState(now.getFullYear());
   const navigate = useNavigate();
 
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
+  const apiBase = process.env.REACT_APP_API_URL || "http://localhost:3002";
 
   useEffect(() => {
     try {

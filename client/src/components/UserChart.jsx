@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import axios from 'axios';
-
-const API_BASE = process.env.REACT_APP_API?.trim() || 'http://192.168.121.195:3002';
+import api from '../api'; 
 
 const getRandomColor = () => {
   const letters = '0123456789ABCDEF';
@@ -16,59 +14,39 @@ const UserChart = ({ month, year }) => {
   useEffect(() => {
     if (!month || !year) return;
 
-    const fetchData = async () => {
+    (async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_BASE}/api/users-chart`, {
-          params: { month, year },
-          withCredentials: true
-        });
-        setData(response.data || []);
-      } catch (error) {
-        console.error('❌ Error fetching chart data:', error.message);
+        const res = await api.get('/api/users-chart', { params: { month, year } });
+        setData(res.data || []);
+      } catch (e) {
+        console.error('❌ Error fetching chart data:', e?.message || e);
+        setData([]);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchData();
+    })();
   }, [month, year]);
 
-  const totalUsage = data.reduce((sum, entry) => sum + (entry.usage_count || 0), 0);
+  const totalUsage = data.reduce((sum, x) => sum + (x.usage_count || 0), 0);
 
-  const chartData = data.map(entry => ({
-    name: entry.name,
-    value: totalUsage > 0
-      ? parseFloat(((entry.usage_count / totalUsage) * 100).toFixed(2))
-      : 0
+  const chartData = data.map(x => ({
+    name: x.name,
+    value: totalUsage > 0 ? Number(((x.usage_count / totalUsage) * 100).toFixed(2)) : 0,
   }));
 
-  // ✅ สุ่มสีใหม่ทุกครั้งที่ chartData เปลี่ยน
-  const COLORS = useMemo(() => {
-    return chartData.map(() => getRandomColor());
-  }, [chartData]);
+  const COLORS = useMemo(() => chartData.map(() => getRandomColor()), [chartData]);
 
-  const renderLabel = ({ payload, percent }) => {
-    const percentage = (percent * 100).toFixed(2);
-    return `${payload.name}: ${percentage}%`;
-  };
-
-  if (loading) {
-    return <div style={{ textAlign: 'center' }}>Loading...</div>;
-  }
+  if (loading) return <div style={{ textAlign: 'center' }}>Loading...</div>;
 
   if (!data.length || totalUsage === 0) {
     return (
       <div
         className="user-chart"
         style={{
-          width: 300,
-          height: 300,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#999',
-          fontSize: '18px',
+          width: 300, height: 300, display: 'flex',
+          alignItems: 'center', justifyContent: 'center',
+          color: '#999', fontSize: 18
         }}
       >
         No data found
@@ -87,15 +65,14 @@ const UserChart = ({ month, year }) => {
             cx="50%"
             cy="50%"
             outerRadius={100}
-            fill="#8884d8"
             label={false}
             labelLine={false}
           >
-            {chartData.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index]} />
+            {chartData.map((_, i) => (
+              <Cell key={i} fill={COLORS[i]} />
             ))}
           </Pie>
-          <Tooltip formatter={(value, name) => [`${value}%`, name]} />
+          <Tooltip formatter={(v, n) => [`${v}%`, n]} />
         </PieChart>
       </ResponsiveContainer>
     </div>
