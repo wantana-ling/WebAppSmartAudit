@@ -1,8 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FaEye } from "react-icons/fa";
 import { FaUserSecret } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { SlArrowDown } from "react-icons/sl";
+
+
 
 const mockData = [
   { no: 1, userId: '40001', department: 'Front-IT Infrastructure', username: 'James Anderson', duration: '01:10:00' },
@@ -108,6 +111,7 @@ const ActiveVisitor = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const selectRef = useRef(null);
 
   
   const navigate = useNavigate();
@@ -160,16 +164,14 @@ const ActiveVisitor = () => {
               setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
             }}
           />
-          <div className="invis" >
-
-          </div>
 
         </div>
         <div className="filter-box">
           <div className="filter-item">
             <label>Show row</label>
             <select
-                    value={rowsPerPage}
+              ref={selectRef}
+              value={rowsPerPage}
               onChange={(e) => {
                 setRowsPerPage(Number(e.target.value));
                 setCurrentPage(1); // reset ไปหน้า 1
@@ -179,6 +181,10 @@ const ActiveVisitor = () => {
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
+            <SlArrowDown 
+              onClick={()=> selectRef.current?.click()}
+              style={{ cursor: "pointer", marginLeft: "6px" }}
+            />
             
           </div>
 
@@ -207,23 +213,39 @@ const ActiveVisitor = () => {
                 <th>No.</th>
                 <th>UserID</th>
                 <th>Department</th>
+                <th>Device</th>
                 <th>Name</th>
                 <th>Duration</th>
                 <th>View</th>
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((item, index) => (
-                <tr key={item.userId}>
-                  <td>{(currentPage - 1) * rowsPerPage + index + 1}</td> {/* แสดงลำดับจริง */}
-                  <td>{item.userId}</td>
-                  <td>{item.department}</td>
-                  <td>{item.username}</td>
-                  <td>{item.duration}</td>
-                  <td><FaEye onClick={() => handleViewClick(item)} style={{ cursor: 'pointer' }} /></td>
+              {paginatedData.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: "center", padding: "20px" }}>
+                    ไม่พบข้อมูล
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                paginatedData.map((item, index) => (
+                  <tr key={item.userId}>
+                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{item.userId}</td>
+                    <td className='department-text'>{item.department}</td>
+                    <td>192.134.xx.xx</td>
+                    <td>{item.username}</td>
+                    <td>{item.duration}</td>
+                    <td>
+                      <FaEye
+                        onClick={() => handleViewClick(item)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
+
 
 
           </table>
@@ -335,44 +357,54 @@ const ActiveVisitor = () => {
 
         .table-form th:nth-child(1),
         .table-form td:nth-child(1) {
-          width: 50px;
+          width: 10%;
           text-align: center;
         }
 
         .table-form th:nth-child(2),
         .table-form td:nth-child(2) {
-          width: 80px;
+          width: 15%;
           text-align: center;
         }
 
-        .table-form th:nth-child(3),
+        .table-form th:nth-child(3) {
+          text-align: left;
+          width: 15rem;
+        }
         .table-form td:nth-child(3) {
-          text-align: center;
-          width: 180px;
+          text-align: left;
+          width: 15rem;
         }
 
         .table-form th:nth-child(4),
         .table-form td:nth-child(4) {
           
-          text-align: center;
-          width: 120px;
+          text-align: left;
+          width: 15%;
         }
 
         .table-form th:nth-child(5),
         .table-form td:nth-child(5) {
-          width: 100px;
+          
           text-align: left;
+          width: 20%;
         }
 
         .table-form th:nth-child(6),
         .table-form td:nth-child(6) {
-          width: 60px;
+          width: 10%;
+          text-align: left;
+        }
+
+        .table-form th:nth-child(7),
+        .table-form td:nth-child(7) {
+          width: 15%;
           text-align: center;
         }
 
         .table-form th:last-child,
         .table-form td:last-child {
-          padding-right: 20px;
+          padding-right: 5%;
         }
 
         .modal-overlay {
@@ -483,6 +515,9 @@ const ActiveVisitor = () => {
           color: white;
           font-weight: bold;
           border: none;
+        }
+        .department-text{
+          text-align: left;
         }
       `}</style>
     </div>
