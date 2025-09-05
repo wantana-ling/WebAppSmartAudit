@@ -133,7 +133,7 @@ td {
 .filter-box button {
     padding: 6px 12px;
     font-size: 14px;
-    border: 1px solid #ccc;
+    border: 1px solid #ffff;
     border-radius: 6px;
     background-color: #fff;
     cursor: pointer;
@@ -148,6 +148,11 @@ td {
     background-color: #fff;
     cursor: pointer;
     transition: border-color 0.2s;
+    position: relative;
+    display: inline-block;   
+    padding: 0;       
+    justify-content: space-between;       
+           
 }
 .filter-item select {
     border: none;
@@ -171,12 +176,12 @@ td {
     border-color: #4d90fe;
 }
 
-.filter-box button {
+/* .filter-box button {
     background-color: #4d90fe;
     color: black;
     border: none;
-}
+} */
 
-.filter-box button:hover {
+/* .filter-box button:hover {
     background-color: #357ae8;
-}
+} */
