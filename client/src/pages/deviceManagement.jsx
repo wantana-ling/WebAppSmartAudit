@@ -124,7 +124,7 @@ const DeviceManagement = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Name</th>
+                <th>Server / Device Name</th>
                 <th>IP / Hostname</th>
                 <th>Department</th>
                 <th>Active Users</th>

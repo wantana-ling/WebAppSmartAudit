@@ -70,12 +70,12 @@ const AddDevice = () => {
       <div className="add-device-wrapper">
         <div className="form-row">
           <div className="form-group">
-            <label>Name<span className="required">*</span></label>
+            <label>Server / Device Name<span className="required">*</span></label>
             <input name="device_name" value={form.device_name} onChange={handleChange} />
           </div>
 
           <div className="form-group">
-            <label>Address<span className="required">*</span></label>
+            <label>IP Address<span className="required">*</span></label>
             <input name="ip" value={form.ip} onChange={handleChange} />
           </div>
         </div>
