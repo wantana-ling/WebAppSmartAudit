@@ -139,6 +139,105 @@ const Dashboard = () => {
           <small className="updated-text">Last updated: {new Date().toLocaleDateString()}</small>
         </div>
       </div>
+    <style>{`
+      .box-container{
+        align-items:center;
+        text-align:center;
+      }
+      .dashboard-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .dashboard-header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        color: var(--secondary-color);
+      }
+
+      .dashboard-header h1{
+        font-size: 45px;
+        font-weight: 500;
+      }
+
+      .dashboard-header h1 span{
+        font-size: 40px;
+        font-weight: 300;
+      }
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin: 5px;
+      }
+        
+      .status-indicator.online {
+        background-color: var(--green-color);
+        box-shadow: 0 0 6px 3px rgba(58, 215, 124, 0.4);
+        animation: glow 2s infinite ease-in-out;
+      }
+      
+      .status-indicator.offline {
+        background-color: #c3c3c3;
+        box-shadow: 0 0 6px 3px rgba(220, 220, 220, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-header {
+            align-items: start;
+        }
+        
+        .dashboard-header h1{
+          font-size: 35px;
+        }
+        
+        .dashboard-header h1 span{
+            font-size: 30px;
+        }
+      
+        .card {
+            padding: 15px;
+            width: 100%;
+            border-radius: 20px;
+        }
+        .card h3 {
+            font-size: 3.5vw;
+        }
+        
+        .card h1 {
+            font-size: 5.5vw;
+        
+        }
+        .card h1 span {
+            font-size: 4vw;
+        }
+
+        .graph {
+            height: 22vh;
+        }
+
+      
+        .history-timeline {
+            display: flex;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .user-chart {
+            width: 200;
+            height: 200;
+
+        }
+        
+        .updated-text {
+            font-size: 12px;
+        }
+
+      
+      }
+    `}</style>  
     </div>
   );
 };

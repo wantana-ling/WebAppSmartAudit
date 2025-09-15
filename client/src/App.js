@@ -4,7 +4,6 @@ import MainLayout from "./mainLayout";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import Profile from "./pages/profile";
-import Permission from "./pages/permission";
 import Video from "./pages/video";
 import EditUser from "./pages/editUser";
 import UserManagement from "./pages/userManagement";
@@ -22,6 +21,7 @@ import EditDepartment from "./pages/editDepartment";
 import DeleteDepartment from "./pages/deleteDepartment";
 import ActiveVisitor from "./pages/activevisitor"; 
 import LiveScreen from "./pages/livescreen";
+import Test from "./pages/test";
 const App = () => {
   return (
       <Routes>
@@ -31,7 +31,6 @@ const App = () => {
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/permission" element={<Permission />} />
           <Route path="/video" element={<Video />} />
           <Route path="/passwordEdit" element={<EditUser />} />
           <Route path="/userManagement" element={<UserManagement />} />
@@ -49,6 +48,7 @@ const App = () => {
           <Route path="/deleteDepartment" element={<DeleteDepartment />} />
           <Route path="acticveVisitor/*" element={<ActiveVisitor />} />
           <Route path="acticveVisitor/liveScreen" element={<LiveScreen />} />
+          <Route path="/Test" element={<Test />} />
         </Route>
       </Routes>
   );

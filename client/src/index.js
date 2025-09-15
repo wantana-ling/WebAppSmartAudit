@@ -5,8 +5,7 @@ import App from './App';
 import axios from 'axios';
 import './css/style.css';
 import './css/dashboard.css';
-import './css/profile.css';
-import './css/permission.css';
+import './css/default.css';
 
 axios.defaults.withCredentials = true;
 const root = ReactDOM.createRoot(document.getElementById('root'));

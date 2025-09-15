@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "../css/editDevice.css";
 import axios from "axios";
 
 const EditDevice = () => {
@@ -129,6 +128,113 @@ const EditDevice = () => {
           </div>
         </form>
       </div>
+    <style>{`
+    .device-form-container {
+      margin: 0 auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 95%;
+      max-width: 900px;
+    }
+
+    .device-form {
+      width: 100%;
+    }
+
+    .device-form .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .device-form .form-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .device-form label {
+      font-weight: 500;
+      color: #002f6c;
+      margin-bottom: 5px;
+    }
+
+    .device-form input[type="text"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .checkbox-group {
+      background-color: #f7f7f7;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .checkbox-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .required {
+      color: red;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      width: 120px;
+      padding: 10px 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      color: white;
+      text-align: center;
+      transition: 0.2s ease;
+    }
+
+    .btn-save {
+      background-color: #00cc66;
+    }
+
+    .btn-save:hover {
+      background-color: #16a34a;
+    }
+
+    .btn-cancel {
+      background-color: #ff4d4d;
+    }
+
+    .btn-cancel:hover {
+      background-color: #dc2626;
+    }
+
+    @media (max-width: 768px) {
+      .device-form .form-row {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+    `}</style>
     </div>
   );
 };

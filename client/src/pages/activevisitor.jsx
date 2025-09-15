@@ -1,9 +1,8 @@
 
-import React, { useState } from 'react';
-import '../css/atvt.css'; // Import the CSS file for styling
+import React, { useState, useRef} from 'react';
 import { FaEye } from "react-icons/fa";
-import { FaUserSecret } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { SlArrowDown,SlLogin  } from "react-icons/sl";
 
 
 
@@ -104,16 +103,18 @@ const mockDepartments = [
 
 
 const ActiveVisitor = () => {
-
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  
+  const [deptOpen, setDeptOpen] = useState(false);
+  const deptMenuRef = useRef(null);
+  const [rowsOpen, setRowsOpen] = useState(false);
+  const rowsMenuRef = useRef(null);
   const navigate = useNavigate();
+
   const selectedDeptName =
     selectedDepartment === 'all'
       ? null
@@ -139,16 +140,14 @@ const ActiveVisitor = () => {
   );
 
   const handleViewClick = (user) => {
-  setSelectedUser(user);
-  setIsModalOpen(true);
+    setSelectedUser(user);
+    setIsModalOpen(true);
   };
 
-
-
   return (
-    <div className="main-container-def">
-      <div className="box-container-def">
-        <div className="search-box-def">
+    <div className="main-container">
+      <div className="box-container">
+        <div className="search-box">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
@@ -156,79 +155,152 @@ const ActiveVisitor = () => {
           <input
             type="text"
             placeholder="Search..."
-            className="search-input-def"
+            className="search-input"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
+              setCurrentPage(1);
             }}
           />
 
         </div>
-        <div className="filter-box-def">
-          <div className="filter-item">
-            <label>Show row</label>
-            <select
-                    value={rowsPerPage}
-              onChange={(e) => {
-                setRowsPerPage(Number(e.target.value));
-                setCurrentPage(1); // reset ไปหน้า 1
-              }}
+        <div className="filter-box">
+          <div className="filter-item" ref={rowsMenuRef}>
+            <button
+              type="button"
+              className="select-btn"
+              onClick={() => setRowsOpen(v => !v)}
+              aria-haspopup="listbox"
+              aria-expanded={rowsOpen}
+              aria-controls="rows-menu"
             >
-              <option value="10">10</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-            
+              <span className="select-label"><b>Show row</b></span>
+              <span className="select-value">{rowsPerPage}</span>
+              <SlArrowDown className={`chev ${rowsOpen ? "rot" : ""}`} />
+            </button>
+
+            {rowsOpen && (
+              <ul className="dropdown" id="rows-menu" role="listbox">
+                {[10, 50, 100].map(n => (
+                  <li
+                    key={n}
+                    role="option"
+                    aria-selected={rowsPerPage === n}
+                    className={`option ${rowsPerPage === n ? "selected" : ""}`}
+                    onClick={() => {
+                      setRowsPerPage(n);
+                      setCurrentPage(1);
+                      setRowsOpen(false);
+                    }}
+                  >
+                    {n}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          <div className="filter-item">
-            <label>Department</label>
-            <select
-              value={selectedDepartment}
-              onChange={(e) => {
-                setSelectedDepartment(e.target.value);
-                setCurrentPage(1);
-              }}
+          <div className="filter-item" ref={deptMenuRef}>
+            <button
+              type="button"
+              className="select-btn"
+              onClick={() => setDeptOpen((v) => !v)}
+              aria-haspopup="listbox"
+              aria-expanded={deptOpen}
+              aria-controls="dept-menu"
+              style={{minWidth: 250}}
             >
-              <option value="all">All</option>
-              {mockDepartments.map((dept) => (
-                <option key={dept.id} value={dept.id}>{dept.name}</option>
-              ))}
-            </select>
+              <span className="select-label"><b>Department</b></span>
+              <span className="select-value">
+                {selectedDepartment === "all"
+                  ? "All"
+                  : mockDepartments.find((d) => d.id === selectedDepartment)?.name}
+              </span>
+              <SlArrowDown className={`chev ${deptOpen ? "rot" : ""}`} />
+            </button>
 
+            {deptOpen && (
+              <ul className="dropdown-dept" id="dept-menu" role="listbox">
+                <li
+                  role="option"
+                  aria-selected={selectedDepartment === "all"}
+                  className={`option ${selectedDepartment === "all" ? "selected" : ""}`}
+                  onClick={() => {
+                    setSelectedDepartment("all");
+                    setCurrentPage(1);
+                    setDeptOpen(false);
+                  }}
+                >
+                  All
+                </li>
+                {mockDepartments.map((dept) => (
+                  <li
+                    key={dept.id}
+                    role="option"
+                    aria-selected={selectedDepartment === dept.id}
+                    className={`option ${
+                      selectedDepartment === dept.id ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedDepartment(dept.id);
+                      setCurrentPage(1);
+                      setDeptOpen(false);
+                    }}
+                  >
+                    {dept.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
+
 
         </div>
-        <div className="table-def">
+        <div className="table-form">
           <table>
             <thead>
               <tr>
                 <th>No.</th>
                 <th>UserID</th>
                 <th>Department</th>
-                <th>Username</th>
+                <th>Device</th>
+                <th>Name</th>
                 <th>Duration</th>
                 <th>View</th>
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((item, index) => (
+            {paginatedData.length === 0 ? (
+              <tr>
+                <td colSpan={7} style={{ textAlign: "center", padding: "20px" }}>
+                  ไม่พบข้อมูล
+                </td>
+              </tr>
+            ) : (
+              paginatedData.map((item, index) => (
                 <tr key={item.userId}>
-                  <td>{(currentPage - 1) * rowsPerPage + index + 1}</td> 
+                  <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                   <td>{item.userId}</td>
-                  <td>{item.department}</td>
+                  <td className='department-text'>{item.department}</td>
+                  <td>192.134.xx.xx</td>
                   <td>{item.username}</td>
                   <td>{item.duration}</td>
-                  <td><FaEye onClick={() => handleViewClick(item)} style={{ cursor: 'pointer' }} /></td>
+                  <td>
+                    <FaEye
+                      onClick={() => handleViewClick(item)}
+                      style={{ cursor: 'pointer', color:'rgb(11,150,219)'}}
+                    />
+                  </td>
                 </tr>
-              ))}
-            </tbody>
+              ))
+            )}
+          </tbody>
+
 
 
           </table>
         </div>
-        <div className="pagination-def">
+        <div className="pagination">
           <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
             {'<<'}
           </button>
@@ -253,17 +325,11 @@ const ActiveVisitor = () => {
             {'>>'}
           </button>
         </div>
-
-
-
-        
-
-
       </div>
         {isModalOpen && (
           <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
             <div className="modal-content alert" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-icon"><FaUserSecret size={40} className="text-yellow-600" /></div>
+              <div className="modal-icon"><SlLogin  size={40} className="text-yellow-600" /></div>
               <h3>Are You Sure?</h3>
               <p>
                 The user will be notified<br />
@@ -281,6 +347,453 @@ const ActiveVisitor = () => {
             </div>
           </div>
         )}
+
+          <style>{`
+        /* Table part */
+        .table-form {
+          width: 100%;
+          max-height: 500px;
+          overflow-y: auto;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 14px;
+          box-sizing: border-box;
+        }
+
+        .table-form table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        .table-form table thead,
+        .table-form table tbody tr {
+          display: table;
+          width: 100%;
+          table-layout: fixed;
+        }
+
+        .table-form table thead {
+          background-color: #f5f5f5;
+          position: sticky;
+          top: 0;
+          z-index: 2;
+          border-bottom: 1px solid #ccc;
+        }
+
+        .table-form table tbody {
+          display: block;
+          max-height: 440px;
+          overflow-y: scroll;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          position: relative;
+        }
+
+        .table-form th,
+        .table-form td {
+          padding: 12px 12px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          border-bottom: 1px solid #eee;
+        }
+
+        .table-form th:nth-child(1),
+        .table-form td:nth-child(1) {
+          width: 10%;
+          text-align: center;
+        }
+
+        .table-form th:nth-child(2),
+        .table-form td:nth-child(2) {
+          padding-left:1rem;
+          width: 10%;
+          text-align: left;
+        }
+        .table-form td:nth-child(3),
+        .table-form th:nth-child(3) {
+          text-align: left;
+          width: 20%;
+        }
+
+        .table-form th:nth-child(4),
+        .table-form td:nth-child(4) {
+          
+          text-align: left;
+          width: 15%;
+        }
+
+        .table-form th:nth-child(5),
+        .table-form td:nth-child(5) {
+          
+          text-align: left;
+          width: 20%;
+        }
+
+        .table-form th:nth-child(6),
+        .table-form td:nth-child(6) {
+          width: 10%;
+          text-align: left;
+        }
+
+        .table-form th:nth-child(7),
+        .table-form td:nth-child(7) {
+          width: 10%;
+          text-align: center;
+        }
+
+        /* Table part */
+        
+        /* Modal Part */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.3);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 999;
+        }
+
+        .modal-content.alert {
+          background: white;
+          border-radius: 16px;
+          padding: 30px 25px;
+          text-align: center;
+          width: 300px;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+          animation: pop-in 0.2s ease;
+        }
+
+        .modal-icon {
+          font-size: 32px;
+          color: red;
+          margin-bottom: 10px;
+        }
+
+        .modal-buttons {
+          display: flex;
+          justify-content: space-around;
+          margin-top: 20px;
+        }
+
+        /* Modal Part*/
+
+        /* Btn Part */
+
+        .btn-cancel {
+          padding: 8px 16px;
+          background: #ddd;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+        }
+
+        .btn-confirm {
+          padding: 8px 16px;
+          background: rgba(13,149,216,0.8);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+          background: #ccc;
+        }
+
+        .btn-confirm:hover {
+          background:rgba(13,149,216,0.6);
+        }
+
+        /* Btn Part */
+
+        @keyframes pop-in {
+          from { transform: scale(0.9); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+
+        .pagination {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 20px;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+
+        .pagination button {
+          padding: 6px 12px;
+          border: 1px solid #ccc;
+          background-color: white;
+          color: #333;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          transition: all 0.2s ease;
+          min-width: 36px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+          background-color:rgba(13,149,216,0.8);
+          border-color: #aaa;
+        }
+
+        .pagination button:disabled {
+          cursor: not-allowed;
+          opacity: 0.5;
+        }
+
+        .pagination button.active {
+          background-color:rgba(13,149,216,255);
+          color: white;
+          font-weight: bold;
+          border: none;
+        }
+        .department-text{
+          text-align: left;
+        }
+
+        /* filter part */
+
+        .filter-item > button {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 120px;
+          height: 36px;
+          padding: 6px 12px;
+          background: #fff;
+          // border: 1px solid #dcdfe5;
+          border-radius: 8px;
+          font-size: 14px;
+          color: #111;
+          cursor: pointer;
+          transition: border-color .2s, box-shadow .2s, background-color .2s;
+          justify-content: space-between;
+        }
+
+        .filter-item > button:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(59,130,246,.18);
+        }
+
+        .filter-item > button svg {
+          transition: transform .2s ease;
+        }
+
+        .filter-item:has(> .dropdown) > button svg {
+          transform: rotate(180deg);
+        }
+
+        .filter-item .dropdown {
+          position: absolute;
+          top: calc(100% + 6px);
+          left: 0;
+          width: 100%;
+          list-style: none;
+          margin: 0;
+          padding: 6px 0;
+          background: #fff;
+          // border: 1px solid #e6e8f0;
+          border-radius: 10px;
+          box-shadow: 0 6px 18px rgba(16,24,40,.12);
+          z-index: 30;
+        }
+
+        .filter-item .dropdown li {
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 12px;
+          font-size: 14px;
+          color: #1f2937;
+          cursor: pointer;
+          transition: background-color .15s;
+        }
+
+        .filter-item .dropdown li:hover {
+          background: #f3f6ff;
+        }
+
+        .filter-item {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .filter-item select {
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          border: none;
+          outline: none;
+          background: transparent;
+          height: 36px;
+          padding-right: 32px;
+        }
+
+        /* filter part */
+
+        .icon-span {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          pointer-events: none;
+          color: #666;
+        }
+        /* กล่องรายการดรอปดาวน์ */
+        .dropdown {
+          position: absolute;
+          top: calc(100% + 6px);
+          left: 0;
+          width: 220px; /* ✅ fix ความกว้างให้เท่ากัน */
+          max-height: 240px; /* ✅ ถ้าเยอะจะมี scroll */
+          overflow-y: auto;
+          background: #fff;
+          border: 1px solid #e6e8f0;
+          border-radius: 10px;
+          box-shadow: 0 6px 18px rgba(16,24,40,.12);
+          list-style: none;
+          margin: 0;
+          padding: 6px 0;
+          z-index: 50;
+        }
+        
+        .dropdown .option {
+          height: 36px;
+          padding: 0 12px;
+          font-size: 14px;
+          color: #1f2937;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          white-space: nowrap; /* ✅ กัน text ขึ้นบรรทัดใหม่ */
+          transition: background-color .15s;
+        }
+
+        .dropdown .option:hover {
+          background: #f3f6ff;
+        }
+
+        .dropdown .option.selected {
+          background: #eef4ff;
+          color: #0b3bff;
+          font-weight: 600;
+        }
+        .select-btn {
+          min-width: 220px;      /* ✅ fix ความกว้างตั้งแต่แรก */
+          justify-content: space-between;
+        }
+
+        /* dropdown-dept */
+
+        .filter-item:has(> .dropdown-dept) > button svg {
+          transform: rotate(180deg);
+        }
+
+        .filter-item .dropdown-dept {
+          position: absolute;
+          top: calc(100% + 6px);
+          left: 0;
+          width: 100%;
+          list-style: none;
+          margin: 0;
+          padding: 6px 0;
+          background: #fff;
+          // border: 1px solid #e6e8f0;
+          border-radius: 10px;
+          box-shadow: 0 6px 18px rgba(16,24,40,.12);
+          z-index: 30;
+        }
+
+        .filter-item .dropdown-dept li {
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 12px;
+          font-size: 14px;
+          color: #1f2937;
+          cursor: pointer;
+          transition: background-color .15s;
+        }
+
+        .filter-item .dropdown-dept li:hover {
+          background: #f3f6ff;
+        }
+
+        .dropdown-dept {
+          position: absolute;
+          top: calc(100% + 6px);
+          left: 0;
+          width: 220px; /* ✅ fix ความกว้างให้เท่ากัน */
+          max-height: 240px; /* ✅ ถ้าเยอะจะมี scroll */
+          overflow-y: auto;
+          background: #fff;
+          border: 1px solid #e6e8f0;
+          border-radius: 10px;
+          box-shadow: 0 6px 18px rgba(16,24,40,.12);
+          list-style: none;
+          margin: 0;
+          padding: 6px 0;
+          z-index: 50;
+        }
+
+        .dropdown-dept .option {
+          height: 36px;
+          padding: 0 12px;
+          font-size: 14px;
+          color: #1f2937;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          white-space: nowrap; /* ✅ กัน text ขึ้นบรรทัดใหม่ */
+          transition: background-color .15s;
+        }
+
+        .dropdown-dept .option:hover {
+          background: #f3f6ff;
+        }
+
+        .dropdown-dept .option.selected {
+          background: #eef4ff;
+          color: #0b3bff;
+          font-weight: 600;
+        }
+
+        .dropdown .option {
+          height: 36px;
+          padding: 0 12px;
+          font-size: 14px;
+          color: #1f2937;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          white-space: nowrap; /* ✅ กัน text ขึ้นบรรทัดใหม่ */
+          transition: background-color .15s;
+        }
+
+        .dropdown .option:hover {
+          background: #f3f6ff;
+        }
+
+        .dropdown .option.selected {
+          background: #eef4ff;
+          color: #0b3bff;
+          font-weight: 600;
+        }
+        
+      `}</style>
     </div>
     
   );

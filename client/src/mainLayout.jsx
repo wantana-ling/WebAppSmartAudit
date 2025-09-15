@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "./navbar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import "./css/mainLayout.css";
 
 const MainLayout = () => {
   const location = useLocation();
@@ -34,6 +33,31 @@ const MainLayout = () => {
       <div className="content">
         <Outlet />
       </div>
+    <style>{`
+    .top-right-profile {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+
+
+    .username {
+      font-weight: 600;
+      font-size: 16px;
+      color: #000;
+    }
+
+    .profile-img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    `}</style>
     </div>
   );
 };
