@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
+import { FaPlus, FaTrash, FaEdit, FaCircle } from "react-icons/fa";
 import DeleteUserManagement from "./deleteUserManagement";
 
 const mockData = [
@@ -102,71 +102,70 @@ const UserManagement = () => {
   return (
     <div className="main-container">
       <div className="box-container">
-        <div className="top-row">
-          <div className="search-box">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
+        <div className="search-box">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
 
-            <input
-              type="text"
-              placeholder="Search..."
-              className="search-input"
-              value={searchText}
+          <input
+            type="text"
+            placeholder="Search..."
+            className="search-input"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
+            }}
+          />
+
+        </div>
+        <div className="filter-box">
+          <div className="filter-item">
+            <label>Show row</label>
+            <select
+                    value={rowsPerPage}
               onChange={(e) => {
-                setSearchText(e.target.value);
-                setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1); // reset ไปหน้า 1
               }}
-            />
-
+            >
+              <option value="10">10</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            
           </div>
-          <div className="filter-box">
-            <div className="filter-item">
-              <label>Show row</label>
-              <select
-                      value={rowsPerPage}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
-                  setCurrentPage(1); // reset ไปหน้า 1
-                }}
-              >
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-              
-            </div>
 
-            <div className="filter-item">
-              <label>Department</label>
-              <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
-                <option value="">Department</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.department_name}>{d.department_name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="filter-item">
-              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                  <option value="">Status</option>
-                  <option value="active">ACTIVE</option>
-                  <option value="inactive">INACTIVE</option>
-              </select>
-            </div>
+          <div className="filter-item">
+            <label>Department</label>
+            <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
+              <option value="">Department</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.department_name}>{d.department_name}</option>
+              ))}
+            </select>
           </div>
-          <div className="add-user-container">
-              <button className="add-user-btn" onClick={() => navigate("/addUser")}> 
-                <FaPlus className="icon" /> ADD
-              </button>
+
+          <div className="filter-item">
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="">Status</option>
+                <option value="active">ACTIVE</option>
+                <option value="inactive">INACTIVE</option>
+            </select>
+          </div>
+
+          <div className="add-button-row">
+            <button className="add-user-btn" onClick={() => navigate("/addUser")}>
+              <FaPlus className="icon" /> ADD
+            </button>
           </div>
         </div>
 
-        <div className="table-container">
-          <table className="scroll-table">
+        <div className="table-form">
+          <table>
             <thead>
               <tr>
-                <th>no.</th>
+                <th>No.</th>
                 <th>UserID</th>
                 <th>Department</th>
                 <th>Name</th>
@@ -185,7 +184,7 @@ const UserManagement = () => {
                   {/* <td>{[user.firstname, user.midname, user.lastname].filter(Boolean).join(" ")}</td> */}
                   <td>
                     <span className={user.status === "Active" ? "status-active" : "status-inactive"}>
-                      {user.status.toUpperCase()}
+                      <FaCircle/>&nbsp;{user.status.toUpperCase()}
                     </span>
                   </td>
                   <td>
@@ -235,183 +234,132 @@ const UserManagement = () => {
         />
       )}
     <style>{`
-    .user-management-wrapper {
-      width: 100%;
-      max-width: 1100px;
-      background-color: #ffffff;
-      font-family: 'Prompt', sans-serif;
-      margin-top: 50px;
-      margin-left: 0;
-      margin-right: 0;
-      margin-bottom: auto;
-    }
 
-    /* === Search + Filters === */
-    .search-filter-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .user-search-input {
-      width: 50%;
-      max-width: 400px;
-      min-width: 200px;
-    }
-
-    .search-filter-row input[type="text"],
-    .search-filter-row select {
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    /* === Table === */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    th, td {
-      padding: 10px 8px; /* ลด padding รวม */
-      text-align: left;
-      vertical-align: middle;
-      padding: 12px 12px;
-    }
-
-    th {
-      background-color: #f0f2fa;
-      color: #00209F;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    td {
-      font-size: 14px;
-      color: #333;
-      border-top: 1px solid #eee;
-      vertical-align: middle;
-    }
-
-    /* === Table spacing / alignment ปรับตามภาพ === */
-    th:nth-child(1),
-    td:nth-child(1) {
-      width: 50px;  /* no. */
-      text-align: center;
-      padding-left: 4px;
-    }
-
-    th:nth-child(2),
-    td:nth-child(2) {
-      width: 80px;  /* UserID */
-      text-align: center;
-    }
-
-    th:nth-child(3),
-    td:nth-child(3) {
-      width: 150px;
-      text-align: center;  /* Department */
-    }
-
-    th:nth-child(4),
-    td:nth-child(4) {
-      width: 150px;  /* Username */
-      white-space: nowrap;
-      overflow: hidden;
-      text-align: left;
-    }
-
-    th:nth-child(5),
-    td:nth-child(5) {
-      width: 50px;  /* Status */
-      text-align: left;
-    }
-
-    th:nth-child(6),
-    td:nth-child(6),
-    th:nth-child(7) {
-      width: 40px;  /* Edit / Delete */
-      text-align: center;
-      vertical-align: middle;
-    }
-
-    th:nth-child(6),
-    th:nth-child(7) {
-        padding-left: 0px;
-    }
-
-    td:nth-child(7) {
-        width: 40px;
-        text-align: center;
-        vertical-align: middle;
-    }
     /* === Status Labels === */
     .status-active {
-      background-color: #4cd964;
-      color: white;
-      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 14px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       height: 100%;
+    }
+    .status-active fa-circle {
+      color: green;
+      font-size: 14px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
     .status-inactive {
-      background-color: #ff3b30;
-      color: white;
-      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 14px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       height: 100%;
     }
 
-    /* === Scroll Table === */
-    .table-container {
-      max-height: calc(51px * 10);
+    /* Table part */
+    .table-form {
+      width: 100%;
       overflow-y: auto;
-      border: 1px solid #ddd;        /* ✅ ขอบนอกสุด */
-      border-radius: 12px;           /* ✅ มุมมน */
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
     }
 
-    .scroll-table thead,
-    .scroll-table tbody tr {
+    .table-form table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table-form table thead,
+    .table-form table tbody tr {
       display: table;
       width: 100%;
       table-layout: fixed;
     }
 
-    .scroll-table {
-      border-collapse: collapse;
-      width: 100%;
+    .table-form table thead {
+      background-color: #f5f5f5;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      border-bottom: 1px solid #ccc;
     }
 
-    .scroll-table tbody {
+    .table-form table tbody {
       display: block;
-      max-height: none;
-      overflow-y: auto;
+      max-height: 440px;
+      overflow-y: scroll;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      position: relative;
     }
 
-    /* === ปุ่ม Edit/Delete === */
+    .table-form th,
+    .table-form td {
+      padding: 12px 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-bottom: 1px solid #eee;
+    }
+
+    .table-form th:nth-child(1),
+    .table-form td:nth-child(1) {
+      width: 10%;
+      text-align: center;
+    }
+
+    .table-form th:nth-child(2),
+    .table-form td:nth-child(2) {
+      padding-left:1rem;
+      width: 10%;
+      text-align: left;
+    }
+    .table-form td:nth-child(3),
+    .table-form th:nth-child(3) {
+      text-align: left;
+      width: 20%;
+    }
+
+    .table-form th:nth-child(4),
+    .table-form td:nth-child(4) {
+      
+      text-align: left;
+      width: 15%;
+    }
+
+    .table-form th:nth-child(5),
+    .table-form td:nth-child(5) {
+      
+      text-align: left;
+      width: 20%;
+    }
+
+    .table-form th:nth-child(6),
+    .table-form td:nth-child(6) {
+      width: 10%;
+      text-align: left;
+    }
+
+    .table-form th:nth-child(7),
+    .table-form td:nth-child(7) {
+      width: 10%;
+      text-align: center;
+    }
+
+      /* Table part */
+
     .edit-btn, .delete-btn {
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
+      font-size: 14px;
       transition: 0.2s ease;
     }
 
@@ -423,28 +371,10 @@ const UserManagement = () => {
       color: #ff3b30;
     }
 
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .search-filter-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      flex: 1;
-    }
-
     .add-button-row {
+      margin-left: auto; /* ดันปุ่มไปขวาสุด */
       display: flex;
-      justify-content: flex-end;
-      flex-shrink: 0;
-      margin-top: 40px;
-      margin-bottom: -10px;
+      align-items: center;
     }
     
     .add-user-container {
@@ -458,7 +388,7 @@ const UserManagement = () => {
       border: none;
       border-radius: 6px;
       padding: 4px 12px;
-      font-size: 13px;
+      font-size: 14px;
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
@@ -507,13 +437,6 @@ const UserManagement = () => {
       cursor: not-allowed;
     }
 
-    .filter-box {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-
     .filter-item {
       padding: 6px 12px;
       font-size: 14px;
@@ -522,12 +445,6 @@ const UserManagement = () => {
       background-color: #fff;
       cursor: pointer;
       transition: border-color 0.2s;
-    }
-
-    .filter-box label {
-      font-size: 14px;
-      color: #000000;
-      margin-right: 8px;
     }
 
     .filter-item select {

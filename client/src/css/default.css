@@ -130,15 +130,16 @@ td {
     gap: 12px;
     align-items: center;
 }
-.filter-box button {
-    padding: 6px 12px;
-    font-size: 14px;
-    border: 1px solid #ffff;
-    border-radius: 6px;
-    background-color: #fff;
-    cursor: pointer;
-    transition: border-color 0.2s;
+/* วิธีสั้นสุด */
+.filter-box button:not(.add-user-btn) {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color .2s;
 }
+
 .filter-item{
     
     padding: 6px 12px;
