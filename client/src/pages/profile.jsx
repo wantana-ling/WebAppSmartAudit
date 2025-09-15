@@ -26,9 +26,6 @@ const Profile = () => {
                 alt="Profile"
               />
             </div>
-            <label htmlFor="upload-edit-image" className="edit-icon">
-              <FaCamera />
-            </label>
           </div>
           <div className="profile-info">
             <h1>{admin.company}</h1>
@@ -37,14 +34,6 @@ const Profile = () => {
 
         <div className="profile-container">
           <div className="profile-card">
-            <div className="edit-button-container">
-              <button
-                id="edit-password-desktop"
-                onClick={() => navigate("/passwordEdit")}
-              >
-                <FaEdit className="icon" /> EDIT
-              </button>
-            </div>
             <table>
               <tbody>
                 <tr>
