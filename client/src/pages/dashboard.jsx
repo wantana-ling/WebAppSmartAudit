@@ -19,31 +19,29 @@ const Dashboard = () => {
   const apiBase = process.env.REACT_APP_API_URL || "http://localhost:3002";
 
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    } catch (err) {
-      console.error("❌ Failed to parse user from localStorage", err);
-    }
+    // ✅ ดึงข้อมูล admin จาก session (ไม่ใช้ JWT)
+    axios.get(`${apiBase}/api/me`, { withCredentials: true })
+      .then(response => setUser(response.data))
+      .catch(error => {
+        console.error("❌ Failed to fetch admin info:", error);
+        if (error.response?.status === 401) {
+          navigate('/login');
+        }
+      });
 
-    axios.get(`${apiBase}/api/dashboard-stats`)
+    axios.get(`${apiBase}/api/dashboard-stats`, { withCredentials: true })
       .then(response => setStats(response.data))
       .catch(error => console.error('Error fetching stats:', error));
 
-    axios.get(`${apiBase}/api/history-timeline?month=${month}&year=${year}`)
+    axios.get(`${apiBase}/api/history-timeline?month=${month}&year=${year}`, { withCredentials: true })
       .then(response => setHistoryTimeline(response.data))
       .catch(error => console.error('Error fetching history timeline data:', error));
 
-    axios.get(`${apiBase}/api/users-chart?month=${month}&year=${year}`)
-      .then(response => {
-        console.log("user-chart response:", response.data);
-        setUserChart(response.data);
-      })
-      .catch(error => console.error('Error fetching filtered data:', error));
+    axios.get(`${apiBase}/api/users-chart?month=${month}&year=${year}`, { withCredentials: true })
+      .then(response => setUserChart(response.data))
+      .catch(error => console.error('Error fetching user chart data:', error));
 
-    axios.get(`${apiBase}/api/available-years`)
+    axios.get(`${apiBase}/api/available-years`, { withCredentials: true })
       .then(res => {
         setYears(res.data);
         if (!year && res.data.length > 0) {
@@ -61,7 +59,7 @@ const Dashboard = () => {
     <div className="main-container">
       <div className="box-container">
         <div className="dashboard-header">
-          <h1>WELCOME<span> , {user.firstname}</span></h1>
+          <h1>WELCOME<span> , {user.company}</span></h1>
           <div className="profile-pic" onClick={() => navigate('/profile')}>
             <button>
               <img

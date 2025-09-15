@@ -45,7 +45,7 @@ const Login = () => {
 
       localStorage.setItem('user_id', adminData.user_id);
       localStorage.setItem('admin', JSON.stringify(adminData));
-
+ 
       navigate('/dashboard');
     } catch (err) {
       if (err.response?.status === 429) {

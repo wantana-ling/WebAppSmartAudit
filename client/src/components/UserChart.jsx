@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import api from '../api'; 
+import api from '../api';
 
 const getRandomColor = () => {
   const letters = '0123456789ABCDEF';
