@@ -11,7 +11,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const apiBase = process.env.REACT_APP_API_URL || "http://localhost:3002";
+  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   useEffect(() => {
     setError('');

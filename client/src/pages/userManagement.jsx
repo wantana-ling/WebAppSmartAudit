@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaTrash, FaEdit, FaCircle } from "react-icons/fa";
+import { SlArrowDown  } from "react-icons/sl";
 import DeleteUserManagement from "./deleteUserManagement";
 
 const mockData = [
@@ -37,7 +38,6 @@ const mockData = [
   { no: 30, userId: '40030', department: 'Cloud Services', name: 'Avery Rivera', status: 'Active' }
 ];
 
-
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -48,6 +48,8 @@ const UserManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [rowsOpen, setRowsOpen] = useState(false);
+  const rowsMenuRef = useRef(null);
 
   const navigate = useNavigate();
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
@@ -62,7 +64,7 @@ const UserManagement = () => {
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
 
-  const filteredUsers = mockData.filter((user) => {
+  const filteredUsers = users.filter((user) => {
     const matchSearch = user.firstname?.includes(searchText) || user.user_id?.toString().includes(searchText);
     const matchDept = departmentFilter ? user.department?.includes(departmentFilter) : true;
     const matchStatus = statusFilter ? user.status === statusFilter : true;
@@ -120,20 +122,39 @@ const UserManagement = () => {
 
         </div>
         <div className="filter-box">
-          <div className="filter-item">
-            <label>Show row</label>
-            <select
-                    value={rowsPerPage}
-              onChange={(e) => {
-                setRowsPerPage(Number(e.target.value));
-                setCurrentPage(1); // reset ไปหน้า 1
-              }}
+          <div className="filter-item" ref={rowsMenuRef}>
+            <button
+              type="button"
+              className="select-btn"
+              onClick={() => setRowsOpen(v => !v)}
+              aria-haspopup="listbox"
+              aria-expanded={rowsOpen}
+              aria-controls="rows-menu"
             >
-              <option value="10">100</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-            
+              <span className="select-label"><b>Show row</b></span>
+              <span className="select-value">{rowsPerPage}</span>
+              <SlArrowDown className={`chev ${rowsOpen ? "rot" : ""}`} />
+            </button>
+
+            {rowsOpen && (
+              <ul className="dropdown" id="rows-menu" role="listbox">
+                {[10, 50, 100].map(n => (
+                  <li
+                    key={n}
+                    role="option"
+                    aria-selected={rowsPerPage === n}
+                    className={`option ${rowsPerPage === n ? "selected" : ""}`}
+                    onClick={() => {
+                      setRowsPerPage(n);
+                      setCurrentPage(1);
+                      setRowsOpen(false);
+                    }}
+                  >
+                    {n}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="filter-item">
@@ -437,15 +458,6 @@ const UserManagement = () => {
       cursor: not-allowed;
     }
 
-    .filter-item {
-      padding: 6px 12px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background-color: #fff;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
 
     .filter-item select {
       border: none;
@@ -457,7 +469,86 @@ const UserManagement = () => {
       -moz-appearance: none;
       padding: 4px 8px;
     }
+    .filter-item > button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 120px;
+      height: 36px;
+      padding: 6px 12px;
+      background: #fff;
+      // border: 1px solid #dcdfe5;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #111;
+      cursor: pointer;
+      transition: border-color .2s, box-shadow .2s, background-color .2s;
+      justify-content: space-between;
+    }
 
+    .filter-item > button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(59,130,246,.18);
+    }
+
+    .filter-item > button svg {
+      transition: transform .2s ease;
+    }
+
+    .filter-item:has(> .dropdown) > button svg {
+      transform: rotate(180deg);
+    }
+
+    .filter-item .dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      width: 100%;
+      list-style: none;
+      margin: 0;
+      padding: 6px 0;
+      background: #fff;
+      // border: 1px solid #e6e8f0;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(16,24,40,.12);
+      z-index: 30;
+    }
+
+    .filter-item .dropdown li {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-size: 14px;
+      color: #1f2937;
+      cursor: pointer;
+      transition: background-color .15s;
+    }
+
+    .filter-item .dropdown li:hover {
+      background: #f3f6ff;
+    }
+
+    .filter-item {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-item select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      height: 36px;
+      padding-right: 32px;
+    }
+
+    /* filter part */
     `}</style>
     </div>
   );

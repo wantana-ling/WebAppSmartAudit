@@ -22,12 +22,21 @@ const LiveScreen = () => {
         </div>
 
         <div className="live-screen-video">
-          <video controls  src="http://localhost:3050/video/id_001_210825"></video>
-
+          <video 
+            controls
+            src="http://localhost:3050/video/id_001_210825">
+          </video>
         </div>
 
         <div className="live-screen-exit">
           <button className="live-screen-exit-btn" onClick={handleExit}>EXIT</button>
+            <a 
+              href="http://localhost:3050/video/id_001_210825"
+              download
+              className="download-btn"
+            >
+              ⬇ Download Video
+            </a>
         </div>
 
       </div>
