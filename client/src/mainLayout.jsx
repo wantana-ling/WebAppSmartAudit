@@ -12,52 +12,28 @@ const MainLayout = () => {
   const hideProfileBar = ["/profile", "/dashboard"].includes(location.pathname);
 
   return (
-    <div className="main-layout">
+    <div className="relative w-full min-h-screen flex">
       <Navbar />
 
       {!hideProfileBar && (
-        <div className="top-right-profile">
-          <span className="username">{companyName}</span>
-          <div className="profile-pic" onClick={() => navigate('/profile')}>
-            <button>
-              <img
-                className="profile-image"
-                src={process.env.PUBLIC_URL + "/img/default-profile.jpg"}
-                alt="Profile"
-              />
-            </button>
-          </div>
+        <div className="absolute top-5 right-5 flex items-center gap-2 z-10">
+          <span className="font-semibold text-[16px] text-black">{companyName}</span>
+          <button
+            onClick={() => navigate("/profile")}
+            className="inline-flex items-center justify-center rounded-full overflow-hidden"
+          >
+            <img
+              src={process.env.PUBLIC_URL + "/img/default-profile.jpg"}
+              alt="Profile"
+              className="w-[35px] h-[35px] rounded-full object-cover"
+            />
+          </button>
         </div>
       )}
 
-      <div className="content">
+      <main className="flex-1 ml-[21vw] p-6">
         <Outlet />
-      </div>
-    <style>{`
-    .top-right-profile {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 10;
-    }
-
-
-    .username {
-      font-weight: 600;
-      font-size: 16px;
-      color: #000;
-    }
-
-    .profile-img {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    `}</style>
+      </main>
     </div>
   );
 };

@@ -11,117 +11,64 @@ const LiveScreen = () => {
   };
 
   return (
-    <div className="main-container">
-      <div className="box-container">
-        <div className="live-screen-title">Live Screen Viewer</div>
+    // <div className="w-full min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    //   <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">
+    //     {/* Title */}
+    //     <div className="text-xl font-bold mb-6 text-center">
+    //       Live Screen Viewer
+    //     </div>
 
-        <div className="live-screen-table">
-          <div><span className="live-screen-label"><b>User ID</b></span><br /><br />{selectedUser.userId}</div>
-          <div><span className="live-screen-label"><b>Department</b></span><br /><br />{selectedUser.department}</div>
-          <div><span className="live-screen-label"><b>Username</b></span><br /><br />{selectedUser.username}</div>
-        </div>
+    //     {/* User Info Table */}
+    //     <div className="flex flex-wrap justify-around gap-10 mb-6 text-base">
+    //       <div className="min-w-[150px] text-center">
+    //         <span className="font-semibold">User ID</span>
+    //         <br />
+    //         <br />
+    //         {selectedUser?.userId}
+    //       </div>
+    //       <div className="min-w-[150px] text-center">
+    //         <span className="font-semibold">Department</span>
+    //         <br />
+    //         <br />
+    //         {selectedUser?.department}
+    //       </div>
+    //       <div className="min-w-[150px] text-center">
+    //         <span className="font-semibold">Username</span>
+    //         <br />
+    //         <br />
+    //         {selectedUser?.username}
+    //       </div>
+    //     </div>
 
-        <div className="live-screen-video">
-          <video 
-            controls
-            src="http://localhost:3050/video/id_001_210825">
-          </video>
-        </div>
+    //     {/* Video */}
+    //     <div className="w-full aspect-[25/10] bg-black border border-gray-300 rounded-lg mb-8 overflow-hidden">
+    //       <video
+    //         className="w-full h-full object-contain rounded"
+    //         controls
+    //         src="http://localhost:3050/video/id_001_210825"
+    //       />
+    //     </div>
 
-        <div className="live-screen-exit">
-          <button className="live-screen-exit-btn" onClick={handleExit}>EXIT</button>
-            <a 
-              href="http://localhost:3050/video/id_001_210825"
-              download
-              className="download-btn"
-            >
-              ⬇ Download Video
-            </a>
-        </div>
-
-      </div>
-
-      <style>{`
-        .live-screen-video video {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;   /* ใช้ cover ถ้าอยากให้เต็มตัดขอบ */
-          border-radius: 6px;
-          display: block;
-        }
-
-
-        .live-screen-content {
-          max-width: 800px;
-          margin: 0 auto;
-          background: white;
-          padding: 40px;
-          border-radius: 10px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-          text-align: center;
-        }
-
-        .live-screen-title {
-          font-size: 20px;
-          font-weight: bold;
-          margin-bottom: 30px;
-          text-align:center;
-        }
-
-        .live-screen-table {
-          display: flex;
-          justify-content: space-around;
-          gap: 40px;                    
-          margin-bottom: 20px;
-          font-size: 16px;
-          flex-wrap: wrap;              
-        }
-
-        .live-screen-table > div {
-          min-width: 150px;
-          text-align: center;
-        }
-
-        .live-screen-table > div {
-          flex: 1;
-          text-align: center;
-        }
-
-
-
-        .live-screen-video {
-          width: 100%;
-          aspect-ratio: 25 / 10; 
-          background: #000;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          margin-bottom: 30px;
-          overflow: hidden;
-        }
-
-        .live-screen-exit-btn {
-          align-item:center;
-          width:50%;
-          background:rgba(13,149,216,1);
-          border: none;
-          color: white;
-          padding: 10px 30px;
-          font-size: 14px;
-          font-weight: bold;
-          border-radius: 6px;
-          cursor: pointer;
-          transition: background 0.3s ease;
-          transition-delay: 0s;
-        }
-
-        .live-screen-exit-btn:hover {
-          background: rgba(13,149,216,0.5);
-          transition-delay: 0.4s;
-        }
-        .live-screen-exit {
-          text-align:center;
-        }
-      `}</style>
+    //     {/* Exit + Download */}
+    //     <div className="text-center flex flex-col items-center gap-4">
+    //       <button
+    //         className="w-1/2 bg-sky-600 hover:bg-sky-400 text-white font-bold py-2 px-6 rounded transition-all duration-300"
+    //         onClick={handleExit}
+    //       >
+    //         EXIT
+    //       </button>
+    //       <a
+    //         href="http://localhost:3050/video/id_001_210825"
+    //         download
+    //         className="w-1/2 bg-green-600 hover:bg-green-400 text-white font-bold py-2 px-6 rounded text-center transition-all duration-300"
+    //       >
+    //         ⬇ Download Video
+    //       </a>
+    //     </div>
+    //   </div>
+    // </div>
+    <div className="w-full min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      lorem1000edwmqolkdmpqwkdwmqdklwqmdwq
     </div>
   );
 };

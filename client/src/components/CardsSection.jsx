@@ -1,32 +1,19 @@
 import React from "react";
 
 const CardsSection = ({ accessCount, dailyUse, visitorActive }) => {
-    return (
-        <div style={{ display: 'flex', gap: '20px' }}>
-            <div className="card">Access Count: {accessCount} Times</div>
-            <div className="card">Daily Use: {dailyUse} Minutes</div>
-            <div className="card">Visitor Active: {visitorActive}</div>
-        <style>{`
-        .card {
-            padding: 10px 30px 10px 30px;
-            background-color: white;
-            box-shadow: 0 4px 8px 0 rgb(0, 0, 0,0.2);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            gap: 20px;
-        }
-        @media (max-width: 768px) {
-        .card {
-            padding: 15px;
-            width: 100%;
-            border-radius: 20px;
-            }
-        }
-        `}</style>
-        </div>
-    );
+  return (
+    <div className="flex gap-5 flex-wrap">
+      <div className="p-3 md:p-4 lg:px-8 lg:py-2 bg-white shadow-md rounded-2xl flex flex-col justify-start gap-5">
+        Access Count: {accessCount} Times
+      </div>
+      <div className="p-3 md:p-4 lg:px-8 lg:py-2 bg-white shadow-md rounded-2xl flex flex-col justify-start gap-5">
+        Daily Use: {dailyUse} Minutes
+      </div>
+      <div className="p-3 md:p-4 lg:px-8 lg:py-2 bg-white shadow-md rounded-2xl flex flex-col justify-start gap-5">
+        Visitor Active: {visitorActive}
+      </div>
+    </div>
+  );
 };
 
 export default CardsSection;

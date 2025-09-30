@@ -145,658 +145,271 @@ const ActiveVisitor = () => {
   };
 
   return (
-    <div className="main-container">
-      <div className="box-container">
-        <div className="search-box">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-          </svg>
+    <div className="flex items-center justify-center min-h-screen ">
+      <div className="mx-auto w-full max-w-[1080px] ">
 
-          <input
-            type="text"
-            placeholder="Search..."
-            className="search-input"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
-          />
-
-        </div>
-        <div className="filter-box">
-          <div className="filter-item" ref={rowsMenuRef}>
-            <button
-              type="button"
-              className="select-btn"
-              onClick={() => setRowsOpen(v => !v)}
-              aria-haspopup="listbox"
-              aria-expanded={rowsOpen}
-              aria-controls="rows-menu"
-            >
-              <span className="select-label"><b>Show row</b></span>
-              <span className="select-value">{rowsPerPage}</span>
-              <SlArrowDown className={`chev ${rowsOpen ? "rot" : ""}`} />
-            </button>
-
-            {rowsOpen && (
-              <ul className="dropdown" id="rows-menu" role="listbox">
-                {[10, 50, 100].map(n => (
-                  <li
-                    key={n}
-                    role="option"
-                    aria-selected={rowsPerPage === n}
-                    className={`option ${rowsPerPage === n ? "selected" : ""}`}
-                    onClick={() => {
-                      setRowsPerPage(n);
-                      setCurrentPage(1);
-                      setRowsOpen(false);
-                    }}
-                  >
-                    {n}
-                  </li>
-                ))}
-              </ul>
-            )}
+        {/* Search + Filters */}
+        <div className="flex flex-col gap-3 mb-4">
+          <div className="flex items-center gap-3">
+            {/* search */}
+            <div className="relative w-full max-w-[520px]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full rounded-xl border border-gray-300 pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8] bg-white"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
           </div>
+          <div className="flex items-center gap-3">
+            {/* rows per page */}
+            <div className="relative inline-flex items-center gap-2" ref={rowsMenuRef}>
+              <button
+                type="button"
+                onClick={() => setRowsOpen(v => !v)}
+                aria-haspopup="listbox"
+                aria-expanded={rowsOpen}
+                aria-controls="rows-menu"
+                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <span className="font-medium">Show row</span>
+                <span className="text-gray-600">{rowsPerPage}</span>
+                <SlArrowDown className={`transition ${rowsOpen ? "rotate-180" : ""}`} />
+              </button>
 
-          <div className="filter-item" ref={deptMenuRef}>
-            <button
-              type="button"
-              className="select-btn"
-              onClick={() => setDeptOpen((v) => !v)}
-              aria-haspopup="listbox"
-              aria-expanded={deptOpen}
-              aria-controls="dept-menu"
-              style={{minWidth: 250}}
-            >
-              <span className="select-label"><b>Department</b></span>
-              <span className="select-value">
-                {selectedDepartment === "all"
-                  ? "All"
-                  : mockDepartments.find((d) => d.id === selectedDepartment)?.name}
-              </span>
-              <SlArrowDown className={`chev ${deptOpen ? "rot" : ""}`} />
-            </button>
-
-            {deptOpen && (
-              <ul className="dropdown-dept" id="dept-menu" role="listbox">
-                <li
-                  role="option"
-                  aria-selected={selectedDepartment === "all"}
-                  className={`option ${selectedDepartment === "all" ? "selected" : ""}`}
-                  onClick={() => {
-                    setSelectedDepartment("all");
-                    setCurrentPage(1);
-                    setDeptOpen(false);
-                  }}
+              {rowsOpen && (
+                <ul
+                  id="rows-menu"
+                  role="listbox"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
                 >
-                  All
-                </li>
-                {mockDepartments.map((dept) => (
+                  {[10, 50, 100].map(n => (
+                    <li
+                      key={n}
+                      role="option"
+                      aria-selected={rowsPerPage === n}
+                      onClick={() => { setRowsPerPage(n); setCurrentPage(1); setRowsOpen(false); }}
+                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm hover:bg-indigo-50 ${
+                        rowsPerPage === n ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      }`}
+                    >
+                      {n}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* department */}
+            <div className="relative inline-flex items-center gap-2" ref={deptMenuRef}>
+              <button
+                type="button"
+                onClick={() => setDeptOpen(v => !v)}
+                aria-haspopup="listbox"
+                aria-expanded={deptOpen}
+                aria-controls="dept-menu"
+                className="inline-flex h-10 min-w-[240px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <span className="font-medium">Department</span>
+                <span className="truncate">
+                  {selectedDepartment === "all"
+                    ? "All"
+                    : mockDepartments.find(d => d.id === selectedDepartment)?.name}
+                </span>
+                <SlArrowDown className={`transition ${deptOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {deptOpen && (
+                <ul
+                  id="dept-menu"
+                  role="listbox"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[240px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                >
                   <li
-                    key={dept.id}
                     role="option"
-                    aria-selected={selectedDepartment === dept.id}
-                    className={`option ${
-                      selectedDepartment === dept.id ? "selected" : ""
+                    aria-selected={selectedDepartment === "all"}
+                    onClick={() => { setSelectedDepartment("all"); setCurrentPage(1); setDeptOpen(false); }}
+                    className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
+                      selectedDepartment === "all" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
                     }`}
-                    onClick={() => {
-                      setSelectedDepartment(dept.id);
-                      setCurrentPage(1);
-                      setDeptOpen(false);
-                    }}
                   >
-                    {dept.name}
+                    All
                   </li>
-                ))}
-              </ul>
-            )}
+                  {mockDepartments.map(dept => (
+                    <li
+                      key={dept.id}
+                      role="option"
+                      aria-selected={selectedDepartment === dept.id}
+                      onClick={() => { setSelectedDepartment(dept.id); setCurrentPage(1); setDeptOpen(false); }}
+                      className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
+                        selectedDepartment === dept.id ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      }`}
+                    >
+                      {dept.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
-
-
         </div>
-        <div className="table-form">
-          <table>
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>UserID</th>
-                <th>Department</th>
-                <th>Device</th>
-                <th>Name</th>
-                <th>Duration</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-            {paginatedData.length === 0 ? (
-              <tr>
-                <td colSpan={7} style={{ textAlign: "center", padding: "20px" }}>
-                  ไม่พบข้อมูล
-                </td>
-              </tr>
-            ) : (
-              paginatedData.map((item, index) => (
-                <tr key={item.userId}>
-                  <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
-                  <td>{item.userId}</td>
-                  <td className='department-text'>{item.department}</td>
-                  <td>192.134.xx.xx</td>
-                  <td>{item.username}</td>
-                  <td>{item.duration}</td>
-                  <td>
-                    <FaEye
-                      onClick={() => handleViewClick(item)}
-                      style={{ cursor: 'pointer', color:'rgb(11,150,219)'}}
-                    />
-                  </td>
+        <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+          <div className="w-full max-h-[560px] overflow-y-auto">
+            <table className="w-full border-collapse text-sm table-fixed">
+              <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
+                <tr className="table w-full table-fixed">
+                  <th className="w-[8%] py-3.5 text-center px-3 font-medium">No.</th>
+                  <th className="w-[10%] py-3.5 text-left  px-4 font-medium">UserID</th>
+                  <th className="w-[24%] py-3.5 text-left  px-3 font-medium">Department</th>
+                  <th className="w-[16%] py-3.5 text-left  px-3 font-medium">Device</th>
+                  <th className="w-[22%] py-3.5 text-left  px-3 font-medium">Name</th>
+                  <th className="w-[12%] py-3.5 text-left  px-3 font-medium">Duration</th>
+                  <th className="w-[8%]  py-3.5 text-center px-3 font-medium">View</th>
                 </tr>
-              ))
-            )}
-          </tbody>
+              </thead>
 
-
-
-          </table>
+              <tbody className="block max-h-[500px] overflow-y-auto">
+                {paginatedData.length === 0 ? (
+                  <tr className="table w-full table-fixed">
+                    <td colSpan={7} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
+                  </tr>
+                ) : (
+                  paginatedData.map((item, index) => (
+                    <tr
+                      key={item.userId}
+                      className="table w-full table-fixed border-b border-gray-200 odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
+                    >
+                      <td className="w-[8%]  px-3 py-4 text-center align-middle">
+                        {(currentPage - 1) * rowsPerPage + index + 1}
+                      </td>
+                      <td className="w-[10%] px-4 py-4 align-middle">{item.userId}</td>
+                      <td className="w-[24%] px-3 py-4 align-middle">{item.department}</td>
+                      <td className="w-[16%] px-3 py-4 align-middle">192.134.xx.xx</td>
+                      <td className="w-[22%] px-3 py-4 align-middle">{item.username}</td>
+                      <td className="w-[12%] px-3 py-4 align-middle">{item.duration}</td>
+                      <td className="w-[8%]  px-3 py-4 text-center align-middle">
+                        <FaEye
+                          onClick={() => handleViewClick(item)}
+                          className="mx-auto cursor-pointer text-[#0DA5D8] hover:brightness-110"
+                        />
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="pagination">
-          <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-            {'<<'}
+
+
+        {/* Pagination */}
+        <div className="mx-auto mt-5 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
+          <button
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {"<<"}
           </button>
-          <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1}>
-            {'<'}
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {"<"}
           </button>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
-              className={page === currentPage ? 'active' : ''}
               onClick={() => setCurrentPage(page)}
+              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm transition hover:bg-[#0DA5D8] hover:text-white ${
+                page === currentPage
+                  ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold"
+                  : "bg-white border-gray-300"
+              }`}
             >
               {page}
             </button>
           ))}
 
-          <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
-            {'>'}
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {">"}
           </button>
-          <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
-            {'>>'}
+          <button
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {">>"}
           </button>
         </div>
-      </div>
+
+        {/* Modal */}
         {isModalOpen && (
-          <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-            <div className="modal-content alert" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-icon"><SlLogin  size={40} className="text-yellow-600" /></div>
-              <h3>Are You Sure?</h3>
-              <p>
-                The user will be notified<br />
+          <div
+            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/30"
+            onClick={() => setIsModalOpen(false)}
+          >
+            <div
+              className="w-[300px] rounded-2xl bg-white p-6 text-center shadow-2xl animate-[pop-in_0.2s_ease]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-2 flex justify-center text-yellow-600">
+                <SlLogin size={40} />
+              </div>
+              <h3 className="mb-1 text-lg font-semibold">Are You Sure?</h3>
+              <p className="text-gray-600">
+                The user will be notified
+                <br />
                 that you are viewing their screen in real time.
               </p>
-              <div className="modal-buttons">
-                <button className="btn-cancel" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                <button className="btn-confirm" onClick={() => {
-                  navigate('liveScreen', {
-                    state: { selectedUser }
-                  });
-                  setIsModalOpen(false);
-                }}>Confirm</button>
+              <div className="mt-5 flex justify-around">
+                <button
+                  className="rounded-lg bg-gray-200 px-4 py-2 hover:bg-gray-300"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="rounded-lg bg-[rgba(13,149,216,0.8)] px-4 py-2 text-white hover:bg-[rgba(13,149,216,0.6)]"
+                  onClick={() => {
+                    navigate("liveScreen", { state: { selectedUser } });
+                    setIsModalOpen(false);
+                  }}
+                >
+                  Confirm
+                </button>
               </div>
             </div>
           </div>
         )}
-
-          <style>{`
-        /* Table part */
-        .table-form {
-          width: 100%;
-          max-height: 500px;
-          overflow-y: auto;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          font-size: 14px;
-          box-sizing: border-box;
-        }
-
-        .table-form table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-
-        .table-form table thead,
-        .table-form table tbody tr {
-          display: table;
-          width: 100%;
-          table-layout: fixed;
-        }
-
-        .table-form table thead {
-          background-color: #f5f5f5;
-          position: sticky;
-          top: 0;
-          z-index: 2;
-          border-bottom: 1px solid #ccc;
-        }
-
-        .table-form table tbody {
-          display: block;
-          max-height: 440px;
-          overflow-y: scroll;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          position: relative;
-        }
-
-        .table-form th,
-        .table-form td {
-          padding: 12px 12px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          border-bottom: 1px solid #eee;
-        }
-
-        .table-form th:nth-child(1),
-        .table-form td:nth-child(1) {
-          width: 10%;
-          text-align: center;
-        }
-
-        .table-form th:nth-child(2),
-        .table-form td:nth-child(2) {
-          padding-left:1rem;
-          width: 10%;
-          text-align: left;
-        }
-        .table-form td:nth-child(3),
-        .table-form th:nth-child(3) {
-          text-align: left;
-          width: 20%;
-        }
-
-        .table-form th:nth-child(4),
-        .table-form td:nth-child(4) {
-          
-          text-align: left;
-          width: 15%;
-        }
-
-        .table-form th:nth-child(5),
-        .table-form td:nth-child(5) {
-          
-          text-align: left;
-          width: 20%;
-        }
-
-        .table-form th:nth-child(6),
-        .table-form td:nth-child(6) {
-          width: 10%;
-          text-align: left;
-        }
-
-        .table-form th:nth-child(7),
-        .table-form td:nth-child(7) {
-          width: 10%;
-          text-align: center;
-        }
-
-        /* Table part */
-        
-        /* Modal Part */
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.3);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 999;
-        }
-
-        .modal-content.alert {
-          background: white;
-          border-radius: 16px;
-          padding: 30px 25px;
-          text-align: center;
-          width: 300px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-          animation: pop-in 0.2s ease;
-        }
-
-        .modal-icon {
-          font-size: 32px;
-          color: red;
-          margin-bottom: 10px;
-        }
-
-        .modal-buttons {
-          display: flex;
-          justify-content: space-around;
-          margin-top: 20px;
-        }
-
-        /* Modal Part*/
-
-        /* Btn Part */
-
-        .btn-cancel {
-          padding: 8px 16px;
-          background: #ddd;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-        }
-
-        .btn-confirm {
-          padding: 8px 16px;
-          background: rgba(13,149,216,0.8);
-          color: white;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-        }
-
-        .btn-cancel:hover {
-          background: #ccc;
-        }
-
-        .btn-confirm:hover {
-          background:rgba(13,149,216,0.6);
-        }
-
-        /* Btn Part */
-
-        @keyframes pop-in {
-          from { transform: scale(0.9); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-
-        .pagination {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-top: 20px;
-          flex-wrap: wrap;
-          gap: 6px;
-        }
-
-        .pagination button {
-          padding: 6px 12px;
-          border: 1px solid #ccc;
-          background-color: white;
-          color: #333;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 14px;
-          transition: all 0.2s ease;
-          min-width: 36px;
-        }
-
-        .pagination button:hover:not(:disabled) {
-          background-color:rgba(13,149,216,0.8);
-          border-color: #aaa;
-        }
-
-        .pagination button:disabled {
-          cursor: not-allowed;
-          opacity: 0.5;
-        }
-
-        .pagination button.active {
-          background-color:rgba(13,149,216,255);
-          color: white;
-          font-weight: bold;
-          border: none;
-        }
-        .department-text{
-          text-align: left;
-        }
-
-        /* filter part */
-
-        .filter-item > button {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          min-width: 120px;
-          height: 36px;
-          padding: 6px 12px;
-          background: #fff;
-          // border: 1px solid #dcdfe5;
-          border-radius: 8px;
-          font-size: 14px;
-          color: #111;
-          cursor: pointer;
-          transition: border-color .2s, box-shadow .2s, background-color .2s;
-          justify-content: space-between;
-        }
-
-        .filter-item > button:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 2px rgba(59,130,246,.18);
-        }
-
-        .filter-item > button svg {
-          transition: transform .2s ease;
-        }
-
-        .filter-item:has(> .dropdown) > button svg {
-          transform: rotate(180deg);
-        }
-
-        .filter-item .dropdown {
-          position: absolute;
-          top: calc(100% + 6px);
-          left: 0;
-          width: 100%;
-          list-style: none;
-          margin: 0;
-          padding: 6px 0;
-          background: #fff;
-          // border: 1px solid #e6e8f0;
-          border-radius: 10px;
-          box-shadow: 0 6px 18px rgba(16,24,40,.12);
-          z-index: 30;
-        }
-
-        .filter-item .dropdown li {
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 12px;
-          font-size: 14px;
-          color: #1f2937;
-          cursor: pointer;
-          transition: background-color .15s;
-        }
-
-        .filter-item .dropdown li:hover {
-          background: #f3f6ff;
-        }
-
-        .filter-item {
-          position: relative;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .filter-item select {
-          appearance: none;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          border: none;
-          outline: none;
-          background: transparent;
-          height: 36px;
-          padding-right: 32px;
-        }
-
-        /* filter part */
-
-        .icon-span {
-          position: absolute;
-          right: 12px;
-          top: 50%;
-          transform: translateY(-50%);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          pointer-events: none;
-          color: #666;
-        }
-        /* กล่องรายการดรอปดาวน์ */
-        .dropdown {
-          position: absolute;
-          top: calc(100% + 6px);
-          left: 0;
-          width: 220px; /* ✅ fix ความกว้างให้เท่ากัน */
-          max-height: 240px; /* ✅ ถ้าเยอะจะมี scroll */
-          overflow-y: auto;
-          background: #fff;
-          border: 1px solid #e6e8f0;
-          border-radius: 10px;
-          box-shadow: 0 6px 18px rgba(16,24,40,.12);
-          list-style: none;
-          margin: 0;
-          padding: 6px 0;
-          z-index: 50;
-        }
-        
-        .dropdown .option {
-          height: 36px;
-          padding: 0 12px;
-          font-size: 14px;
-          color: #1f2937;
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-          white-space: nowrap; /* ✅ กัน text ขึ้นบรรทัดใหม่ */
-          transition: background-color .15s;
-        }
-
-        .dropdown .option:hover {
-          background: #f3f6ff;
-        }
-
-        .dropdown .option.selected {
-          background: #eef4ff;
-          color: #0b3bff;
-          font-weight: 600;
-        }
-        .select-btn {
-          min-width: 220px;      /* ✅ fix ความกว้างตั้งแต่แรก */
-          justify-content: space-between;
-        }
-
-        /* dropdown-dept */
-
-        .filter-item:has(> .dropdown-dept) > button svg {
-          transform: rotate(180deg);
-        }
-
-        .filter-item .dropdown-dept {
-          position: absolute;
-          top: calc(100% + 6px);
-          left: 0;
-          width: 100%;
-          list-style: none;
-          margin: 0;
-          padding: 6px 0;
-          background: #fff;
-          // border: 1px solid #e6e8f0;
-          border-radius: 10px;
-          box-shadow: 0 6px 18px rgba(16,24,40,.12);
-          z-index: 30;
-        }
-
-        .filter-item .dropdown-dept li {
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 12px;
-          font-size: 14px;
-          color: #1f2937;
-          cursor: pointer;
-          transition: background-color .15s;
-        }
-
-        .filter-item .dropdown-dept li:hover {
-          background: #f3f6ff;
-        }
-
-        .dropdown-dept {
-          position: absolute;
-          top: calc(100% + 6px);
-          left: 0;
-          width: 220px; /* ✅ fix ความกว้างให้เท่ากัน */
-          max-height: 240px; /* ✅ ถ้าเยอะจะมี scroll */
-          overflow-y: auto;
-          background: #fff;
-          border: 1px solid #e6e8f0;
-          border-radius: 10px;
-          box-shadow: 0 6px 18px rgba(16,24,40,.12);
-          list-style: none;
-          margin: 0;
-          padding: 6px 0;
-          z-index: 50;
-        }
-
-        .dropdown-dept .option {
-          height: 36px;
-          padding: 0 12px;
-          font-size: 14px;
-          color: #1f2937;
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-          white-space: nowrap; /* ✅ กัน text ขึ้นบรรทัดใหม่ */
-          transition: background-color .15s;
-        }
-
-        .dropdown-dept .option:hover {
-          background: #f3f6ff;
-        }
-
-        .dropdown-dept .option.selected {
-          background: #eef4ff;
-          color: #0b3bff;
-          font-weight: 600;
-        }
-
-        .dropdown .option {
-          height: 36px;
-          padding: 0 12px;
-          font-size: 14px;
-          color: #1f2937;
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-          white-space: nowrap; /* ✅ กัน text ขึ้นบรรทัดใหม่ */
-          transition: background-color .15s;
-        }
-
-        .dropdown .option:hover {
-          background: #f3f6ff;
-        }
-
-        .dropdown .option.selected {
-          background: #eef4ff;
-          color: #0b3bff;
-          font-weight: 600;
-        }
-        
-      `}</style>
+      </div>
     </div>
-    
   );
+
 };
 
 export default ActiveVisitor;
