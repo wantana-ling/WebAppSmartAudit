@@ -145,8 +145,8 @@ const ActiveVisitor = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
-      <div className="mx-auto w-full max-w-[1080px] ">
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className="mx-auto w-full max-w-[1080px]">
 
         {/* Search + Filters */}
         <div className="flex flex-col gap-3 mb-4">
@@ -272,8 +272,8 @@ const ActiveVisitor = () => {
           </div>
         </div>
         <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
-          <div className="w-full max-h-[560px] overflow-y-auto">
-            <table className="w-full border-collapse text-sm table-fixed">
+          <div className="w-full max-h-[640px] overflow-y-auto">
+            <table className="w-full h-full border-collapse text-sm table-fixed">
               <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
                 <tr className="table w-full table-fixed">
                   <th className="w-[8%] py-3.5 text-center px-3 font-medium">No.</th>
@@ -286,7 +286,7 @@ const ActiveVisitor = () => {
                 </tr>
               </thead>
 
-              <tbody className="block max-h-[500px] overflow-y-auto">
+              <tbody className="block max-h-[640px] overflow-y-auto">
                 {paginatedData.length === 0 ? (
                   <tr className="table w-full table-fixed">
                     <td colSpan={7} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
@@ -378,7 +378,7 @@ const ActiveVisitor = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mb-2 flex justify-center text-yellow-600">
-                <SlLogin size={40} />
+                <SlLogin size={40} color='red' />
               </div>
               <h3 className="mb-1 text-lg font-semibold">Are You Sure?</h3>
               <p className="text-gray-600">
