@@ -4,8 +4,6 @@ import { FaEye } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { SlArrowDown,SlLogin  } from "react-icons/sl";
 
-
-
 const mockData = [
   { no: 1, userId: '40001', department: 'Front-IT Infrastructure', username: 'James Anderson', duration: '01:10:00' },
   { no: 2, userId: '40002', department: 'Back-IT Infrastructure', username: 'Emily Johnson', duration: '02:15:22' },
@@ -145,8 +143,9 @@ const ActiveVisitor = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="mx-auto w-full max-w-[1080px]">
+    <div className="flex min-h-screen flex-col items-center justify-start">
+      <div className="mx-auto w-full max-w-[1080px] pt-10 lg:pt-20">
+
 
         {/* Search + Filters */}
         <div className="flex flex-col gap-3 mb-4">
@@ -286,7 +285,7 @@ const ActiveVisitor = () => {
                 </tr>
               </thead>
 
-              <tbody className="block max-h-[640px] overflow-y-auto">
+              <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
                 {paginatedData.length === 0 ? (
                   <tr className="table w-full table-fixed">
                     <td colSpan={7} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
