@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import ConfirmModal from "./deleteDevice";
+
+const ROW_H = 48; // ความสูงต่อแถวโดยประมาณ (px)
 
 const DeviceManagement = () => {
   const [devices, setDevices] = useState([]);
@@ -23,25 +25,30 @@ const DeviceManagement = () => {
   }, []);
 
   const fetchDevices = () => {
-    axios.get(`${apiBase}/api/devices`)
-      .then((res) => setDevices(res.data))
+    axios
+      .get(`${apiBase}/api/devices`)
+      .then((res) => setDevices(res.data || []))
       .catch((err) => console.error("❌ โหลด devices ไม่ได้", err));
   };
 
   const fetchDepartments = () => {
-    axios.get(`${apiBase}/api/departments`)
-      .then((res) => setDepartments(res.data))
+    axios
+      .get(`${apiBase}/api/departments`)
+      .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด departments ไม่ได้", err));
   };
 
-  const filteredDevices = devices.filter(d =>
-    (d.name?.toLowerCase().includes(search.toLowerCase()) ||
-      d.ip?.includes(search)) &&
-    (!filterDept || d.department === filterDept)
-  );
+  // filter & paginate
+  const filteredDevices = devices.filter((d) => {
+    const key = `${d.name || ""} ${d.ip || ""}`.toLowerCase();
+    const matchSearch = key.includes(search.toLowerCase());
+    const matchDept = !filterDept || d.department === filterDept;
+    return matchSearch && matchDept;
+  });
 
-  const totalPages = Math.ceil(filteredDevices.length / rowsPerPage);
-  const paginated = filteredDevices.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filteredDevices.length / rowsPerPage));
+  const startIdx = (currentPage - 1) * rowsPerPage;
+  const paginated = filteredDevices.slice(startIdx, startIdx + rowsPerPage);
   const paddedRows = Math.max(0, rowsPerPage - paginated.length);
 
   const handleDeleteClick = (id) => {
@@ -51,112 +58,212 @@ const DeviceManagement = () => {
 
   const confirmDelete = () => {
     if (!selectedId) return;
-    axios.delete(`${apiBase}/api/devices/${selectedId}`)
+    axios
+      .delete(`${apiBase}/api/devices/${selectedId}`)
       .then(() => {
-        console.log("✅ ลบสำเร็จ");
         setShowModal(false);
         setSelectedId(null);
         fetchDevices();
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("❌ ลบไม่สำเร็จ:", err);
         setShowModal(false);
       });
   };
 
-  return (
-    <div className="main-container">
-      <div className="box-container">
-        <div className="top-row">
-          <div className="search-box">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
+  // reset page เมื่อเปลี่ยนเงื่อนไข
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filterDept, rowsPerPage]);
 
+  return (
+    <div className="min-h-screen w-full flex items-start justify-center pt-10 pb-12">
+      <div className="w-[95%] max-w-[1100px]">
+        {/* Top controls */}
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          {/* Search */}
+          <div className="relative w-full max-w-[420px]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              />
+            </svg>
             <input
               type="text"
-              placeholder="Search..."
-              className="search-input"
+              placeholder="Search by name or IP..."
+              className="w-full rounded-xl border border-gray-300 bg-white pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]"
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
-              }}
+              onChange={(e) => setSearch(e.target.value)}
             />
-
           </div>
-          <div className="filter-box">
-            <div className="filter-item">
-              <label>Show row</label>
+
+          {/* Filters */}
+          <div className="flex items-center gap-3">
+            <div className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm">
+              <span className="text-gray-800">Show row</span>
               <select
-                      value={rowsPerPage}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
-                  setCurrentPage(1); // reset ไปหน้า 1
-                }}
+                value={rowsPerPage}
+                onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                className="appearance-none bg-transparent pl-1 pr-6 outline-none"
               >
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
+                <option value={10}>10</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
               </select>
-              
             </div>
 
-            <div className="filter-item">
-              <label>Department</label>
-              <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
-                <option value="">Department</option>
+            <div className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm">
+              <span className="text-gray-800">Department</span>
+              <select
+                value={filterDept}
+                onChange={(e) => setFilterDept(e.target.value)}
+                className="appearance-none bg-transparent pl-1 pr-6 outline-none"
+              >
+                <option value="">All</option>
                 {departments.map((d) => (
-                  <option key={d.id} value={d.department_name}>{d.department_name}</option>
+                  <option key={d.id} value={d.department_name}>
+                    {d.department_name}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
-          <div className="add-user-container">
-              <button className="add-user-btn" onClick={() => navigate("/addDevice")}> 
-                <FaPlus className="icon" /> ADD
-              </button>
+
+          {/* Add button */}
+          <div className="ml-auto">
+            <button
+              className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700"
+              onClick={() => navigate("/addDevice")}
+            >
+              <FaPlus /> ADD
+            </button>
           </div>
         </div>
 
-        <div className="table-container">
-          <table className="scroll-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Server / Device Name</th>
-                <th>IP / Hostname</th>
-                <th>Department</th>
-                <th>Active Users</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((d, i) => (
-                <tr key={d.id}>
-                  <td>{(currentPage - 1) * rowsPerPage + i + 1}</td>
-                  <td>{d.name}</td>
-                  <td>{d.ip}</td>
-                  <td>{d.department}</td>
-                  <td>{d.active_users}</td>
-                  <td>
-                    <button className="edit-btn" onClick={() => navigate(`/editDevice/${d.id}`)}><FaEdit /></button>
-                  </td>
-                  <td>
-                    <button className="delete-btn" onClick={() => handleDeleteClick(d.id)}>
-                      <FaTrash />
-                    </button>
-                  </td>
+        {/* Table card */}
+        <div className="rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+          <div className="w-full">
+            <table className="w-full table-fixed border-collapse text-sm">
+              <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
+                <tr className="table w-full table-fixed">
+                  <th className="w-[8%]  px-3 py-3.5 text-center font-medium">ID</th>
+                  <th className="w-[28%] px-3 py-3.5 text-left font-medium">Server / Device Name</th>
+                  <th className="w-[20%] px-3 py-3.5 text-left font-medium">IP / Hostname</th>
+                  <th className="w-[22%] px-3 py-3.5 text-left font-medium">Department</th>
+                  <th className="w-[10%] px-3 py-3.5 text-center font-medium">Active Users</th>
+                  <th className="w-[6%]  px-3 py-3.5 text-center font-medium">Edit</th>
+                  <th className="w-[6%]  px-3 py-3.5 text-center font-medium">Delete</th>
                 </tr>
-              ))}
-              {Array.from({ length: paddedRows }).map((_, idx) => (
-                <tr key={`empty-${idx}`}>
-                  <td colSpan={7} style={{ height: "40px" }}></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              {/* tbody เลื่อนเอง + ล็อคความสูงตาม rowsPerPage */}
+              <tbody
+                className="block overflow-y-auto divide-y divide-gray-200"
+                style={{
+                  minHeight: `${rowsPerPage * ROW_H}px`,
+                  maxHeight: `${rowsPerPage * ROW_H}px`,
+                }}
+              >
+                {paginated.map((d, i) => (
+                  <tr
+                    key={d.id}
+                    className="table w-full table-fixed odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
+                  >
+                    <td className="w-[8%]  px-3 py-3 text-center align-middle">
+                      {startIdx + i + 1}
+                    </td>
+                    <td className="w-[28%] px-3 py-3 align-middle">{d.name}</td>
+                    <td className="w-[20%] px-3 py-3 align-middle">{d.ip}</td>
+                    <td className="w-[22%] px-3 py-3 align-middle">{d.department}</td>
+                    <td className="w-[10%] px-3 py-3 text-center align-middle">{d.active_users}</td>
+                    <td className="w-[6%]  px-3 py-3 text-center align-middle">
+                      <button
+                        className="text-blue-600 hover:text-blue-700"
+                        onClick={() => navigate(`/editDevice/${d.id}`)}
+                        aria-label="Edit"
+                      >
+                        <FaEdit className="mx-auto" />
+                      </button>
+                    </td>
+                    <td className="w-[6%]  px-3 py-3 text-center align-middle">
+                      <button
+                        className="text-red-600 hover:text-red-700"
+                        onClick={() => handleDeleteClick(d.id)}
+                        aria-label="Delete"
+                      >
+                        <FaTrash className="mx-auto" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+
+                {/* เติมแถวเปล่าให้คงความสูง */}
+                {Array.from({ length: paddedRows }).map((_, idx) => (
+                  <tr key={`pad-${idx}`} className="table w-full table-fixed">
+                    <td className="px-3 py-3 text-transparent select-none" colSpan={7}>
+                      &nbsp;
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Pagination */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
+          <button
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {"<<"}
+          </button>
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {"<"}
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm transition hover:bg-[#0DA5D8] hover:text-white ${
+                page === currentPage
+                  ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold"
+                  : "bg-white border-gray-300"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {">"}
+          </button>
+          <button
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {">>"}
+          </button>
         </div>
 
         <ConfirmModal
@@ -165,145 +272,6 @@ const DeviceManagement = () => {
           onConfirm={confirmDelete}
         />
       </div>
-    <style>{`
-
-
-    /* === Wrapper กลาง + ขนาดจำกัด === */
-    .device-management-wrapper {
-      width: 100%;
-      max-width: 1100px;
-      background-color: #ffffff;
-      font-family: 'Prompt', sans-serif;
-      margin-top: 50px;
-      margin-left: 0;
-      margin-right: 0;
-      margin-bottom: auto;
-    }
-
-    /* === กล่องควบคุมด้านบน === */
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .user-search-input {
-      width: 50%;
-      max-width: 400px;
-      min-width: 200px;
-    }
-
-    /* === Table === */
-    .table-container {
-      max-height: calc(51px * 10);
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    }
-
-    .scroll-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .scroll-table thead,
-    .scroll-table tbody tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-    }
-
-    .scroll-table tbody {
-      display: block;
-      overflow-y: auto;
-      max-height: none;
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    /* === Column Widths === */
-    th:nth-child(1), td:nth-child(1) { width: 20px; text-align: center; }
-    th:nth-child(2), td:nth-child(2) { width: 50px; text-align: left; }
-    th:nth-child(3), td:nth-child(3) { width: 100px; text-align: left; }
-    th:nth-child(4), td:nth-child(4) { width: 200px; text-align: left; }
-    th:nth-child(5), td:nth-child(5) { width: 20px; text-align: center; }
-    th:nth-child(6), td:nth-child(6) { width: 20px;}
-    th:nth-child(7), td:nth-child(7) {
-      width: 20px;
-      text-align: center;
-      vertical-align: middle;
-    }
-
-    /* === ปุ่ม Edit/Delete === */
-    .edit-btn, .delete-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
-      transition: 0.2s ease;
-    }
-
-    .edit-btn:hover { color: #007bff; }
-    .delete-btn:hover { color: #ff3b30; }
-
-    /* === ปุ่ม Add === */
-    .add-user-btn {
-      background-color: #22c55e;
-      color: white;
-      font-weight: 500;
-      border: none;
-      border-radius: 6px;
-      padding: 4px 12px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .add-user-btn:hover {
-      background-color: #16a34a;
-    }
-        .filter-box {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .filter-item {
-      padding: 6px 12px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background-color: #fff;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-
-    .filter-box label {
-      font-size: 14px;
-      color: #000000;
-      margin-right: 8px;
-    }
-
-    .filter-item select {
-      border: none;
-      background: transparent;
-      font-size: 14px;
-      outline: none;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      padding: 4px 8px;
-    }
-    `}</style>
     </div>
   );
 };

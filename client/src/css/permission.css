@@ -34,7 +34,6 @@
   }
 
 
-  /* ------popup edit user----- */
   .edit-icon {
     position: absolute;
     bottom: 0;
@@ -62,10 +61,6 @@
     color: white;
     padding: 8px 20px;
   }
-  
-
-
- /*-------- for video page -----------*/
 
  .search-box {
     display: flex;
