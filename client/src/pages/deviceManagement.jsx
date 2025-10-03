@@ -209,12 +209,12 @@ const DeviceManagement = () => {
               <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
                 <tr className="table w-full table-fixed">
                   <th className="w-[8%]  py-3.5 text-center px-3 font-medium">No.</th>
-                  <th className="w-[28%] py-3.5 text-left  px-3 font-medium">Server / Device Name</th>
+                  <th className="w-[20%] py-3.5 text-left  px-3 font-medium">Server / Device Name</th>
                   <th className="w-[20%] py-3.5 text-left  px-3 font-medium">IP / Hostname</th>
-                  <th className="w-[22%] py-3.5 text-left  px-3 font-medium">Department</th>
-                  <th className="w-[10%] py-3.5 text-center px-3 font-medium">Active Users</th>
+                  <th className="w-[20%] py-3.5 text-left  px-3 font-medium">Department</th>
+                  <th className="w-[15%] py-3.5 text-center px-3 font-medium">Active Users</th>
                   <th className="w-[6%]  py-3.5 text-center px-3 font-medium">Edit</th>
-                  <th className="w-[6%]  py-3.5 text-center px-3 font-medium">Delete</th>
+                  <th className="w-[10%]  py-3.5 text-center px-3 font-medium">Delete</th>
                 </tr>
               </thead>
 
@@ -231,10 +231,10 @@ const DeviceManagement = () => {
                       className="table w-full table-fixed border-b border-gray-200 odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
                     >
                       <td className="w-[8%]  px-3 py-4 text-center align-middle">{startIdx + i + 1}</td>
-                      <td className="w-[28%] px-3 py-4 align-middle">{d.name}</td>
+                      <td className="w-[20%] px-3 py-4 align-middle">{d.name}</td>
                       <td className="w-[20%] px-3 py-4 align-middle">{d.ip}</td>
-                      <td className="w-[22%] px-3 py-4 align-middle">{d.department}</td>
-                      <td className="w-[10%] px-3 py-4 text-center align-middle">{d.active_users}</td>
+                      <td className="w-[20%] px-3 py-4 align-middle">{d.department}</td>
+                      <td className="w-[15%] px-3 py-4 text-center align-middle">{d.active_users}</td>
                       <td className="w-[6%]  px-3 py-4 text-center align-middle">
                         <button
                           className="text-blue-600 hover:text-blue-700"
@@ -244,7 +244,7 @@ const DeviceManagement = () => {
                           <FaEdit className="mx-auto" />
                         </button>
                       </td>
-                      <td className="w-[6%]  px-3 py-4 text-center align-middle">
+                      <td className="w-[10%]  px-3 py-4 text-center align-middle">
                         <button
                           className="text-red-600 hover:text-red-700"
                           onClick={() => handleDeleteClick(d.id)}

@@ -1,413 +1,232 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import ConfirmModal from "./deleteDepartment"; // ✅ Modal ที่มีปุ่มยืนยัน/ยกเลิก
-import {
-  FaFileVideo,
-  FaAngleLeft,
-  FaAngleRight,
-  FaTrash,
-  Faplus
-} from "react-icons/fa";
+import { FaFileVideo, FaTrash } from "react-icons/fa";
+import { SlArrowDown } from "react-icons/sl";
+import ConfirmModal from "./deleteDepartment";
 
 const Video = () => {
   const [sessions, setSessions] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState([]);
-  const [showModal, setShowModal] = useState(false); // ✅ ใช้เปิด modal
+  const [showModal, setShowModal] = useState(false);
+
+  const [rowsOpen, setRowsOpen] = useState(false);
+  const rowsMenuRef = useRef(null);
 
   const API_BASE = "http://192.168.121.195:3002";
 
-  const loadSessions = () => {
-    axios.get(`${API_BASE}/api/sessions`)
-      .then((res) => setSessions(res.data))
-      .catch((err) => console.error("❌ โหลด sessions fail:", err));
-  };
-
   useEffect(() => {
-    loadSessions();
+    axios.get(`${API_BASE}/api/sessions`)
+      .then((res) => setSessions(res.data || []))
+      .catch(console.error);
   }, []);
 
-  const filteredSessions = sessions.filter((s) => {
-    const name = `${s.firstname} ${s.lastname}`.toLowerCase();
-    const matchesSearch = name.includes(searchText.toLowerCase());
-    const matchesDate = dateFilter ? s.login_time.startsWith(dateFilter) : true;
-    return matchesSearch && matchesDate;
-  });
+  const filtered = sessions.filter((s) =>
+    `${s.firstname} ${s.lastname}`.toLowerCase().includes(searchText.toLowerCase())
+  );
 
-  const totalPages = Math.ceil(filteredSessions.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const visibleSessions = filteredSessions.slice(startIndex, startIndex + rowsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
+  const startIdx = (currentPage - 1) * rowsPerPage;
+  const pageData = filtered.slice(startIdx, startIdx + rowsPerPage);
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
-
-  const handleCheckboxChange = (id) => {
-    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
-  };
-
-  const formatDate = (datetimeStr) => {
-    return new Date(datetimeStr).toLocaleDateString("en-GB").replaceAll("/", ".");
-  };
-
-  const formatTime = (datetimeStr) => {
-    return new Date(datetimeStr).toLocaleTimeString("en-GB", { hour12: false });
-  };
-
-  const handleDeleteSelected = () => {
-    if (selectedIds.length === 0) {
-      alert("ยังไม่ได้เลือก session ที่จะลบ");
-      return;
-    }
-    setShowModal(true); // ✅ แสดง modal แทน confirm ธรรมดา
-  };
-
-  const cancelDelete = () => {
-    setShowModal(false);
-  };
-
-  const confirmDelete = async () => {
-    try {
-      const res = await axios.delete(`${API_BASE}/api/sessions`, {
-        data: { ids: selectedIds },
-      });
-      alert(res.data.message || "ลบสำเร็จ");
-      setSelectedIds([]);
-      loadSessions();
-    } catch (err) {
-      console.error("❌ ลบ session fail:", err);
-      alert("เกิดข้อผิดพลาดในการลบ session");
-    }
-    setShowModal(false);
-  };
+  // format date/time
+  const fmtDate = (d) => new Date(d).toLocaleDateString("en-GB").replaceAll("/", ".");
+  const fmtTime = (d) => new Date(d).toLocaleTimeString("en-GB", { hour12: false });
 
   return (
-    <div className="main-container">
-      <div className="box-container">
-        <div className="search-box">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
+    <div className="flex min-h-screen flex-col items-center justify-start">
+      <div className="mx-auto w-full max-w-[1080px] pt-10 lg:pt-20">
 
-            <input
-              type="text"
-              placeholder="Search..."
-              className="search-input"
-              value={searchText}
-              onChange={(e) => {
-                setSearchText(e.target.value);
-                setCurrentPage(1); // reset page ไปหน้าแรกเวลา search
-              }}
-            />
+        {/* Search */}
+        <div className="mb-4 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            {/* Search bar */}
+            <div className="relative w-full max-w-[520px]">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full rounded-xl border border-gray-300 bg-white pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]"
+                value={searchText}
+                onChange={(e) => { setSearchText(e.target.value); setCurrentPage(1); }}
+              />
+            </div>
+          </div>
 
-        </div>
-        <div className="filter-box">
-            <div className="filter-item">
-              <label>Show row</label>
-              <select
-                      value={rowsPerPage}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
-                  setCurrentPage(1); // reset ไปหน้า 1
-                }}
+          {/* Filter (row per page + delete) → แยกออกมาอยู่อีกบรรทัด */}
+          <div className="flex items-center gap-3">
+            {/* Rows per page */}
+            <div className="relative inline-flex items-center gap-2" ref={rowsMenuRef}>
+              <button
+                type="button"
+                onClick={() => setRowsOpen(v => !v)}
+                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
               >
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-              
-            </div>  
-        </div>
-
-        <div className="table-container">
-          <table className="scroll-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Time-In</th>
-                <th>Time-Out</th>
-                <th>Username</th>
-                <th>File.mp4</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visibleSessions.map((s, idx) => (
-                <tr key={s.session_id}>
-                  <td>{startIndex + idx + 1}</td>
-                  <td>{formatDate(s.login_time)}</td>
-                  <td>{formatTime(s.login_time)}</td>
-                  <td>{formatTime(s.logout_time)}</td>
-                  <td>{s.firstname} {s.lastname}</td>
-                  <td>
-                    <a
-                      href={`${API_BASE}${s.video_path}`}
-                      download
-                      className="video-icon-link"
-                      target="_blank"
-                      rel="noreferrer"
+                <span className="font-medium">Show row</span>
+                <span className="text-gray-600">{rowsPerPage}</span>
+                <SlArrowDown className={`transition ${rowsOpen ? "rotate-180" : ""}`} />
+              </button>
+              {rowsOpen && (
+                <ul className="absolute left-0 top-[calc(100%+6px)] z-30 w-full rounded-xl border bg-white shadow-lg">
+                  {[10, 50, 100].map((n) => (
+                    <li
+                      key={n}
+                      onClick={() => { setRowsPerPage(n); setCurrentPage(1); setRowsOpen(false); }}
+                      className={`px-3 py-2 text-sm cursor-pointer hover:bg-indigo-50 ${
+                        rowsPerPage === n ? "bg-indigo-50 font-semibold text-indigo-700" : ""
+                      }`}
                     >
-                      <FaFileVideo className="video-icon" />.mp4
-                    </a>
-                  </td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(s.session_id)}
-                      onChange={() => handleCheckboxChange(s.session_id)}
-                    />
-                  </td>
-                </tr>
-              ))}
-              {visibleSessions.length === 0 && (
-                <tr><td colSpan="7" style={{ textAlign: "center" }}>ไม่พบข้อมูล</td></tr>
+                      {n}
+                    </li>
+                  ))}
+                </ul>
               )}
-              {Array.from({ length: Math.max(0, rowsPerPage - visibleSessions.length) }).map((_, idx) => (
-                <tr key={`empty-${idx}`}>
-                  <td colSpan={7} style={{ height: "40px" }}></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* Delete button */}
+            <button
+              className="ml-auto inline-flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-600"
+              onClick={() => selectedIds.length ? setShowModal(true) : alert("ยังไม่ได้เลือก")}
+            >
+              <FaTrash /> Delete
+            </button>
+          </div>
         </div>
 
-        <div className="pagination">
-          <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-            <FaAngleLeft />
+
+        {/* Table */}
+        <div className="mx-auto w-full rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+          <div className="max-h-[640px] overflow-y-auto">
+            <table className="w-full border-collapse text-sm table-fixed">
+              <thead className="sticky top-0 bg-[#f9fafc] text-[#1B2880] border-b">
+                <tr>
+                  <th className="w-[6%]  py-3 text-center">No.</th>
+                  <th className="w-[12%] py-3 text-center">Date</th>
+                  <th className="w-[12%] py-3 text-center">Time-In</th>
+                  <th className="w-[12%] py-3 text-center">Time-Out</th>
+                  <th className="w-[24%] py-3 text-center px-4">User</th>
+                  <th className="w-[22%] py-3 text-center">File</th>
+                  <th className="w-[12%] py-3 text-center">Action</th>
+                </tr>
+              </thead>
+
+              <tbody className="min-h-[500px]">
+                {pageData.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
+                  </tr>
+                ) : (
+                  pageData.map((s, i) => (
+                    <tr
+                      key={s.session_id}
+                      className="odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] border-b transition-colors"
+                    >
+                      <td className="px-4 py-4 text-center">{startIdx + i + 1}</td>
+                      <td className="px-4 py-4 text-center">{fmtDate(s.login_time)}</td>
+                      <td className="px-4 py-4 text-center">{fmtTime(s.login_time)}</td>
+                      <td className="px-4 py-4 text-center">{fmtTime(s.logout_time)}</td>
+                      <td className="px-4 py-4 text-center">{s.firstname} {s.lastname}</td>
+                      <td className="px-4 py-4 text-center">
+                        <a
+                          href={`${API_BASE}${s.video_path}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                        >
+                          <FaFileVideo /> .mp4
+                        </a>
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                          <input
+                          type="checkbox"
+                          checked={selectedIds.includes(s.session_id)}
+                          onChange={() =>
+                              setSelectedIds(prev => prev.includes(s.session_id)
+                              ? prev.filter(id => id !== s.session_id)
+                              : [...prev, s.session_id]
+                              )
+                          }
+                          />
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+        {/* Pagination */}
+        <div className="mx-auto mt-5 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
+          <button
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {"<<"}
           </button>
-          {Array.from({ length: totalPages }).map((_, i) => (
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {"<"}
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
-              key={i + 1}
-              className={currentPage === i + 1 ? "active" : ""}
-              onClick={() => handlePageChange(i + 1)}
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm transition hover:bg-[#0DA5D8] hover:text-white ${
+                page === currentPage
+                  ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold"
+                  : "bg-white border-gray-300"
+              }`}
             >
-              {i + 1}
+              {page}
             </button>
           ))}
-          <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-            <FaAngleRight />
+
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {">"}
+          </button>
+          <button
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+          >
+            {">>"}
           </button>
         </div>
+
+
+
+        {/* Confirm Modal */}
+        {showModal && (
+          <ConfirmModal
+            isOpen={showModal}
+            onCancel={() => setShowModal(false)}
+            onConfirm={async () => {
+              await axios.delete(`${API_BASE}/api/sessions`, { data: { ids: selectedIds }});
+              setSelectedIds([]);
+              setShowModal(false);
+            }}
+          />
+        )}
       </div>
-
-      {/* ✅ Confirm Modal */}
-      {showModal && (
-        <ConfirmModal
-          isOpen={showModal}
-          onCancel={cancelDelete}
-          onConfirm={confirmDelete}
-        />
-      )}
-    <style>{`
-    /* === Top Row (Search + Filter + Delete) === */
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .search-filter-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      flex: 1;
-    }
-
-    .user-search-input {
-      width: 50%;
-      max-width: 400px;
-      min-width: 200px;
-    }
-
-    .search-filter-row input[type="text"],
-    .search-filter-row input[type="date"],
-    .search-filter-row select {
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    /* === Delete Button === */
-    .delete-button-row {
-      display: flex;
-      justify-content: flex-end;
-      flex-shrink: 0;
-      margin-top: 40px;
-      margin-bottom: -10px;
-    }
-
-    .delete-btn {
-      background-color: #ef4444 !important;
-      color: white !important;
-      font-weight: 500;
-      border: none;
-      border-radius: 6px;
-      padding: 4px 12px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .delete-btn:hover {
-      background-color: #dc2626ac;
-    }
-
-    /* === Table === */
-    .table-container {
-      max-height: calc(51px * 10);
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    }
-
-    .scroll-table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: #fff;
-    }
-
-    .scroll-table thead,
-    .scroll-table tbody tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-    }
-
-    .scroll-table tbody {
-      display: block;
-      overflow-y: auto;
-      max-height: none;
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th {
-      background-color: #f0f2fa;
-      color: #00209F;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    td {
-      font-size: 14px;
-      color: #333;
-      border-top: 1px solid #eee;
-    }
-
-    /* === Column Specific === */
-    th:nth-child(1), td:nth-child(1) { width: 50px; text-align: center; }
-    th:nth-child(2), td:nth-child(2) { width: 100px; text-align: center; }
-    th:nth-child(3), td:nth-child(3) { width: 100px; text-align: center; }
-    th:nth-child(4), td:nth-child(4) { width: 100px; text-align: center; }
-    th:nth-child(5), td:nth-child(5) { width: 150px; text-align: left; }
-    th:nth-child(6), td:nth-child(6) { width: 120px; text-align: center; }
-    th:nth-child(7), td:nth-child(7) { width: 60px; text-align: center; }
-
-    /* === Download Icon === */
-    .video-icon-link {
-      color: #007bff;
-      text-decoration: none;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .video-icon-link:hover {
-      text-decoration: underline;
-    }
-
-    /* === Pagination === */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin-top: 24px;
-      padding-bottom: 30px;
-    }
-
-    .pagination button {
-      width: 32px;
-      height: 32px;
-      border: 1px solid #ddd;
-      background-color: white;
-      color: #111;
-      font-size: 14px;
-      font-weight: 500;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .pagination button:hover:not(:disabled) {
-      border-color: #aaa;
-    }
-
-    .pagination button.active {
-      background-color: #fd924c;
-      color: white;
-      border-color: #fd924c;
-    }
-
-    .pagination button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    
-    .filter-box {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-    .filter-box label {
-      font-size: 14px;
-      color: #000000;
-      margin-right: 8px;
-    }
-    .filter-item {
-      padding: 6px 12px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background-color: #fff;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-    .filter-item select {
-      border: none;
-      background: transparent;
-      font-size: 14px;
-      outline: none;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      padding: 4px 8px;
-    }
-    `}</style>
     </div>
   );
 };
 
 export default Video;
+  

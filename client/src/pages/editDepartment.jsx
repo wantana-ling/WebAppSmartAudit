@@ -5,12 +5,12 @@ import axios from "axios";
 const EditDepartment = () => {
   const [departmentName, setDepartmentName] = useState("");
   const navigate = useNavigate();
-  const { id } = useParams(); // ดึง id จาก URL
+  const { id } = useParams();
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   useEffect(() => {
-    // โหลดข้อมูลแผนกจาก backend
-    axios.get(`${apiBase}/api/departments/${id}`)
+    axios
+      .get(`${apiBase}/api/departments/${id}`)
       .then((res) => {
         setDepartmentName(res.data.department_name || "");
       })
@@ -24,110 +24,49 @@ const EditDepartment = () => {
   const handleSave = () => {
     if (!departmentName.trim()) return alert("กรุณากรอกชื่อแผนก");
 
-    axios.put(`${apiBase}/api/departments/${id}`, { name: departmentName })
+    axios
+      .put(`${apiBase}/api/departments/${id}`, { name: departmentName })
       .then(() => {
         alert("✅ บันทึกสำเร็จ");
         navigate("/department");
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("❌ บันทึกไม่สำเร็จ:", err);
         alert("เกิดข้อผิดพลาด");
       });
   };
 
   return (
-    <div className="main-container">
-      <div className="form-wrapper">
-        <div className="form-group">
-          <label>Department Name <span className="required">*</span></label>
-          <input
-            type="text"
-            value={departmentName}
-            onChange={(e) => setDepartmentName(e.target.value)}
-            placeholder="Enter department name"
-          />
-        </div>
-        <div className="button-group">
-          <button className="save-btn" onClick={handleSave}>SAVE</button>
-          <button className="cancel-btn" onClick={() => navigate("/department")}>CANCEL</button>
-        </div>
+    <div className="w-full max-w-[700px] bg-white p-10 rounded-xl shadow-md border border-gray-300 mx-auto mt-12 pt-12 pb-16 ">
+      {/* Input */}
+      <div className="flex flex-col mb-6">
+        <label className="text-[15px] text-[#00209F] mb-2">
+          Department Name <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={departmentName}
+          onChange={(e) => setDepartmentName(e.target.value)}
+          placeholder="Enter department name"
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-[#0DA5D8] outline-none"
+        />
       </div>
-    <style>{`
 
-    /* ให้ form wrapper กว้างและชิดซ้ายแบบ edit */
-    .form-wrapper {
-      width: 100%;
-      max-width: 700px;
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      margin: 50px auto 0;
-      border: 1px solid #ddd;
-    }
-
-    /* ช่องกรอก input */
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 30px;
-    }
-
-    label {
-      font-size: 15px;
-      color: #00209F;
-      margin-bottom: 6px;
-    }
-
-    .required {
-      color: red;
-    }
-
-    input[type="text"] {
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      width: 100%;
-    }
-
-    /* ปุ่ม Save/Cancel */
-    .button-group {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-    }
-
-    .save-btn {
-      background-color: #22c55e;
-      color: white;
-      padding: 10px 30px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .save-btn:hover {
-      background-color: #16a34a;
-    }
-
-    .cancel-btn {
-      background-color: #ef4444;
-      color: white;
-      padding: 10px 30px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .cancel-btn:hover {
-      background-color: #dc2626;
-    }
-    `}</style>
+      {/* Buttons */}
+      <div className="flex justify-center gap-4">
+        <button
+          className="bg-green-500 hover:bg-green-600 text-white px-8 py-2.5 rounded-lg font-medium shadow-sm transition-colors"
+          onClick={handleSave}
+        >
+          SAVE
+        </button>
+        <button
+          className="bg-red-500 hover:bg-red-600 text-white px-8 py-2.5 rounded-lg font-medium shadow-sm transition-colors"
+          onClick={() => navigate("/department")}
+        >
+          CANCEL
+        </button>
+      </div>
     </div>
   );
 };

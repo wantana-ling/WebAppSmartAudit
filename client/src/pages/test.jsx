@@ -1,7 +1,18 @@
 const Test = () => {
     return(
         <div className="container">
-        111111111
+        <td className="text-center">
+            <input
+            type="checkbox"
+            checked={selectedIds.includes(s.session_id)}
+            onChange={() =>
+                setSelectedIds(prev => prev.includes(s.session_id)
+                ? prev.filter(id => id !== s.session_id)
+                : [...prev, s.session_id]
+                )
+            }
+            />
+        </td>
         </div>
     );
 };

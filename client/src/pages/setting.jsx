@@ -33,74 +33,32 @@ const Setting = () => {
   };
 
   return (
-    <div className="main-container">
-      <div className="form-wrapper">
-        <div className="form-group">
-          <label>AD Server IP / Hostname <span className="required">*</span></label>
+    <div className="h-screen p-6 justify-center items-center flex">
+      <div className="w-full max-w-[700px] bg-white p-10 rounded-xl shadow-md border border-gray-300">
+        {/* Form Group */}
+        <div className="flex flex-col mb-6">
+          <label className="text-[15px] text-[#00209F] mb-2">
+            AD Server IP / Hostname <span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             value={adServer}
             onChange={(e) => setAdServer(e.target.value)}
             placeholder="Enter AD Server IP or Hostname"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-[#0DA5D8] outline-none"
           />
         </div>
-        <div className="button-group">
-          <button className="save-btn" onClick={handleSave}>SAVE</button>
+
+        {/* Button */}
+        <div className="flex justify-center">
+          <button
+            className="w-32 bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-6 rounded-lg shadow-sm transition-colors"
+            onClick={handleSave}
+          >
+            SAVE
+          </button>
         </div>
       </div>
-    <style>{`
-    /* กล่องตั้งค่า */
-    .setting-wrapper {
-      width: 100%;
-      max-width: 700px;
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      margin: 50px auto 0;
-      border: 1px solid #ddd;
-    }
-
-    /* ช่องกรอกข้อความ */
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 30px;
-    }
-
-    .form-group label {
-      font-size: 15px;
-      color: #00209F;
-      margin-bottom: 6px;
-    }
-
-    input[type="text"] {
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      width: 100%;
-    }
-
-    /* ปุ่ม SAVE */
-    .save-btn {
-      display: block;
-      margin: 0 auto;
-      width: 120px;
-      background-color: #22c55e;
-      color: white;
-      padding: 10px 30px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .save-btn:hover {
-      background-color: #16a34a;
-    }
-    `}</style>
     </div>
   );
 };

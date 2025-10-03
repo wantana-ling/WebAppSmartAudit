@@ -270,6 +270,8 @@ const ActiveVisitor = () => {
             </div>
           </div>
         </div>
+
+        
         <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
           <div className="w-full max-h-[640px] overflow-y-auto">
             <table className="w-full h-full border-collapse text-sm table-fixed">

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { SlArrowDown } from "react-icons/sl";
 
 const EditManageUser = () => {
   const navigate = useNavigate();
@@ -18,9 +19,41 @@ const EditManageUser = () => {
   const [departments, setDepartments] = useState([]);
   const [invalidId, setInvalidId] = useState(false);
 
+  const [deptOpen, setDeptOpen] = useState(false);
+  const [statusOpen, setStatusOpen] = useState(false);
+
+  const deptMenuRef = useRef(null);
+  const statusMenuRef = useRef(null);
+
   useEffect(() => {
-    axios.get(`${apiBase}/api/departments`)
-      .then((res) => setDepartments(res.data))
+  const handleClickOutside = (e) => {
+    if (deptMenuRef.current && !deptMenuRef.current.contains(e.target)) {
+      setDeptOpen(false);
+    }
+    if (statusMenuRef.current && !statusMenuRef.current.contains(e.target)) {
+      setStatusOpen(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Escape") {
+      setDeptOpen(false);
+      setStatusOpen(false);
+    }
+  };
+
+  window.addEventListener("click", handleClickOutside);
+  window.addEventListener("keydown", handleKeyDown);
+  return () => {
+    window.removeEventListener("click", handleClickOutside);
+    window.removeEventListener("keydown", handleKeyDown);
+  };
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(`${apiBase}/api/departments`)
+      .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
 
@@ -30,15 +63,16 @@ const EditManageUser = () => {
       return;
     }
 
-    axios.get(`${apiBase}/api/users/${id}`)
+    axios
+      .get(`${apiBase}/api/users/${id}`)
       .then((res) => {
-        const u = res.data;
+        const u = res.data || {};
         setFormData({
-          firstName: u.firstname,
+          firstName: u.firstname || "",
           midName: u.midname || "",
-          lastName: u.lastname,
+          lastName: u.lastname || "",
           department: u.department || "No Department",
-          status: u.status,
+          status: u.status || "",
         });
       })
       .catch((err) => {
@@ -63,8 +97,11 @@ const EditManageUser = () => {
       }
     }
 
-    const selectedDept = departments.find((d) => d.department_name === formData.department);
-    const department_id = formData.department === "No Department" ? null : selectedDept?.id || null;
+    const selectedDept = departments.find(
+      (d) => d.department_name === formData.department
+    );
+    const department_id =
+      formData.department === "No Department" ? null : selectedDept?.id || null;
 
     try {
       await axios.put(`${apiBase}/api/users/${id}`, {
@@ -88,202 +125,210 @@ const EditManageUser = () => {
 
   if (invalidId) {
     return (
-      <div style={{ padding: 30, color: "red" }}>
+      <div className="min-h-[40vh] p-8 text-center text-red-600">
         ❌ ไม่พบข้อมูลผู้ใช้ หรือ URL ไม่ถูกต้อง
       </div>
     );
   }
 
+  // shared Tailwind classes
+  const labelCls = "text-[#002f6c] font-medium mb-1";
+  const inputCls =
+    "w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]";
+  const rowCls = "flex flex-col gap-5 md:flex-row";
+
   return (
-    <div className="main-container">
-      <div className="add-user-wrapper">
-        <div className="box-container">
-          <form className="add-form" onSubmit={handleSubmit}>
-            <div className="form-row">
-              <div className="form-group">
-                <label>First Name <span className="required">*</span></label>
-                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
-              </div>
-              <div className="form-group">
-                <label>Mid Name</label>
-                <input type="text" name="midName" value={formData.midName} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Last Name <span className="required">*</span></label>
-                <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
-              </div>
-            </div>
+    <div className="min-h-screen w-full flex items-start justify-center pt-12 pb-16">
+      <div className="w-[95%] max-w-[900px] rounded-2xl bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.08)] ring-1 ring-gray-200">
+        <h1 className="mb-6 text-xl font-semibold text-gray-800">Edit User</h1>
 
-            <div className="form-group">
-              <label>Department</label>
-              <select
-                name="department"
-                value={formData.department || ""}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Row 1 */}
+          <div className={rowCls}>
+            <div className="flex-1 min-w-[200px]">
+              <label className={labelCls}>
+                First Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
                 onChange={handleChange}
-              >
-                <option value="No Department">No Department</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.department_name}>{d.department_name}</option>
-                ))}
-              </select>
+                required
+                placeholder="Enter first name"
+                className={inputCls}
+              />
             </div>
 
-            <div className="form-group">
-              <label>Status <span className="required">*</span></label>
-              <select name="status" value={formData.status} onChange={handleChange} required>
-                <option value="">-- เลือกสถานะ --</option>
-                <option value="active">ACTIVE</option>
-                <option value="inactive">INACTIVE</option>
-              </select>
+            <div className="flex-1 min-w-[200px]">
+              <label className={labelCls}>Mid Name</label>
+              <input
+                type="text"
+                name="midName"
+                value={formData.midName}
+                onChange={handleChange}
+                placeholder="Enter middle name"
+                className={inputCls}
+              />
             </div>
 
-            <div className="button-row">
-              <button type="submit" className="btn btn-save">SAVE</button>
-              <button type="button" className="btn btn-cancel" onClick={() => navigate(-1)}>CANCEL</button>
+            <div className="flex-1 min-w-[200px]">
+              <label className={labelCls}>
+                Last Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+                placeholder="Enter last name"
+                className={inputCls}
+              />
             </div>
-          </form>
-        </div>
+          </div>
+
+          {/* Row 2 */}
+          <div className={rowCls}>
+            {/* Department */}
+            <div className="w-full">
+              <label className={labelCls}>
+                Department <span className="text-red-500">*</span>
+              </label>
+
+              <div className="relative inline-flex w-full" ref={deptMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setDeptOpen(v => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={deptOpen}
+                  aria-controls="dept-menu"
+                  className="inline-flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]"
+                >
+                  <span className="truncate text-gray-700">
+                    {formData.department ? formData.department : "Select Department"}
+                  </span>
+                  <SlArrowDown className={`shrink-0 transition ${deptOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {deptOpen && (
+                  <ul
+                    id="dept-menu"
+                    role="listbox"
+                    className="absolute left-0 top-[calc(100%+6px)] z-30 w-full max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  >
+                    <li
+                      key="no-dept"
+                      role="option"
+                      aria-selected={formData.department === "No Department"}
+                      onClick={() => {
+                        setFormData(p => ({ ...p, department: "No Department" }));
+                        setDeptOpen(false);
+                      }}
+                      className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
+                        formData.department === "No Department"
+                          ? "bg-indigo-50 font-semibold text-indigo-700"
+                          : "text-gray-800"
+                      }`}
+                    >
+                      No Department
+                    </li>
+
+                    {departments.map((d) => {
+                      const active = formData.department === d.department_name;
+                      return (
+                        <li
+                          key={d.id}
+                          role="option"
+                          aria-selected={active}
+                          onClick={() => {
+                            setFormData(p => ({ ...p, department: d.department_name }));
+                            setDeptOpen(false);
+                          }}
+                          className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
+                            active ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                          }`}
+                        >
+                          {d.department_name}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            {/* Status */}
+            <div className="w-full">
+              <label className={labelCls}>
+                Status <span className="text-red-500">*</span>
+              </label>
+
+              <div className="relative inline-flex w-full" ref={statusMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setStatusOpen(v => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={statusOpen}
+                  aria-controls="status-menu"
+                  className="inline-flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]"
+                >
+                  <span className="truncate text-gray-700">
+                    {formData.status ? formData.status.toUpperCase() : "Select Status"}
+                  </span>
+                  <SlArrowDown className={`shrink-0 transition ${statusOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {statusOpen && (
+                  <ul
+                    id="status-menu"
+                    role="listbox"
+                    className="absolute left-0 top-[calc(100%+6px)] z-30 w-full max-h-40 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  >
+                    {["active", "inactive"].map((s) => {
+                      const active = formData.status === s;
+                      return (
+                        <li
+                          key={s}
+                          role="option"
+                          aria-selected={active}
+                          onClick={() => {
+                            setFormData(p => ({ ...p, status: s }));
+                            setStatusOpen(false);
+                          }}
+                          className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
+                            active ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                          }`}
+                        >
+                          {s.toUpperCase()}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+
+
+          {/* Actions */}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="submit"
+              className="w-32 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-green-700"
+            >
+              SAVE
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="w-32 rounded-xl bg-red-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-red-600"
+            >
+              CANCEL
+            </button>
+          </div>
+        </form>
       </div>
-    <style>{`
-    .device-management-wrapper {
-      width: 100%;
-      max-width: 1100px;
-      background-color: #ffffff;
-      font-family: 'Prompt', sans-serif;
-      margin-top: 50px;
-      margin-left: 0;
-      margin-right: 0;
-      margin-bottom: auto;
-    }
-
-    /* === กล่องควบคุมด้านบน === */
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .search-filter-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      flex: 1;
-    }
-
-    .add-button-row {
-      display: flex;
-      justify-content: flex-end;
-      flex-shrink: 0;
-    }
-
-    /* === Input + Select === */
-    .search-filter-row input[type="text"],
-    .search-filter-row select {
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    .user-search-input {
-      width: 50%;
-      max-width: 400px;
-      min-width: 200px;
-    }
-
-    /* === Table === */
-    .table-container {
-      max-height: calc(51px * 10);
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    }
-
-    .scroll-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .scroll-table thead,
-    .scroll-table tbody tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-    }
-
-    .scroll-table tbody {
-      display: block;
-      overflow-y: auto;
-      max-height: none;
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th {
-      background-color: #f0f2fa;
-      color: #00209F;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    td {
-      font-size: 14px;
-      color: #333;
-      border-top: 1px solid #eee;
-    }
-
-    /* === Column Widths === */
-    th:nth-child(1), td:nth-child(1) { width: 20px; text-align: center; }
-    th:nth-child(2), td:nth-child(2) { width: 50px; text-align: left; }
-    th:nth-child(3), td:nth-child(3) { width: 100px; text-align: left; }
-    th:nth-child(4), td:nth-child(4) { width: 200px; text-align: left; }
-    th:nth-child(5), td:nth-child(5) { width: 20px; text-align: center; }
-    th:nth-child(6), td:nth-child(6) { width: 20px;}
-    th:nth-child(7), td:nth-child(7) {
-      width: 20px;
-      text-align: center;
-      vertical-align: middle;
-    }
-
-    /* === ปุ่ม Edit/Delete === */
-    .edit-btn, .delete-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
-      transition: 0.2s ease;
-    }
-
-    .edit-btn:hover { color: #007bff; }
-    .delete-btn:hover { color: #ff3b30; }
-
-    /* === ปุ่ม Add === */
-    .add-user-btn {
-      background-color: #22c55e;
-      color: white;
-      font-weight: 500;
-      border: none;
-      border-radius: 6px;
-      padding: 4px 12px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .add-user-btn:hover {
-      background-color: #16a34a;
-    }
-    `}</style>
     </div>
   );
 };

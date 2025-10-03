@@ -5,7 +5,6 @@ import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import Profile from "./pages/profile";
 import Video from "./pages/video";
-import EditUser from "./pages/editUser";
 import UserManagement from "./pages/userManagement";
 import DeviceManagement from "./pages/deviceManagement";
 import Department from "./pages/department";
@@ -32,7 +31,6 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/video" element={<Video />} />
-          <Route path="/passwordEdit" element={<EditUser />} />
           <Route path="/userManagement" element={<UserManagement />} />
           <Route path="/deviceManagement" element={<DeviceManagement />} />
           <Route path="/department" element={<Department />} />
