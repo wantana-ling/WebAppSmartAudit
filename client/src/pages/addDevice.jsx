@@ -1,203 +1,236 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { SlArrowDown } from "react-icons/sl";
 
 const AddDevice = () => {
+  const navigate = useNavigate();
+  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
+
+  // ฟอร์มเหมือนไฟล์เดิม แต่ย้ายมาใช้ Tailwind + placeholder ครบ
   const [form, setForm] = useState({
     device_name: "",
     ip: "",
-    departments: [],
+    departments: [], // multiple
     max_users: "",
   });
 
   const [departmentOptions, setDepartmentOptions] = useState([]);
-  const navigate = useNavigate();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
+
+  // dropdown สำหรับ Department (multi-select)
+  const [deptOpen, setDeptOpen] = useState(false);
+  const deptMenuRef = useRef(null);
 
   useEffect(() => {
     axios
       .get(`${apiBase}/api/departments`)
-      .then((res) => setDepartmentOptions(res.data))
-      .catch((err) => console.error("❌ โหลด department ไม่ได้", err));
+      .then((res) => setDepartmentOptions(res.data || []))
+      .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
+  }, []);
+
+  useEffect(() => {
+    const onClickOutside = (e) => {
+      if (deptMenuRef.current && !deptMenuRef.current.contains(e.target)) setDeptOpen(false);
+    };
+    window.addEventListener("click", onClickOutside);
+    return () => window.removeEventListener("click", onClickOutside);
   }, []);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckbox = (e) => {
-    const { value, checked } = e.target;
+  const toggleDepartment = (value) => {
     setForm((prev) => {
-      const updated = checked
-        ? [...prev.departments, value]
-        : prev.departments.filter((d) => d !== value);
-      return { ...prev, departments: updated };
+      const has = prev.departments.includes(value);
+      return {
+        ...prev,
+        departments: has
+          ? prev.departments.filter((d) => d !== value)
+          : [...prev.departments, value],
+      };
     });
   };
 
-  const handleSubmit = async () => {
-  const { device_name, ip, departments, max_users } = form;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { device_name, ip, departments, max_users } = form;
 
-  if (!device_name || !ip || departments.length === 0 || !max_users) {
-    return alert("กรอกข้อมูลให้ครบ");
-  }
+    if (!device_name || !ip || departments.length === 0 || !max_users) {
+      alert("กรอกข้อมูลให้ครบ");
+      return;
+    }
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const create_by = user?.user_id;
+    const user = JSON.parse(localStorage.getItem("user"));
+    const create_by = user?.user_id;
 
-  const payload = {
-    device_name,
-    ip,
-    department: departments.join(", "),
-    max_users,
-    create_by
+    const payload = {
+      device_name,
+      ip,
+      department: departments.join(", "), // ⬅️ คงพฤติกรรมไฟล์เดิม
+      max_users,
+      create_by,
+    };
+
+    try {
+      await axios.post(`${apiBase}/api/devices`, payload);
+      alert("✅ เพิ่มอุปกรณ์สำเร็จ");
+      navigate("/deviceManagement");
+    } catch (err) {
+      console.error("❌ เพิ่ม device ไม่สำเร็จ", err);
+      alert("เกิดข้อผิดพลาดในการเพิ่มอุปกรณ์");
+    }
   };
 
-  console.log("📦 ส่งข้อมูล:", payload);
+  // class ร่วมให้โทนเหมือน AddUser
+  const labelCls = "text-[#002f6c] font-medium mb-1";
+  const inputCls =
+    "w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]";
+  const rowCls = "flex flex-col gap-5 md:flex-row";
 
-  try {
-    await axios.post(`${apiBase}/api/devices`, payload);
-    alert("✅ เพิ่มอุปกรณ์สำเร็จ");
-    navigate("/deviceManagement");
-  } catch (err) {
-    console.error("❌ เพิ่ม device ไม่สำเร็จ", err);
-    alert("เกิดข้อผิดพลาดในการเพิ่มอุปกรณ์");
-  }
-};
+  // แสดงสถานะที่ปุ่ม dropdown
+  const deptSummary =
+    form.departments.length === 0
+      ? "Select department(s)"
+      : form.departments.length <= 2
+      ? form.departments.join(", ")
+      : `${form.departments.length} selected`;
 
   return (
-    <div className="main-container">
-      <div className="add-device-wrapper">
-        <div className="form-row">
-          <div className="form-group">
-            <label>Server / Device Name<span className="required">*</span></label>
-            <input name="device_name" value={form.device_name} onChange={handleChange} />
-          </div>
+    <div className="min-h-screen w-full flex items-start justify-center pt-18 pb-16 lg:pt-24">
+      <div className="w-[95%] max-w-[900px] rounded-2xl bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.08)] ring-1 ring-gray-200">
+        <h1 className="mb-6 text-xl font-semibold text-gray-800">Add Device</h1>
 
-          <div className="form-group">
-            <label>IP Address<span className="required">*</span></label>
-            <input name="ip" value={form.ip} onChange={handleChange} />
-          </div>
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Row 1 */}
+          <div className={rowCls}>
+            <div className="flex-1 min-w-[240px]">
+              <label className={labelCls}>
+                Server / Device Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="device_name"
+                value={form.device_name}
+                onChange={handleChange}
+                required
+                placeholder="Enter device name"
+                className={inputCls}
+              />
+            </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label>Department<span className="required">*</span></label>
-            <div className="checkbox-group">
-              {departmentOptions.map((dept) => (
-                <label key={dept.id} className="checkbox-inline">
-                  <input
-                    type="checkbox"
-                    value={dept.department_name}
-                    checked={form.departments.includes(dept.department_name)}
-                    onChange={handleCheckbox}
-                  />
-                  {dept.department_name}
-                </label>
-              ))}
+            <div className="flex-1 min-w-[240px]">
+              <label className={labelCls}>
+                IP Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="ip"
+                value={form.ip}
+                onChange={handleChange}
+                required
+                placeholder="Enter IP or hostname"
+                className={inputCls}
+              />
             </div>
           </div>
-        </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label>Max users<span className="required">*</span></label>
-            <input
-              type="number"
-              name="max_users"
-              value={form.max_users}
-              onChange={handleChange}
-            />
+          {/* Row 2 — Department (multi-select dropdown แบบ AddUser style) */}
+          <div className={rowCls}>
+            <div className="w-full">
+              <label className={labelCls}>
+                Department <span className="text-red-500">*</span>
+              </label>
+
+              <div className="relative inline-flex w-full" ref={deptMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setDeptOpen((v) => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={deptOpen}
+                  aria-controls="dept-menu"
+                  className="inline-flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]"
+                >
+                  <span className="truncate text-gray-700">{deptSummary}</span>
+                  <SlArrowDown className={`shrink-0 transition ${deptOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {deptOpen && (
+                  <ul
+                    id="dept-menu"
+                    role="listbox"
+                    className="absolute left-0 top-[calc(100%+6px)] z-30 w-full max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  >
+                    {departmentOptions.map((d) => {
+                      const name = d.department_name;
+                      const checked = form.departments.includes(name);
+                      return (
+                        <li
+                          key={d.id}
+                          role="option"
+                          aria-selected={checked}
+                          className={`flex h-10 cursor-pointer items-center justify-between px-3 text-sm hover:bg-indigo-50 ${
+                            checked ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                          }`}
+                          onClick={(e) => {
+                            // รองรับคลิกทั้งบรรทัด: toggle ค่า
+                            e.preventDefault();
+                            toggleDepartment(name);
+                          }}
+                        >
+                          <span className="truncate pr-3">{name}</span>
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => {}}
+                            className="h-4 w-4 pointer-events-none accent-indigo-600"
+                          />
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="button-row">
-          <button className="btn-add" onClick={handleSubmit}>ADD</button>
-          <button className="btn-cancel" onClick={() => navigate("/deviceManagement")}>CANCEL</button>
-        </div>
+          {/* Row 3 */}
+          <div className={rowCls}>
+            <div className="w-full md:max-w-[320px]">
+              <label className={labelCls}>
+                Max users <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                name="max_users"
+                value={form.max_users}
+                onChange={handleChange}
+                required
+                placeholder="Enter max concurrent users"
+                className={inputCls}
+              />
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="submit"
+              className="w-32 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-green-700"
+            >
+              ADD
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/deviceManagement")}
+              className="w-32 rounded-xl bg-red-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-red-600"
+            >
+              CANCEL
+            </button>
+          </div>
+        </form>
       </div>
-    <style>{`
-    .add-device-wrapper {
-      background: #fff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .form-row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .form-group {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-group label {
-      font-weight: 500;
-      color: #002f6c;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-
-    .form-group input,
-    .form-group select {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    .button-row {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-    }
-    .btn-add,
-    .btn-cancel {
-      width: 120px;
-      padding: 10px 0;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      color: white;
-      text-align: center;
-      transition: 0.2s ease;
-    }
-
-    .btn-add {
-      background-color: #22c55e;
-    }
-
-    .btn-cancel {
-      background-color: #ef4444;
-    }
-
-    .btn-add:hover,
-    .btn-cancel:hover {
-      opacity: 0.9;
-    }
-
-    .required {
-      color: red;
-    }
-
-    @media (max-width: 768px) {
-      .form-row {
-        flex-direction: column;
-      }
-
-      .btn-add,
-      .btn-cancel {
-        width: 100%;
-      }
-    }
-    `}</style>
     </div>
   );
 };
