@@ -99,58 +99,64 @@ const Video = () => {
 
 
         {/* Table */}
-        <div className="mx-auto w-full rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
-          <div className="max-h-[640px] overflow-y-auto">
-            <table className="w-full border-collapse text-sm table-fixed">
-              <thead className="sticky top-0 bg-[#f9fafc] text-[#1B2880] border-b">
-                <tr>
-                  <th className="w-[6%]  py-3 text-center">No.</th>
-                  <th className="w-[12%] py-3 text-center">Date</th>
-                  <th className="w-[12%] py-3 text-center">Time-In</th>
-                  <th className="w-[12%] py-3 text-center">Time-Out</th>
-                  <th className="w-[24%] py-3 text-center px-4">User</th>
-                  <th className="w-[22%] py-3 text-center">File</th>
-                  <th className="w-[12%] py-3 text-center">Action</th>
+        <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+          {/* กรอบสโครล กำหนดสูงขั้นต่ำ/สูงสุด */}
+          <div className="w-full min-h-[520px] max-h-[640px] overflow-y-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead className="sticky top-0 z-10 bg-[#f9fafc] text-[#1B2880]">
+                {/* ใช้กริดกำหนดความกว้างคอลัมน์ให้ตรงกันทุกแถว */}
+                <tr className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%] border-b">
+                  <th className="py-3 text-center">No.</th>
+                  <th className="py-3 text-center">Date</th>
+                  <th className="py-3 text-center">Time-In</th>
+                  <th className="py-3 text-center">Time-Out</th>
+                  <th className="py-3 text-center px-2">User</th>
+                  <th className="py-3 text-center">File</th>
+                  <th className="py-3 text-center">Action</th>
                 </tr>
               </thead>
 
-              <tbody className="min-h-[500px]">
+              {/* ทำ tbody เป็น block + min-h เพื่อ “ยืด” ให้เต็ม */}
+              <tbody className="block min-h-[500px]">
                 {pageData.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
+                  <tr className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%]">
+                    <td className="col-span-7 py-6 text-center text-gray-500 border-b">
+                      ไม่พบข้อมูล
+                    </td>
                   </tr>
                 ) : (
                   pageData.map((s, i) => (
                     <tr
                       key={s.session_id}
-                      className="odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] border-b transition-colors"
+                      className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%] border-b even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
                     >
-                      <td className="px-4 py-4 text-center">{startIdx + i + 1}</td>
-                      <td className="px-4 py-4 text-center">{fmtDate(s.login_time)}</td>
-                      <td className="px-4 py-4 text-center">{fmtTime(s.login_time)}</td>
-                      <td className="px-4 py-4 text-center">{fmtTime(s.logout_time)}</td>
-                      <td className="px-4 py-4 text-center">{s.firstname} {s.lastname}</td>
-                      <td className="px-4 py-4 text-center">
+                      <td className="py-4 text-center">{startIdx + i + 1}</td>
+                      <td className="py-4 text-center">{fmtDate(s.login_time)}</td>
+                      <td className="py-4 text-center">{fmtTime(s.login_time)}</td>
+                      <td className="py-4 text-center">{fmtTime(s.logout_time)}</td>
+                      <td className="py-4 text-center">{s.firstname} {s.lastname}</td>
+                      <td className="py-4 text-center">
                         <a
                           href={`${API_BASE}${s.video_path}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                          className="inline-flex items-center gap-1 hover:underline"
                         >
                           <FaFileVideo /> .mp4
                         </a>
                       </td>
-                      <td className="px-4 py-4 text-center">
-                          <input
+                      <td className="py-4 text-center">
+                        <input
                           type="checkbox"
                           checked={selectedIds.includes(s.session_id)}
                           onChange={() =>
-                              setSelectedIds(prev => prev.includes(s.session_id)
-                              ? prev.filter(id => id !== s.session_id)
-                              : [...prev, s.session_id]
-                              )
+                            setSelectedIds(prev =>
+                              prev.includes(s.session_id)
+                                ? prev.filter(id => id !== s.session_id)
+                                : [...prev, s.session_id]
+                            )
                           }
-                          />
+                        />
                       </td>
                     </tr>
                   ))
@@ -159,6 +165,7 @@ const Video = () => {
             </table>
           </div>
         </div>
+
 
 
 

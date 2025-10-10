@@ -20,7 +20,6 @@ import EditDepartment from "./pages/editDepartment";
 import DeleteDepartment from "./pages/deleteDepartment";
 import ActiveVisitor from "./pages/activevisitor"; 
 import LiveScreen from "./pages/livescreen";
-import Test from "./pages/test";
 const App = () => {
   return (
       <Routes>
@@ -46,7 +45,6 @@ const App = () => {
           <Route path="/deleteDepartment" element={<DeleteDepartment />} />
           <Route path="acticveVisitor/*" element={<ActiveVisitor />} />
           <Route path="acticveVisitor/liveScreen" element={<LiveScreen />} />
-          <Route path="/Test" element={<Test />} />
         </Route>
       </Routes>
   );

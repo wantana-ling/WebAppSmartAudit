@@ -49,10 +49,7 @@ const Department = () => {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const pageData = filtered.slice(startIndex, startIndex + rowsPerPage);
 
-  // ล็อคความสูงให้ไม่หด (โทนเดียวกับ activevisitor)
-  const ROWS_LOCK_MIN = 10;
-  const minRows = Math.max(ROWS_LOCK_MIN, rowsPerPage);
-  const placeholderCount = Math.max(0, minRows - pageData.length);
+
 
   const handleDeleteClick = (id) => {
     setSelectedId(id);

@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
+import DeleteModal from "./deleteUserManagement";
+
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -12,6 +14,9 @@ const UserManagement = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+
 
   // dropdown states
   const [rowsOpen, setRowsOpen] = useState(false);
@@ -62,13 +67,29 @@ const UserManagement = () => {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const visibleUsers = filteredUsers.slice(startIndex, startIndex + rowsPerPage);
 
+  const handleDelete = (userId) => {
+    setSelectedUserId(userId);
+    setShowModal(true);
+  };
+
+  const confirmDelete = () => {
+  if (!selectedUserId) return;
+  axios.delete(`${apiBase}/api/users/${selectedUserId}`)
+    .then(() => axios.get(`${apiBase}/api/users`))
+    .then(res => setUsers(res.data || []))
+    .catch(err => console.error("❌ ลบไม่สำเร็จ:", err))
+    .finally(() => { setShowModal(false); setSelectedUserId(null); });
+  };
+
+  const cancelDelete = () => {
+    setShowModal(false);
+    setSelectedUserId(null);
+  };
+
+
+
   // reset page when filter changes
   useEffect(() => { setCurrentPage(1); }, [searchText, departmentFilter, statusFilter, rowsPerPage]);
-
-  const handleDelete = (userId) => {
-    // TODO: เปิด modal ยืนยันลบตามที่คุณมีอยู่
-    console.log("delete", userId);
-  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start">
@@ -282,7 +303,7 @@ const UserManagement = () => {
                       <td className="w-[8%]  px-3 py-4 text-center align-middle">{startIndex + idx + 1}</td>
                       <td className="w-[12%] px-4 py-4 align-middle">{u.user_id ?? u.userId}</td>
                       <td className="w-[24%] px-3 py-4 align-middle">{u.department}</td>
-                      <td className="w-[30%] px-3 py-4 align-middle">{u.name ?? `${u.firstname || ""} ${u.lastname || ""}`}</td>
+                      <td className="w-[30%] px-3 py-4 align-middle">{u.name ?? `${u.firstname || ""} ${u.midname || ""} ${u.lastname || ""}`}</td>
                       <td className="w-[10%] px-3 py-4 align-middle">
                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold
                           ${String(u.status).toLowerCase() === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
@@ -313,6 +334,13 @@ const UserManagement = () => {
                 )}
               </tbody>
             </table>
+            {showModal && (
+              <DeleteModal
+                onCancel={cancelDelete}
+                onConfirm={confirmDelete}
+              />
+            )}
+
           </div>
         </div>
 

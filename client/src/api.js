@@ -4,7 +4,7 @@ const API_BASE = process.env.REACT_APP_API_URL?.trim() || 'http://192.168.121.19
 
 const api = axios.create({
   baseURL: API_BASE,
-  withCredentials: true, // เพื่อให้ cookie JWT ไปกับ request
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
