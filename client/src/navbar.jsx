@@ -32,135 +32,157 @@ const Navbar = () => {
           />
         </div>
 
-        <nav className="px-0">
-          <ul>
-            <li
-              className={`${liBase} ${
-                isActive("/dashboard")
-                  ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
-                  : ""
+      <nav className="px-0">
+        <ul className="flex flex-col gap-2">
+          {/* Dashboard */}
+          <li
+            className={`${liBase} ${
+              isActive("/dashboard")
+                ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
+                : ""
+            }`}
+          >
+            <Link
+              to="/dashboard"
+              className={`${linkBase} ${linkHover} ${
+                isActive("/dashboard") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <Link
-                to="/dashboard"
-                className={`${linkBase} ${linkHover} ${
-                  isActive("/dashboard") ? "!text-[#0B1246]" : ""
-                }`}
-              >
-                <FaChartBar className="icon text-[24px]" />
-                <span className="menu-label hidden md:inline">Dashboard</span>
-              </Link>
-            </li>
+              <div className="flex items-center justify-center w-6 h-6">
+                <FaChartBar className="text-[20px]" />
+              </div>
+              <span className="menu-label hidden md:inline">Dashboard</span>
+            </Link>
+          </li>
 
-            <li
-              className={`${liBase} ${
-                isActive("/acticveVisitor")
-                  ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
-                  : ""
-              } md:pl-[10px] md:pr-0 md:ml-[10px]`}
-            >
-              <Link
-                to="/acticveVisitor"
-                className={`${linkBase} ${linkHover} ${
-                  isActive("/acticveVisitor") ? "!text-[#0B1246]" : ""
-                }`}
-              >
-                <FaUser className="icon text-[24px]" />
-                <span className="menu-label hidden md:inline">Active Visitor</span>
-              </Link>
-            </li>
-
-            <li
-              className={`${liBase} ${
-                isActive("/userManagement")
-                  ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
-                  : ""
+          {/* Active Visitor */}
+          <li
+            className={`${liBase} ${
+              isActive("/activeVisitor")
+                ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
+                : ""
+            }`}
+          >
+            <Link
+              to="/activeVisitor"
+              className={`${linkBase} ${linkHover} ${
+                isActive("/activeVisitor") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <Link
-                to="/userManagement"
-                className={`${linkBase} ${linkHover} ${
-                  isActive("/userManagement") ? "!text-[#0B1246]" : ""
-                }`}
-              >
-                <FaUserEdit className="icon text-[24px]" />
-                <span className="menu-label hidden md:inline">User Management</span>
-              </Link>
-            </li>
+              <div className="flex items-center justify-center w-6 h-6">
+                <FaUser className="text-[20px]" />
+              </div>
+              <span className="menu-label hidden md:inline">Active Visitor</span>
+            </Link>
+          </li>
 
-            <li
-              className={`${liBase} ${
-                isActive("/deviceManagement")
-                  ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
-                  : ""
+          {/* User Management */}
+          <li
+            className={`${liBase} ${
+              isActive("/userManagement")
+                ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
+                : ""
+            }`}
+          >
+            <Link
+              to="/userManagement"
+              className={`${linkBase} ${linkHover} ${
+                isActive("/userManagement") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <Link
-                to="/deviceManagement"
-                className={`${linkBase} ${linkHover} ${
-                  isActive("/deviceManagement") ? "!text-[#0B1246]" : ""
-                }`}
-              >
-                <FaDesktop className="icon text-[24px]" />
-                <span className="menu-label hidden md:inline">Device Management</span>
-              </Link>
-            </li>
+              <div className="flex items-center justify-center w-6 h-6">
+                <FaUserEdit className="text-[20px]" />
+              </div>
+              <span className="menu-label hidden md:inline">User Management</span>
+            </Link>
+          </li>
 
-            <li
-              className={`${liBase} ${
-                isActive("/department")
-                  ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
-                  : ""
+          {/* Device Management */}
+          <li
+            className={`${liBase} ${
+              isActive("/deviceManagement")
+                ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
+                : ""
+            }`}
+          >
+            <Link
+              to="/deviceManagement"
+              className={`${linkBase} ${linkHover} ${
+                isActive("/deviceManagement") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <Link
-                to="/department"
-                className={`${linkBase} ${linkHover} ${
-                  isActive("/department") ? "!text-[#0B1246]" : ""
-                }`}
-              >
-                <FaUsers className="icon text-[24px]" />
-                <span className="menu-label hidden md:inline">Department</span>
-              </Link>
-            </li>
+              <div className="flex items-center justify-center w-6 h-6">
+                <FaDesktop className="text-[20px]" />
+              </div>
+              <span className="menu-label hidden md:inline">Device Management</span>
+            </Link>
+          </li>
 
-            <li
-              className={`${liBase} ${
-                isActive("/video")
-                  ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
-                  : ""
+          {/* Department */}
+          <li
+            className={`${liBase} ${
+              isActive("/department")
+                ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
+                : ""
+            }`}
+          >
+            <Link
+              to="/department"
+              className={`${linkBase} ${linkHover} ${
+                isActive("/department") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <Link
-                to="/video"
-                className={`${linkBase} ${linkHover} ${
-                  isActive("/video") ? "!text-[#0B1246]" : ""
-                }`}
-              >
-                <FaVideo className="icon text-[24px]" />
-                <span className="menu-label hidden md:inline">Activity Video</span>
-              </Link>
-            </li>
+              <div className="flex items-center justify-center w-6 h-6">
+                <FaUsers className="text-[20px]" />
+              </div>
+              <span className="menu-label hidden md:inline">Department</span>
+            </Link>
+          </li>
 
-            <li
-              className={`${liBase} ${
-                isActive("/setting")
-                  ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
-                  : ""
+          {/* Activity Video */}
+          <li
+            className={`${liBase} ${
+              isActive("/video")
+                ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
+                : ""
+            }`}
+          >
+            <Link
+              to="/video"
+              className={`${linkBase} ${linkHover} ${
+                isActive("/video") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <Link
-                to="/setting"
-                className={`${linkBase} ${linkHover} ${
-                  isActive("/setting") ? "!text-[#0B1246]" : ""
-                }`}
-              >
-                <FaCog className="icon text-[24px]" />
-                <span className="menu-label hidden md:inline">Setting</span>
-              </Link>
-            </li>
-          </ul>
-        </nav>
+              <div className="flex items-center justify-center w-6 h-6">
+                <FaVideo className="text-[20px]" />
+              </div>
+              <span className="menu-label hidden md:inline">Activity Video</span>
+            </Link>
+          </li>
+
+          {/* Setting */}
+          <li
+            className={`${liBase} ${
+              isActive("/setting")
+                ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
+                : ""
+            }`}
+          >
+            <Link
+              to="/setting"
+              className={`${linkBase} ${linkHover} ${
+                isActive("/setting") ? "!text-[#0B1246]" : ""
+              }`}
+            >
+              <div className="flex items-center justify-center w-6 h-6">
+                <FaCog className="text-[20px]" />
+              </div>
+              <span className="menu-label hidden md:inline">Setting</span>
+            </Link>
+          </li>
+        </ul>
+      </nav>
+
       </div>
 
       <ul className="list-none text-center m-[50px] mb-[50px]">
