@@ -70,7 +70,7 @@ const Navbar = () => {
               }`}
             >
               <div className="flex items-center justify-center w-6 h-6">
-                <FaUser className="text-[20px]" />
+                <FaUser className="text-[18px]" />
               </div>
               <span className="menu-label hidden md:inline">Active Visitor</span>
             </Link>
@@ -91,7 +91,7 @@ const Navbar = () => {
               }`}
             >
               <div className="flex items-center justify-center w-6 h-6">
-                <FaUserEdit className="text-[20px]" />
+                <FaUserEdit className="text-[18px]" />
               </div>
               <span className="menu-label hidden md:inline">User Management</span>
             </Link>
