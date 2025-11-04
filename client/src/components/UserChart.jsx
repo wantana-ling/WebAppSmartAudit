@@ -2,44 +2,70 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import api from '../api';
 
-const getRandomColor = () => {
-  const letters = '0123456789ABCDEF';
-  return '#' + Array.from({ length: 6 }, () => letters[Math.floor(Math.random() * 16)]).join('');
+// พาเลตต์สีคงที่
+const PALETTE = [
+  '#3366CC', '#DC3912', '#FF9900', '#109618', '#990099',
+  '#3B3EAC', '#0099C6', '#DD4477', '#66AA00', '#B82E2E',
+  '#316395', '#994499', '#22AA99', '#AAAA11', '#6633CC',
+  '#E67300', '#8B0707', '#651067', '#329262', '#5574A6',
+];
+
+// map สีแบบคงที่ตามชื่อ
+const colorFor = (name) => {
+  const s = String(name ?? '');
+  let hash = 0;
+  for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+  return PALETTE[hash % PALETTE.length];
 };
 
 const UserChart = ({ month, year }) => {
-  const [data, setData] = useState([]);
+  const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // ดึงข้อมูลจาก /api/dashboard/users
   useEffect(() => {
     if (!month || !year) return;
 
+    let cancelled = false;
     (async () => {
       setLoading(true);
       try {
-        const res = await api.get('/api/users-chart', { params: { month, year } });
-        setData(res.data || []);
+        const res = await api.get('/api/dashboard/users', { params: { month, year } });
+        if (!cancelled) setRows(res.data || []);
       } catch (e) {
         console.error('❌ Error fetching chart data:', e?.message || e);
-        setData([]);
+        if (!cancelled) setRows([]);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
+
+    return () => { cancelled = true; };
   }, [month, year]);
 
-  const totalUsage = data.reduce((sum, x) => sum + (x.usage_count || 0), 0);
+  // รองรับทั้งสองสคีมา:
+  // 1) [{ name, usage_count }]
+  // 2) [{ day, count }]
+  const normalized = useMemo(() => {
+    return (rows || []).map((r) => ({
+      name: r.name ?? r.day ?? r.user ?? 'Unknown',
+      usage_count: Number(r.usage_count ?? r.count ?? r.total ?? 0),
+    }));
+  }, [rows]);
 
-  const chartData = data.map(x => ({
-    name: x.name,
-    value: totalUsage > 0 ? Number(((x.usage_count / totalUsage) * 100).toFixed(2)) : 0,
-  }));
+  const total = normalized.reduce((s, x) => s + (x.usage_count || 0), 0);
 
-  const COLORS = useMemo(() => chartData.map(() => getRandomColor()), [chartData]);
+  const chartData = useMemo(() => {
+    if (total <= 0) return [];
+    return normalized.map((x) => ({
+      name: x.name,
+      value: Number(((x.usage_count / total) * 100).toFixed(2)),
+    }));
+  }, [normalized, total]);
 
   if (loading) return <div style={{ textAlign: 'center' }}>Loading...</div>;
 
-  if (!data.length || totalUsage === 0) {
+  if (!chartData.length) {
     return (
       <div
         className="user-chart"
@@ -68,8 +94,8 @@ const UserChart = ({ month, year }) => {
             label={false}
             labelLine={false}
           >
-            {chartData.map((_, i) => (
-              <Cell key={i} fill={COLORS[i]} />
+            {chartData.map((d, i) => (
+              <Cell key={i} fill={colorFor(d.name)} />
             ))}
           </Pie>
           <Tooltip formatter={(v, n) => [`${v}%`, n]} />

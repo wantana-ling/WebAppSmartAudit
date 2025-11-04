@@ -20,9 +20,7 @@ const StatCard = ({ title, children, trend }) => (
       <div className="text-sm text-gray-700">{title}</div>
       {trend !== undefined && <Trend value={trend} />}
     </div>
-    <div className="flex items-end gap-2">
-      {children}
-    </div>
+    <div className="flex items-end gap-2">{children}</div>
   </div>
 );
 
@@ -37,45 +35,61 @@ const FrameCard = ({ title, right, children }) => (
 );
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
+  const [user] = useState({ company: "Smartclick", username: "admin" });
   const [stats, setStats] = useState(null);
   const [userChart, setUserChart] = useState([]);
   const [historyTimeline, setHistoryTimeline] = useState([]);
   const [years, setYears] = useState([]);
+
   const now = new Date();
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
   const navigate = useNavigate();
 
-  const apiBase = process.env.REACT_APP_API_URL || "http://localhost:3002";
+  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   useEffect(() => {
-    axios.get(`${apiBase}/api/me`, { withCredentials: true })
-      .then(r => setUser(r.data))
-      .catch(e => { if (e.response?.status === 401) navigate("/login"); });
+    let cancelled = false;
 
-    axios.get(`${apiBase}/api/dashboard-stats`, { withCredentials: true })
-      .then(r => setStats(r.data));
+    const fetchAll = async () => {
+      try {
+        const [statsRes, historyRes, chartRes, yearsRes] = await Promise.all([
+          axios.get(`${apiBase}/api/dashboard/stats`, { withCredentials: true }),
+          axios.get(`${apiBase}/api/dashboard/history`, {
+            withCredentials: true,
+            params: { month, year },
+          }),
+          axios.get(`${apiBase}/api/dashboard/users`, {
+            withCredentials: true,
+            params: { month, year },
+          }),
+          axios.get(`${apiBase}/api/dashboard/years`, { withCredentials: true }),
+        ]);
 
-    axios.get(`${apiBase}/api/history-timeline?month=${month}&year=${year}`, { withCredentials: true })
-      .then(r => setHistoryTimeline(r.data));
+        if (cancelled) return;
+        setStats(statsRes.data);
+        setHistoryTimeline(historyRes.data || []);
+        setUserChart(chartRes.data || []);
+        setYears(yearsRes.data || []);
+      } catch (e) {
+        console.error("Dashboard fetch error:", e);
+      }
+    };
 
-    axios.get(`${apiBase}/api/users-chart?month=${month}&year=${year}`, { withCredentials: true })
-      .then(r => setUserChart(r.data));
+    fetchAll();
+    return () => { cancelled = true; };
+  }, [apiBase, month, year]);
 
-    axios.get(`${apiBase}/api/available-years`, { withCredentials: true })
-      .then(r => setYears(r.data));
-  }, [month, year]); // keeps your original behavior
+  if (!stats) return <div className="py-20 text-center text-gray-500">Loading dashboard…</div>;
 
-  if (!user || !stats) return <div className="py-20 text-center text-gray-500">Loading dashboard…</div>;
-
-  // ตัวอย่าง trend mock หาก API ยังไม่มีค่า %
   const accessTrend = stats.accessTrend ?? -1.55;
   const dailyUseTrend = stats.dailyUseTrend ?? 2.12;
 
+  const hours = Math.floor((stats.dailyUse || 0) / 60);
+  const minutes = (stats.dailyUse || 0) % 60;
+
   return (
     <div className="w-[80vw] min-h-screen flex items-start justify-center">
-      {/* กรอบขาวมีขอบฟ้าอ่อนรอบพื้นที่ dashboard ให้ความรู้สึกเหมือน mock */}
       <div className="mt-10 mb-12 w-[90%] max-w-[1200px] rounded-3xl bg-transparent p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -98,17 +112,17 @@ const Dashboard = () => {
         {/* Top stats */}
         <div className="flex flex-wrap gap-6">
           <StatCard title="Access Count" trend={accessTrend}>
-            <div className="text-[40px] font-semibold text-black">{stats.accessCount ?? 0}</div>
+            <div className="text-[40px] font-semibold text-black">
+              {stats.accessCount ?? 0}
+            </div>
             <div className="text-gray-500 mb-1">Times</div>
           </StatCard>
 
           <StatCard title="Daily Use" trend={dailyUseTrend}>
-            <div className="text-[40px] font-semibold text-black">
-              {Math.floor(stats.dailyUse / 60) || 0}
-            </div>
+            <div className="text-[40px] font-semibold text-black">{hours}</div>
             <div className="text-gray-500 mb-1">hours</div>
             <div className="text-[40px] font-semibold text-black">
-              {stats.dailyUse % 60 || 0}
+              {minutes.toString().padStart(2, "0")}
             </div>
             <div className="text-gray-500 mb-1">minutes</div>
           </StatCard>
@@ -117,12 +131,18 @@ const Dashboard = () => {
             <div className="flex items-center justify-between mb-2">
               <div className="text-sm text-gray-700">Visitor Active</div>
               <span className="inline-flex items-center gap-2">
-                <span className={`size-3 rounded-full ${stats.visitorActive > 0 ? "bg-green-500" : "bg-gray-300"}`}></span>
+                <span
+                  className={`size-3 rounded-full ${
+                    stats.visitorActive > 0 ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                ></span>
               </span>
             </div>
             <div className="flex items-center gap-3">
               <FaUser className="text-2xl text-[#1A2DAC]" />
-              <div className="text-[40px] font-semibold text-black">{stats.visitorActive}</div>
+              <div className="text-[40px] font-semibold text-black">
+                {stats.visitorActive ?? 0}
+              </div>
             </div>
           </div>
         </div>
@@ -133,16 +153,19 @@ const Dashboard = () => {
             title="Users"
             right={
               <div className="flex items-center gap-2">
-                <span className="text-gray-500">{
-                  new Date(2000, month - 1, 1).toLocaleString(undefined,{ month: "long" })
-                } , {year}</span>
+                <span className="text-gray-500">
+                  {new Date(2000, month - 1, 1).toLocaleString(undefined, { month: "long" })},{" "}
+                  {year}
+                </span>
                 <select
                   value={month}
                   onChange={(e) => setMonth(Number(e.target.value))}
                   className="border border-gray-300 rounded-xl px-3 py-1.5 text-sm focus:ring-2 focus:ring-[#0DA5D8] outline-none"
                 >
                   {Array.from({ length: 12 }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -164,7 +187,9 @@ const Dashboard = () => {
                   className="border border-gray-300 rounded-xl px-3 py-1.5 text-sm focus:ring-2 focus:ring-[#0DA5D8] outline-none"
                 >
                   {years.map((y, idx) => (
-                    <option key={idx} value={y}>{y}</option>
+                    <option key={idx} value={y}>
+                      {y}
+                    </option>
                   ))}
                 </select>
               </div>

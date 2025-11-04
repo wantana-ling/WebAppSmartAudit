@@ -1,39 +1,90 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { FaFileVideo, FaTrash } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
 import ConfirmModal from "./deleteDepartment";
 
+const API_BASE = "http://192.168.121.195:3002";
+
 const Video = () => {
-  const [sessions, setSessions] = useState([]);
-  const [searchText, setSearchText] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchText, setSearchText] = useState("");
+
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [rows, setRows] = useState([]);
+
   const [selectedIds, setSelectedIds] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   const [rowsOpen, setRowsOpen] = useState(false);
   const rowsMenuRef = useRef(null);
 
-  const API_BASE = "http://192.168.121.195:3002";
+  // --- helpers ---
+  const basename = (p) => (typeof p === "string" ? p.split(/[\\/]/).pop() : "");
+  const normalizeVideo = (v) => ({
+    id: v.id,
+    date: v.date,                                     // 'YYYY-MM-DD' จาก API
+    timeIn: v.timeIn ?? v.start ?? "",                // map start -> timeIn
+    timeOut: v.timeOut ?? v.stop ?? "",               // map stop  -> timeOut
+    user: v.user ?? v.username ?? v.target ?? "-",    // เผื่อ API อนาคต
+    file: v.file ?? v.recording_path ?? "",           // map path -> file
+    duration: v.duration ?? "",
+  });
+
+  const fetchVideos = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`${API_BASE}/api/videos`, {
+        params: {
+          page: currentPage,
+          limit: rowsPerPage,
+          search: searchText || undefined,
+        },
+      });
+
+      const list = Array.isArray(data?.data) ? data.data.map(normalizeVideo) : [];
+      setRows(list);
+      setTotal(data?.total ?? list.length);
+      setTotalPages(data?.totalPages ?? Math.max(1, Math.ceil((data?.total ?? list.length) / rowsPerPage)));
+    } catch (err) {
+      console.error("fetch /api/videos error:", err);
+      setRows([]);
+      setTotal(0);
+      setTotalPages(1);
+    }
+  }, [currentPage, rowsPerPage, searchText]);
+
+  useEffect(() => { fetchVideos(); }, [fetchVideos]);
 
   useEffect(() => {
-    axios.get(`${API_BASE}/api/sessions`)
-      .then((res) => setSessions(res.data || []))
-      .catch(console.error);
+    const onClick = (e) => {
+      if (rowsMenuRef.current && !rowsMenuRef.current.contains(e.target)) setRowsOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const filtered = sessions.filter((s) =>
-    `${s.firstname} ${s.lastname}`.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const fmtDate = (dateStr) => {
+    if (!dateStr) return "-";
+    try {
+      // รองรับทั้ง 'YYYY-MM-DD' และ ISO
+      const d = new Date(dateStr);
+      if (!isNaN(d)) {
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yy = String(d.getFullYear());
+        return `${dd}.${mm}.${yy}`;
+      }
+      const [y, m, d2] = String(dateStr).split(/[-/]/);
+      return `${d2}.${m}.${y}`;
+    } catch { return String(dateStr); }
+  };
+  const fmtTime = (t) => (t ? String(t).slice(0, 8) : "-"); // ถ้าเป็น 'HH:MM:SS' จะคงเดิม
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
-  const startIdx = (currentPage - 1) * rowsPerPage;
-  const pageData = filtered.slice(startIdx, startIdx + rowsPerPage);
-
-  // format date/time
-  const fmtDate = (d) => new Date(d).toLocaleDateString("en-GB").replaceAll("/", ".");
-  const fmtTime = (d) => new Date(d).toLocaleTimeString("en-GB", { hour12: false });
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start">
@@ -42,24 +93,22 @@ const Video = () => {
         {/* Search */}
         <div className="mb-4 flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            {/* Search bar */}
             <div className="relative w-full max-w-[520px]">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search by user / target / file..."
                 className="w-full rounded-xl border border-gray-300 bg-white pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]"
                 value={searchText}
                 onChange={(e) => { setSearchText(e.target.value); setCurrentPage(1); }}
+                onKeyDown={(e) => { if (e.key === "Enter") fetchVideos(); }}
               />
             </div>
           </div>
 
-          {/* Filter (row per page + delete) → แยกออกมาอยู่อีกบรรทัด */}
           <div className="flex items-center gap-3">
-            {/* Rows per page */}
             <div className="relative inline-flex items-center gap-2" ref={rowsMenuRef}>
               <button
                 type="button"
@@ -76,9 +125,7 @@ const Video = () => {
                     <li
                       key={n}
                       onClick={() => { setRowsPerPage(n); setCurrentPage(1); setRowsOpen(false); }}
-                      className={`px-3 py-2 text-sm cursor-pointer hover:bg-indigo-50 ${
-                        rowsPerPage === n ? "bg-indigo-50 font-semibold text-indigo-700" : ""
-                      }`}
+                      className={`px-3 py-2 text-sm cursor-pointer hover:bg-indigo-50 ${rowsPerPage === n ? "bg-indigo-50 font-semibold text-indigo-700" : ""}`}
                     >
                       {n}
                     </li>
@@ -87,7 +134,6 @@ const Video = () => {
               )}
             </div>
 
-            {/* Delete button */}
             <button
               className="ml-auto inline-flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-600"
               onClick={() => selectedIds.length ? setShowModal(true) : alert("ยังไม่ได้เลือก")}
@@ -97,14 +143,11 @@ const Video = () => {
           </div>
         </div>
 
-
         {/* Table */}
         <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
-          {/* กรอบสโครล กำหนดสูงขั้นต่ำ/สูงสุด */}
           <div className="w-full min-h-[520px] max-h-[640px] overflow-y-auto">
             <table className="w-full text-sm border-collapse">
               <thead className="sticky top-0 z-10 bg-[#f9fafc] text-[#1B2880]">
-                {/* ใช้กริดกำหนดความกว้างคอลัมน์ให้ตรงกันทุกแถว */}
                 <tr className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%] border-b">
                   <th className="py-3 text-center">No.</th>
                   <th className="py-3 text-center">Date</th>
@@ -116,46 +159,37 @@ const Video = () => {
                 </tr>
               </thead>
 
-              {/* ทำ tbody เป็น block + min-h เพื่อ “ยืด” ให้เต็ม */}
               <tbody className="block min-h-[500px]">
-                {pageData.length === 0 ? (
+                {rows.length === 0 ? (
                   <tr className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%]">
-                    <td className="col-span-7 py-6 text-center text-gray-500 border-b">
-                      ไม่พบข้อมูล
-                    </td>
+                    <td className="col-span-7 py-6 text-center text-gray-500 border-b">ไม่พบข้อมูล</td>
                   </tr>
                 ) : (
-                  pageData.map((s, i) => (
-                    <tr
-                      key={s.session_id}
-                      className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%] border-b even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
-                    >
-                      <td className="py-4 text-center">{startIdx + i + 1}</td>
-                      <td className="py-4 text-center">{fmtDate(s.login_time)}</td>
-                      <td className="py-4 text-center">{fmtTime(s.login_time)}</td>
-                      <td className="py-4 text-center">{fmtTime(s.logout_time)}</td>
-                      <td className="py-4 text-center">{s.firstname} {s.lastname}</td>
+                  rows.map((s, i) => (
+                    <tr key={s.id} className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%] border-b even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors">
+                      <td className="py-4 text-center">{(currentPage - 1) * rowsPerPage + i + 1}</td>
+                      <td className="py-4 text-center">{fmtDate(s.date)}</td>
+                      <td className="py-4 text-center">{fmtTime(s.timeIn)}</td>
+                      <td className="py-4 text-center">{fmtTime(s.timeOut)}</td>
+                      <td className="py-4 text-center">{s.user || "-"}</td>
                       <td className="py-4 text-center">
-                        <a
-                          href={`${API_BASE}${s.video_path}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 hover:underline"
-                        >
-                          <FaFileVideo /> .mp4
-                        </a>
+                        {s.file ? (
+                          <a
+                            href="#!"
+                            title={s.file}
+                            className="inline-flex items-center justify-center hover:text-[#0DA5D8]"
+                          >
+                            <FaFileVideo />
+                          </a>
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="py-4 text-center">
                         <input
                           type="checkbox"
-                          checked={selectedIds.includes(s.session_id)}
-                          onChange={() =>
-                            setSelectedIds(prev =>
-                              prev.includes(s.session_id)
-                                ? prev.filter(id => id !== s.session_id)
-                                : [...prev, s.session_id]
-                            )
-                          }
+                          checked={selectedIds.includes(s.id)}
+                          onChange={() => toggleSelect(s.id)}
                         />
                       </td>
                     </tr>
@@ -166,57 +200,25 @@ const Video = () => {
           </div>
         </div>
 
-
-
-
         {/* Pagination */}
         <div className="mx-auto mt-5 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
-          <button
-            onClick={() => setCurrentPage(1)}
-            disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
-          >
-            {"<<"}
-          </button>
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-            disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
-          >
-            {"<"}
-          </button>
+          <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white">{"<<"}</button>
+          <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white">{"<"}</button>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
+            <button key={page} onClick={() => setCurrentPage(page)}
               className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm transition hover:bg-[#0DA5D8] hover:text-white ${
-                page === currentPage
-                  ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold"
-                  : "bg-white border-gray-300"
-              }`}
-            >
-              {page}
-            </button>
+                page === currentPage ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold" : "bg-white border-gray-300"
+              }`}>{page}</button>
           ))}
 
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
-          >
-            {">"}
-          </button>
-          <button
-            onClick={() => setCurrentPage(totalPages)}
-            disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
-          >
-            {">>"}
-          </button>
+          <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white">{">"}</button>
+          <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white">{">>"}</button>
         </div>
-
-
 
         {/* Confirm Modal */}
         {showModal && (
@@ -224,9 +226,15 @@ const Video = () => {
             isOpen={showModal}
             onCancel={() => setShowModal(false)}
             onConfirm={async () => {
-              await axios.delete(`${API_BASE}/api/sessions`, { data: { ids: selectedIds }});
-              setSelectedIds([]);
-              setShowModal(false);
+              try {
+                await axios.delete(`${API_BASE}/api/videos`, { data: { ids: selectedIds } });
+                setSelectedIds([]);
+                setShowModal(false);
+                fetchVideos();
+              } catch (e) {
+                console.error("delete error:", e);
+                setShowModal(false);
+              }
             }}
           />
         )}
@@ -236,4 +244,3 @@ const Video = () => {
 };
 
 export default Video;
-  
