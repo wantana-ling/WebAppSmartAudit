@@ -147,7 +147,7 @@ const Department = () => {
         <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
           <div className="w-full max-h-[640px] overflow-y-auto">
             <table className="w-full h-full border-collapse text-sm table-fixed">
-              <thead className="sticky top-0 z-10 bg-[#f9fafc] text-[#1B2880] border-b border-gray-200">
+              <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200"> {/*แก้*/}
                 <tr className="table w-full table-fixed">
                   <th className="w-[13%] py-3 text-center font-semibold">No.</th>
                   <th className="w-[40%] py-3 text-center font-semibold">Department Name</th>

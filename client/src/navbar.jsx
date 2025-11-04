@@ -100,7 +100,7 @@ const Navbar = () => {
           {/* Device Management */}
           <li
             className={`${liBase} ${
-              isActive("/deviceManagement")
+              ["/deviceManagement", "/addDevice"].includes(location.pathname)
                 ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
                 : ""
             }`}
@@ -108,9 +108,12 @@ const Navbar = () => {
             <Link
               to="/deviceManagement"
               className={`${linkBase} ${linkHover} ${
-                isActive("/deviceManagement") ? "!text-[#0B1246]" : ""
+                ["/deviceManagement", "/addDevice"].includes(location.pathname)
+                  ? "!text-[#0B1246]"
+                  : ""
               }`}
             >
+
               <div className="flex items-center justify-center w-6 h-6">
                 <FaDesktop className="text-[20px]" />
               </div>
@@ -121,7 +124,7 @@ const Navbar = () => {
           {/* Department */}
           <li
             className={`${liBase} ${
-              isActive("/department")
+              ["/department","addDepartment","editDepartment/"].includes(location.pathname)
                 ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
                 : ""
             }`}
@@ -129,7 +132,9 @@ const Navbar = () => {
             <Link
               to="/department"
               className={`${linkBase} ${linkHover} ${
-                isActive("/department") ? "!text-[#0B1246]" : ""
+                ["/department","addDepartment","editDepartment/"].includes(location.pathname)
+                  ? "!text-[#0B1246]"
+                  : ""
               }`}
             >
               <div className="flex items-center justify-center w-6 h-6">

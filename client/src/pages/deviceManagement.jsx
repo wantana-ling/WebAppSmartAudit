@@ -13,7 +13,6 @@ const DeviceManagement = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // dropdown states + refs (เหมือน activevisitor)
   const [rowsOpen, setRowsOpen] = useState(false);
   const rowsMenuRef = useRef(null);
   const [deptOpen, setDeptOpen] = useState(false);
@@ -25,7 +24,6 @@ const DeviceManagement = () => {
   const navigate = useNavigate();
   const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
-  // ปิด dropdown เมื่อคลิกนอกกรอบ
   useEffect(() => {
     const handler = (e) => {
       if (rowsMenuRef.current && !rowsMenuRef.current.contains(e.target)) setRowsOpen(false);
@@ -40,7 +38,6 @@ const DeviceManagement = () => {
     axios.get(`${apiBase}/api/departments`).then(r => setDepartments(r.data || [])).catch(console.error);
   }, []);
 
-  // แปลง filter ให้เหมือน activevisitor (All + ชื่อแผนก)
   const filtered = devices
     .filter(d => {
       const key = `${d.name || ""} ${d.ip || ""}`.toLowerCase();
@@ -55,7 +52,6 @@ const DeviceManagement = () => {
   const startIdx = (currentPage - 1) * rowsPerPage;
   const pageData = filtered.slice(startIdx, startIdx + rowsPerPage);
 
-  // รีเซ็ตหน้าเมื่อ filter/rows/search เปลี่ยน
   useEffect(() => { setCurrentPage(1); }, [search, filterDept, rowsPerPage]);
 
   const handleDeleteClick = (id) => { setSelectedId(id); setShowModal(true); };
@@ -76,10 +72,8 @@ const DeviceManagement = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-start">
       <div className="mx-auto w-full max-w-[1080px] pt-10 lg:pt-20">
-        {/* Search + Filters (สไตล์เดียวกับ ActiveVisitor) */}
         <div className="mb-4 flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            {/* search */}
             <div className="relative w-full max-w-[520px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +96,6 @@ const DeviceManagement = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* rows per page (custom dropdown) */}
             <div className="relative inline-flex items-center gap-2" ref={rowsMenuRef}>
               <button
                 type="button"
@@ -140,7 +133,6 @@ const DeviceManagement = () => {
               )}
             </div>
 
-            {/* department (custom dropdown) */}
             <div className="relative inline-flex items-center gap-2" ref={deptMenuRef}>
               <button
                 type="button"
@@ -190,7 +182,6 @@ const DeviceManagement = () => {
               )}
             </div>
 
-            {/* Add button */}
             <div className="ml-auto">
               <button
                 className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700"
@@ -201,8 +192,6 @@ const DeviceManagement = () => {
             </div>
           </div>
         </div>
-
-        {/* Table card (เหมือน activevisitor) */}
         <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
           <div className="w-full max-h-[640px] overflow-y-auto">
             <table className="w-full h-full border-collapse text-sm table-fixed">
@@ -218,7 +207,6 @@ const DeviceManagement = () => {
                 </tr>
               </thead>
 
-              {/* ล็อคความสูงให้ทรงเหมือน activevisitor */}
               <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
                 {pageData.length === 0 ? (
                   <tr className="table w-full table-fixed">
@@ -261,7 +249,6 @@ const DeviceManagement = () => {
           </div>
         </div>
 
-        {/* Pagination (โทนเดียวกัน) */}
         <div className="mx-auto mt-5 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
           <button
             onClick={() => setCurrentPage(1)}

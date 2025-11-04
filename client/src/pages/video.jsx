@@ -147,7 +147,7 @@ const Video = () => {
         <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
           <div className="w-full min-h-[520px] max-h-[640px] overflow-y-auto">
             <table className="w-full text-sm border-collapse">
-              <thead className="sticky top-0 z-10 bg-[#f9fafc] text-[#1B2880]">
+              <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880]">
                 <tr className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%] border-b">
                   <th className="py-3 text-center">No.</th>
                   <th className="py-3 text-center">Date</th>
