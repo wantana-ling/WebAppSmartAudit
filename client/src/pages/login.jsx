@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
+import { API_BASE, STORAGE_KEYS, MESSAGES, ROUTES, PLACEHOLDERS } from '../constants';
 
 const Login = () => {
   const [user_id, setUserId] = useState("");
@@ -10,14 +11,24 @@ const Login = () => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
+  const location = useLocation();
 
   useEffect(() => {
+    // ตรวจสอบว่าถ้า login แล้วให้ redirect ไป dashboard
+    const admin = localStorage.getItem(STORAGE_KEYS.ADMIN);
+    const userId = localStorage.getItem(STORAGE_KEYS.USER_ID);
+    
+    if (admin && userId) {
+      // ถ้ามี path ที่พยายามเข้าถึงก่อนหน้า ให้ไปที่ path นั้น
+      const from = location.state?.from?.pathname || ROUTES.DASHBOARD;
+      navigate(from, { replace: true });
+      return;
+    }
+
     setError("");
-    localStorage.removeItem("user_id");
-    localStorage.removeItem("admin");
-  }, []);
+    localStorage.removeItem(STORAGE_KEYS.USER_ID);
+    localStorage.removeItem(STORAGE_KEYS.ADMIN);
+  }, [navigate, location]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,15 +36,15 @@ const Login = () => {
     setError("");
     try {
       const res = await axios.post(
-        `${apiBase}/api/login`,
+        `${API_BASE}/api/login`,
         { user_id, password },
         { headers: { "Content-Type": "application/json" }, withCredentials: true }
       );
       const adminData = res.data.admin_info;
       if (!adminData) { setError("Invalid response from server"); return; }
-      localStorage.setItem("user_id", adminData.user_id);
-      localStorage.setItem("admin", JSON.stringify(adminData));
-      navigate("/dashboard");
+      localStorage.setItem(STORAGE_KEYS.USER_ID, adminData.user_id);
+      localStorage.setItem(STORAGE_KEYS.ADMIN, JSON.stringify(adminData));
+      navigate(ROUTES.DASHBOARD);
     } catch (err) {
       if (err.response?.status === 429) setError("Too many attempts. Please wait a moment.");
       else if (err.response?.status === 401) setError("Invalid user_id or password");
@@ -45,9 +56,9 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen">
-      <div className="h-full flex flex-col md:flex-row justify-between items-center py-10 overflow-hidden">
-        <div className="min-w-[50vw] text-center px-4">
-          <img src="../img/company_logo.JPG" alt="company_logo" className="w-3/5 mx-auto" />
+      <div className="h-full flex flex-col md:flex-row justify-between items-center py-6 sm:py-8 md:py-10 overflow-hidden">
+        <div className="w-full md:min-w-[50vw] text-center px-4 sm:px-6 md:px-8 py-6 md:py-0">
+          <img src="../img/company_logo.JPG" alt="company_logo" className="w-2/3 sm:w-3/5 md:w-3/5 mx-auto max-w-[300px] md:max-w-none" />
         </div>
 
         <div className="min-w-[50vw] h-full rounded-l-[60px] bg-gradient-to-b from-[#1A2DAC] to-[#0B1246] flex justify-center px-6">
@@ -56,14 +67,14 @@ const Login = () => {
             {error && <p className="text-red-400">{error}</p>}
 
             <form onSubmit={handleLogin} className="w-full">
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4 md:gap-5">
                 <input
                   type="text"
                   value={user_id}
                   onChange={(e) => setUserId(e.target.value)}
                   required
-                  placeholder="Username"
-                  className="w-full px-5 py-5 rounded-2xl bg-[#F1F3FF] text-base text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#4DB1D6]"
+                  placeholder={PLACEHOLDERS.USERNAME}
+                  className="w-full px-4 py-3 md:px-5 md:py-4 lg:py-5 rounded-xl md:rounded-2xl bg-[#F1F3FF] text-sm md:text-base text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#4DB1D6]"
                 />
 
                 <div className="relative flex items-center">
@@ -72,13 +83,13 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    placeholder="Password"
-                    className="w-full px-5 py-5 rounded-2xl bg-[#F1F3FF] text-base text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#4DB1D6]"
+                    placeholder={PLACEHOLDERS.PASSWORD}
+                    className="w-full px-4 py-3 md:px-5 md:py-4 lg:py-5 rounded-xl md:rounded-2xl bg-[#F1F3FF] text-sm md:text-base text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#4DB1D6] pr-10 md:pr-12"
                   />
                   <button
                     type="button"
                     onClick={() => setShow(!show)}
-                    className="absolute right-5 text-[20px] text-gray-400"
+                    className="absolute right-3 md:right-4 lg:right-5 text-[18px] md:text-[20px] text-gray-400"
                     aria-label={show ? "Hide password" : "Show password"}
                   >
                     {show ? <FaEyeSlash /> : <FaEye />}
@@ -88,9 +99,9 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full px-5 py-5 rounded-2xl bg-[#4DB1D6] text-white text-lg font-semibold disabled:opacity-70 disabled:cursor-not-allowed hover:brightness-110 transition"
+                  className="w-full px-4 py-3 md:px-5 md:py-4 lg:py-5 rounded-xl md:rounded-2xl bg-[#4DB1D6] text-white text-base md:text-lg font-semibold disabled:opacity-70 disabled:cursor-not-allowed hover:brightness-110 transition"
                 >
-                  {loading ? "Logging in..." : "Login"}
+                  {loading ? MESSAGES.LOGGING_IN : MESSAGES.LOGIN}
                 </button>
               </div>
             </form>

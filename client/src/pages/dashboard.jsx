@@ -15,9 +15,9 @@ const Trend = ({ value }) => {
 };
 
 const StatCard = ({ title, children, trend }) => (
-  <div className="rounded-[22px] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] ring-1 ring-gray-100 px-6 py-5 min-w-[260px]">
+  <div className="rounded-[16px] md:rounded-[20px] lg:rounded-[22px] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] ring-1 ring-gray-100 px-4 py-4 md:px-5 md:py-5 lg:px-6 lg:py-5 min-w-[200px] sm:min-w-[220px] md:min-w-[240px] lg:min-w-[260px] flex-1">
     <div className="flex items-center justify-between mb-1">
-      <div className="text-sm text-gray-700">{title}</div>
+      <div className="text-xs md:text-sm text-gray-700">{title}</div>
       {trend !== undefined && <Trend value={trend} />}
     </div>
     <div className="flex items-end gap-2">{children}</div>
@@ -25,10 +25,10 @@ const StatCard = ({ title, children, trend }) => (
 );
 
 const FrameCard = ({ title, right, children }) => (
-  <div className="flex-1 min-w-[340px] rounded-[22px] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] ring-1 ring-gray-100 p-6">
-    <div className="flex items-center justify-between mb-3">
-      <h3 className="text-[22px] font-semibold text-black">{title}</h3>
-      <div className="text-sm text-gray-600">{right}</div>
+  <div className="flex-1 min-w-[280px] sm:min-w-[300px] md:min-w-[320px] lg:min-w-[340px] rounded-[16px] md:rounded-[20px] lg:rounded-[22px] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] ring-1 ring-gray-100 p-4 md:p-5 lg:p-6">
+    <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+      <h3 className="text-lg md:text-xl lg:text-[22px] font-semibold text-black">{title}</h3>
+      <div className="text-xs md:text-sm text-gray-600">{right}</div>
     </div>
     {children}
   </div>
@@ -89,16 +89,16 @@ const Dashboard = () => {
   const minutes = (stats.dailyUse || 0) % 60;
 
   return (
-    <div className="w-[80vw] min-h-screen flex items-start justify-center">
-      <div className="mt-10 mb-12 w-[90%] max-w-[1200px] rounded-3xl bg-transparent p-8">
+    <div className="w-full min-h-screen flex items-start justify-center">
+      <div className="mt-5 md:mt-8 lg:mt-10 mb-8 md:mb-10 lg:mb-12 w-full max-w-[1200px] rounded-2xl md:rounded-3xl bg-transparent p-4 sm:p-5 md:p-6 lg:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-[44px] leading-tight font-semibold text-black tracking-wide">
+        <div className="flex items-center justify-between mb-4 md:mb-5 lg:mb-6 flex-wrap gap-3">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[44px] leading-tight font-semibold text-black tracking-wide">
             WELCOME <span className="font-light">, {user.company}</span>
           </h1>
           <button
             onClick={() => navigate("/profile")}
-            className="size-12 rounded-full border border-gray-300 overflow-hidden hover:ring-2 hover:ring-[#0DA5D8] transition"
+            className="size-8 sm:size-10 md:size-11 lg:size-12 rounded-full border border-gray-300 overflow-hidden hover:ring-2 hover:ring-[#0DA5D8] transition shrink-0"
             aria-label="Profile"
           >
             <img
@@ -110,37 +110,37 @@ const Dashboard = () => {
         </div>
 
         {/* Top stats */}
-        <div className="flex flex-wrap gap-6">
+        <div className="flex flex-wrap gap-3 md:gap-4 lg:gap-6">
           <StatCard title="Access Count" trend={accessTrend}>
-            <div className="text-[40px] font-semibold text-black">
+            <div className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-semibold text-black">
               {stats.accessCount ?? 0}
             </div>
-            <div className="text-gray-500 mb-1">Times</div>
+            <div className="text-xs md:text-sm text-gray-500 mb-1">Times</div>
           </StatCard>
 
           <StatCard title="Daily Use" trend={dailyUseTrend}>
-            <div className="text-[40px] font-semibold text-black">{hours}</div>
-            <div className="text-gray-500 mb-1">hours</div>
-            <div className="text-[40px] font-semibold text-black">
+            <div className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-semibold text-black">{hours}</div>
+            <div className="text-xs md:text-sm text-gray-500 mb-1">hours</div>
+            <div className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-semibold text-black">
               {minutes.toString().padStart(2, "0")}
             </div>
-            <div className="text-gray-500 mb-1">minutes</div>
+            <div className="text-xs md:text-sm text-gray-500 mb-1">minutes</div>
           </StatCard>
 
-          <div className="rounded-[22px] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] ring-1 ring-gray-100 px-6 py-5 min-w-[260px]">
+          <div className="rounded-[16px] md:rounded-[20px] lg:rounded-[22px] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] ring-1 ring-gray-100 px-4 py-4 md:px-5 md:py-5 lg:px-6 lg:py-5 min-w-[200px] sm:min-w-[220px] md:min-w-[240px] lg:min-w-[260px] flex-1">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-sm text-gray-700">Visitor Active</div>
+              <div className="text-xs md:text-sm text-gray-700">Visitor Active</div>
               <span className="inline-flex items-center gap-2">
                 <span
-                  className={`size-3 rounded-full ${
+                  className={`size-2 md:size-3 rounded-full ${
                     stats.visitorActive > 0 ? "bg-green-500" : "bg-gray-300"
                   }`}
                 ></span>
               </span>
             </div>
-            <div className="flex items-center gap-3">
-              <FaUser className="text-2xl text-[#1A2DAC]" />
-              <div className="text-[40px] font-semibold text-black">
+            <div className="flex items-center gap-2 md:gap-3">
+              <FaUser className="text-xl md:text-2xl text-[#1A2DAC]" />
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-semibold text-black">
                 {stats.visitorActive ?? 0}
               </div>
             </div>
@@ -148,30 +148,41 @@ const Dashboard = () => {
         </div>
 
         {/* Charts row */}
-        <div className="mt-8 flex flex-wrap gap-6">
+        <div className="mt-6 md:mt-7 lg:mt-8 flex flex-wrap gap-4 md:gap-5 lg:gap-6">
           <FrameCard
             title="Users"
             right={
-              <div className="flex items-center gap-2">
-                <span className="text-gray-500">
+              <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+                <span className="text-xs md:text-sm text-gray-500 font-medium">
                   {new Date(2000, month - 1, 1).toLocaleString(undefined, { month: "long" })},{" "}
                   {year}
                 </span>
-                <select
-                  value={month}
-                  onChange={(e) => setMonth(Number(e.target.value))}
-                  className="border border-gray-300 rounded-xl px-3 py-1.5 text-sm focus:ring-2 focus:ring-[#0DA5D8] outline-none"
-                >
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative inline-block">
+                  <select
+                    value={month}
+                    onChange={(e) => setMonth(Number(e.target.value))}
+                    className="bg-white border border-gray-300 rounded-lg md:rounded-xl px-3 py-1.5 md:px-4 md:py-2 pr-8 md:pr-10 text-xs md:text-sm text-gray-700 font-medium focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] outline-none shadow-sm hover:shadow-md hover:border-gray-400 transition-all duration-200 cursor-pointer appearance-none"
+                  >
+                  {Array.from({ length: 12 }, (_, i) => {
+                    const monthDate = new Date(2000, i, 1);
+                    const monthName = monthDate.toLocaleString(undefined, { month: "short" });
+                    return (
+                      <option key={i + 1} value={i + 1}>
+                        {monthName}
+                      </option>
+                    );
+                  })}
+                  </select>
+                  <div className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-3 h-3 md:w-4 md:h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             }
           >
-            <div className="h-[320px] flex items-center justify-center">
+            <div className="h-[240px] sm:h-[280px] md:h-[300px] lg:h-[320px] flex items-center justify-center">
               <UserChart data={userChart} month={month} year={year} />
             </div>
           </FrameCard>
@@ -179,23 +190,30 @@ const Dashboard = () => {
           <FrameCard
             title="History Timeline"
             right={
-              <div className="flex items-center gap-2">
-                <span className="text-gray-500">{year}</span>
-                <select
-                  value={year}
-                  onChange={(e) => setYear(Number(e.target.value))}
-                  className="border border-gray-300 rounded-xl px-3 py-1.5 text-sm focus:ring-2 focus:ring-[#0DA5D8] outline-none"
-                >
+              <div className="flex items-center gap-2 md:gap-3">
+                <span className="text-xs md:text-sm text-gray-500 font-medium">Year:</span>
+                <div className="relative inline-block">
+                  <select
+                    value={year}
+                    onChange={(e) => setYear(Number(e.target.value))}
+                    className="bg-white border border-gray-300 rounded-lg md:rounded-xl px-3 py-1.5 md:px-4 md:py-2 pr-8 md:pr-10 text-xs md:text-sm text-gray-700 font-medium focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] outline-none shadow-sm hover:shadow-md hover:border-gray-400 transition-all duration-200 cursor-pointer appearance-none"
+                  >
                   {years.map((y, idx) => (
                     <option key={idx} value={y}>
                       {y}
                     </option>
                   ))}
-                </select>
+                  </select>
+                  <div className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-3 h-3 md:w-4 md:h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             }
           >
-            <div className="h-[320px] flex items-center justify-center">
+            <div className="h-[240px] sm:h-[280px] md:h-[300px] lg:h-[320px] flex items-center justify-center">
               <HistoryTimeline data={historyTimeline} />
             </div>
           </FrameCard>
@@ -203,7 +221,7 @@ const Dashboard = () => {
       </div>
 
       {/* footer chip */}
-      <div className="fixed bottom-0 right-0 bg-[#0B1246] text-white text-sm rounded-tl-[16px] rounded-tr-[16px] px-5 py-2 shadow-lg mr-5">
+      <div className="fixed bottom-0 right-0 bg-[#0B1246] text-white text-xs md:text-sm rounded-tl-[12px] md:rounded-tl-[16px] rounded-tr-[12px] md:rounded-tr-[16px] px-3 py-1.5 md:px-4 md:py-2 lg:px-5 lg:py-2 shadow-lg mr-2 md:mr-4 lg:mr-5">
         Last updated: {new Date().toLocaleDateString()}
       </div>
     </div>

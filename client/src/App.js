@@ -20,13 +20,21 @@ import EditDepartment from "./pages/editDepartment";
 import DeleteDepartment from "./pages/deleteDepartment";
 import ActiveVisitor from "./pages/activevisitor"; 
 import LiveScreen from "./pages/livescreen";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 const App = () => {
   return (
       <Routes>
         <Route path="/" element={<Login />} />
 
         
-        <Route element={<MainLayout />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/video" element={<Video />} />
@@ -43,8 +51,8 @@ const App = () => {
           <Route path="/addDepartment" element={<AddDepartment />} />
           <Route path="/editDepartment/:id" element={<EditDepartment />} />
           <Route path="/deleteDepartment" element={<DeleteDepartment />} />
-          <Route path="activeVisitor/*" element={<ActiveVisitor />} />
-          <Route path="acticveVisitor/liveScreen" element={<LiveScreen />} />
+          <Route path="/activeVisitor" element={<ActiveVisitor />} />
+          <Route path="/liveScreen" element={<LiveScreen />} />
         </Route>
       </Routes>
   );

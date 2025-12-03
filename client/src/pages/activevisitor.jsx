@@ -2,21 +2,22 @@
 import React, { useState, useRef} from 'react';
 import { FaEye } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { SlArrowDown,SlLogin  } from "react-icons/sl";
+import { SlArrowDown, SlLogin } from "react-icons/sl";
+import { PAGINATION_OPTIONS, DEFAULT_ROWS_PER_PAGE, MESSAGES, PLACEHOLDERS, MODAL_MESSAGES, ROUTES } from '../constants';
 
 const mockData = [
   { no: 1, userId: '40001', department: 'Front-IT Infrastructure', username: 'James Anderson', duration: '01:10:00' },
   { no: 2, userId: '40002', department: 'Back-IT Infrastructure', username: 'Emily Johnson', duration: '02:15:22' },
-  // { no: 3, userId: '40003', department: 'Network Operations', username: 'William Smith', duration: '03:05:11' },
-  // { no: 4, userId: '40004', department: 'Database Management', username: 'Olivia Brown', duration: '01:55:44' },
-  // { no: 5, userId: '40005', department: 'Security Operations', username: 'Benjamin Lee', duration: '02:10:30' },
-  // { no: 6, userId: '40006', department: 'Cloud Services', username: 'Sophia Wilson', duration: '03:25:40' },
-  // { no: 7, userId: '40007', department: 'Technical Support', username: 'Daniel Taylor', duration: '01:35:10' },
-  // { no: 8, userId: '40008', department: 'Software Development', username: 'Mia Davis', duration: '04:00:00' },
-  // { no: 9, userId: '40009', department: 'Front-IT Infrastructure', username: 'Alexander Moore', duration: '02:20:20' },
-  // { no: 10, userId: '40010', department: 'Back-IT Infrastructure', username: 'Charlotte Martinez', duration: '01:50:50' },
-  // { no: 11, userId: '40011', department: 'Network Operations', username: 'Michael Thomas', duration: '03:10:10' },
-  // { no: 12, userId: '40012', department: 'Database Management', username: 'Amelia Garcia', duration: '02:40:40' },
+  { no: 3, userId: '40003', department: 'Network Operations', username: 'William Smith', duration: '03:05:11' },
+  { no: 4, userId: '40004', department: 'Database Management', username: 'Olivia Brown', duration: '01:55:44' },
+  { no: 5, userId: '40005', department: 'Security Operations', username: 'Benjamin Lee', duration: '02:10:30' },
+  { no: 6, userId: '40006', department: 'Cloud Services', username: 'Sophia Wilson', duration: '03:25:40' },
+  { no: 7, userId: '40007', department: 'Technical Support', username: 'Daniel Taylor', duration: '01:35:10' },
+  { no: 8, userId: '40008', department: 'Software Development', username: 'Mia Davis', duration: '04:00:00' },
+  { no: 9, userId: '40009', department: 'Front-IT Infrastructure', username: 'Alexander Moore', duration: '02:20:20' },
+  { no: 10, userId: '40010', department: 'Back-IT Infrastructure', username: 'Charlotte Martinez', duration: '01:50:50' },
+  { no: 11, userId: '40011', department: 'Network Operations', username: 'Michael Thomas', duration: '03:10:10' },
+  { no: 12, userId: '40012', department: 'Database Management', username: 'Amelia Garcia', duration: '02:40:40' },
   // { no: 13, userId: '40013', department: 'Security Operations', username: 'Elijah Rodriguez', duration: '01:25:25' },
   // { no: 14, userId: '40014', department: 'Cloud Services', username: 'Harper Martinez', duration: '04:05:05' },
   // { no: 15, userId: '40015', department: 'Technical Support', username: 'Lucas Hernandez', duration: '02:10:10' },
@@ -101,7 +102,7 @@ const mockDepartments = [
 
 
 const ActiveVisitor = () => {
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -148,13 +149,13 @@ const ActiveVisitor = () => {
 
 
         {/* Search + Filters */}
-        <div className="flex flex-col gap-3 mb-4">
+        <div className="flex flex-col gap-4 mb-6">
           <div className="flex items-center gap-3">
             {/* search */}
             <div className="relative w-full max-w-[520px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-gray-400 transition-colors group-focus-within:text-[#0DA5D8]"
                 viewBox="0 0 24 24"
                 fill="none"
                 strokeWidth={1.5}
@@ -168,8 +169,8 @@ const ActiveVisitor = () => {
               </svg>
               <input
                 type="text"
-                placeholder="Search..."
-                className="w-full rounded-xl border border-gray-300 pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8] bg-white"
+                placeholder={MESSAGES.SEARCH_PLACEHOLDER}
+                className="w-full rounded-xl border border-gray-300 pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] bg-white shadow-sm hover:shadow-md transition-all duration-200 placeholder:text-gray-400"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -187,27 +188,27 @@ const ActiveVisitor = () => {
                 aria-haspopup="listbox"
                 aria-expanded={rowsOpen}
                 aria-controls="rows-menu"
-                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
               >
                 <span className="font-medium">Show row</span>
                 <span className="text-gray-600">{rowsPerPage}</span>
-                <SlArrowDown className={`transition ${rowsOpen ? "rotate-180" : ""}`} />
+                <SlArrowDown className={`transition-transform duration-200 ${rowsOpen ? "rotate-180" : ""}`} />
               </button>
 
               {rowsOpen && (
                 <ul
                   id="rows-menu"
                   role="listbox"
-                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease]"
                 >
-                  {[10, 50, 100].map(n => (
+                  {PAGINATION_OPTIONS.map(n => (
                     <li
                       key={n}
                       role="option"
                       aria-selected={rowsPerPage === n}
                       onClick={() => { setRowsPerPage(n); setCurrentPage(1); setRowsOpen(false); }}
-                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm hover:bg-indigo-50 ${
-                        rowsPerPage === n ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                        rowsPerPage === n ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                       }`}
                     >
                       {n}
@@ -225,29 +226,29 @@ const ActiveVisitor = () => {
                 aria-haspopup="listbox"
                 aria-expanded={deptOpen}
                 aria-controls="dept-menu"
-                className="inline-flex h-10 min-w-[240px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+                className="inline-flex h-10 min-w-[240px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
               >
                 <span className="font-medium">Department</span>
-                <span className="truncate">
+                <span className="truncate text-gray-600">
                   {selectedDepartment === "all"
                     ? "All"
                     : mockDepartments.find(d => d.id === selectedDepartment)?.name}
                 </span>
-                <SlArrowDown className={`transition ${deptOpen ? "rotate-180" : ""}`} />
+                <SlArrowDown className={`transition-transform duration-200 ${deptOpen ? "rotate-180" : ""}`} />
               </button>
 
               {deptOpen && (
                 <ul
                   id="dept-menu"
                   role="listbox"
-                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[240px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[240px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease] scrollbar-thin"
                 >
                   <li
                     role="option"
                     aria-selected={selectedDepartment === "all"}
                     onClick={() => { setSelectedDepartment("all"); setCurrentPage(1); setDeptOpen(false); }}
-                    className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                      selectedDepartment === "all" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                    className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                      selectedDepartment === "all" ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                     }`}
                   >
                     All
@@ -258,8 +259,8 @@ const ActiveVisitor = () => {
                       role="option"
                       aria-selected={selectedDepartment === dept.id}
                       onClick={() => { setSelectedDepartment(dept.id); setCurrentPage(1); setDeptOpen(false); }}
-                      className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                        selectedDepartment === dept.id ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                        selectedDepartment === dept.id ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                       }`}
                     >
                       {dept.name}
@@ -272,7 +273,7 @@ const ActiveVisitor = () => {
         </div>
 
 
-        <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+        <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 overflow-hidden border border-gray-100">
           <div className="w-full max-h-[640px] overflow-y-auto">
             <table className="w-full h-full border-collapse text-sm table-fixed">
               <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
@@ -290,7 +291,7 @@ const ActiveVisitor = () => {
               <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
                 {paginatedData.length === 0 ? (
                   <tr className="table w-full table-fixed">
-                    <td colSpan={7} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
+                    <td colSpan={7} className="py-6 text-center text-gray-500">{MESSAGES.NO_DATA}</td>
                   </tr>
                 ) : (
                   paginatedData.map((item, index) => (
@@ -303,7 +304,7 @@ const ActiveVisitor = () => {
                       </td>
                       <td className="w-[10%] px-4 py-4 align-middle">{item.userId}</td>
                       <td className="w-[24%] px-3 py-4 align-middle">{item.department}</td>
-                      <td className="w-[16%] px-3 py-4 align-middle">192.134.xx.xx</td>
+                      <td className="w-[16%] px-3 py-4 align-middle">{PLACEHOLDERS.DEVICE_IP}</td>
                       <td className="w-[22%] px-3 py-4 align-middle">{item.username}</td>
                       <td className="w-[12%] px-3 py-4 align-middle">{item.duration}</td>
                       <td className="w-[8%]  px-3 py-4 text-center align-middle">
@@ -322,18 +323,18 @@ const ActiveVisitor = () => {
 
 
         {/* Pagination */}
-        <div className="mx-auto mt-5 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
+        <div className="mx-auto mt-6 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
           <button
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {"<<"}
           </button>
           <button
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
             disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {"<"}
           </button>
@@ -342,10 +343,10 @@ const ActiveVisitor = () => {
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm transition hover:bg-[#0DA5D8] hover:text-white ${
+              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:shadow-md ${
                 page === currentPage
-                  ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold"
-                  : "bg-white border-gray-300"
+                  ? "bg-gradient-to-r from-[#0DA5D8] to-[#1A2DAC] text-white border-[#0DA5D8] font-semibold shadow-md"
+                  : "bg-white border-gray-300 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8]"
               }`}
             >
               {page}
@@ -355,14 +356,14 @@ const ActiveVisitor = () => {
           <button
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {">"}
           </button>
           <button
             onClick={() => setCurrentPage(totalPages)}
             disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {">>"}
           </button>
@@ -371,37 +372,37 @@ const ActiveVisitor = () => {
         {/* Modal */}
         {isModalOpen && (
           <div
-            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/30"
+            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-[fade-in_0.2s_ease]"
             onClick={() => setIsModalOpen(false)}
           >
             <div
-              className="w-[300px] rounded-2xl bg-white p-6 text-center shadow-2xl animate-[pop-in_0.2s_ease]"
+              className="w-[90%] max-w-[400px] rounded-2xl bg-white p-6 md:p-8 text-center shadow-2xl border border-gray-100 animate-[pop-in_0.3s_ease-out]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mb-2 flex justify-center text-yellow-600">
-                <SlLogin size={40} color='red' />
+              <div className="mb-4 flex justify-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center">
+                  <SlLogin size={32} className="text-orange-500" />
+                </div>
               </div>
-              <h3 className="mb-1 text-lg font-semibold">Are You Sure?</h3>
-              <p className="text-gray-600">
-                The user will be notified
-                <br />
-                that you are viewing their screen in real time.
+              <h3 className="mb-2 text-xl font-bold text-gray-800">{MODAL_MESSAGES.CONFIRM_VIEW_SCREEN.TITLE}</h3>
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-6">
+                {MODAL_MESSAGES.CONFIRM_VIEW_SCREEN.MESSAGE}
               </p>
-              <div className="mt-5 flex justify-around">
+              <div className="flex justify-center gap-3">
                 <button
-                  className="rounded-lg bg-gray-200 px-4 py-2 hover:bg-gray-300"
+                  className="rounded-xl bg-gray-100 text-gray-700 px-6 py-2.5 text-sm font-medium hover:bg-gray-200 transition-all duration-200 shadow-sm hover:shadow-md"
                   onClick={() => setIsModalOpen(false)}
                 >
-                  Cancel
+                  {MESSAGES.CANCEL}
                 </button>
                 <button
-                  className="rounded-lg bg-[rgba(13,149,216,0.8)] px-4 py-2 text-white hover:bg-[rgba(13,149,216,0.6)]"
+                  className="rounded-xl bg-gradient-to-r from-[#0DA5D8] to-[#1A2DAC] text-white px-6 py-2.5 text-sm font-semibold hover:shadow-lg transition-all duration-200 shadow-md"
                   onClick={() => {
-                    navigate("liveScreen", { state: { selectedUser } });
+                    navigate(ROUTES.LIVE_SCREEN, { state: { selectedUser } });
                     setIsModalOpen(false);
                   }}
                 >
-                  Confirm
+                  {MESSAGES.CONFIRM}
                 </button>
               </div>
             </div>

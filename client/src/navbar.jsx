@@ -1,19 +1,29 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaChartBar, FaUserEdit, FaVideo, FaDesktop, FaSignOutAlt, FaUsers, FaUser, FaCog
 } from "react-icons/fa";
+import { STORAGE_KEYS, ROUTES, MESSAGES } from './constants';
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // ลบข้อมูลใน localStorage
+    localStorage.removeItem(STORAGE_KEYS.USER_ID);
+    localStorage.removeItem(STORAGE_KEYS.ADMIN);
+    // Redirect ไปหน้า login
+    navigate(ROUTES.LOGIN, { replace: true });
+  };
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path);
 
   const liBase =
-    "group relative pl-[10px] pr-[110px] py-[15px] ml-[20px] mb-[20px] rounded-l-[30px]";
+    "group relative pl-[8px] md:pl-[10px] pr-[60px] md:pr-[90px] lg:pr-[110px] py-[12px] md:py-[15px] ml-[10px] md:ml-[15px] lg:ml-[20px] mb-[15px] md:mb-[20px] rounded-l-[20px] md:rounded-l-[25px] lg:rounded-l-[30px]";
   const linkBase =
-    "w-full ml-[10px] text-white no-underline flex items-center gap-[10px] transition-all duration-500";
-  const linkHover = "group-hover:ml-[30px] group-hover:font-medium";
+    "w-full ml-[8px] md:ml-[10px] text-white no-underline flex items-center gap-[8px] md:gap-[10px] transition-all duration-500 text-sm md:text-base";
+  const linkHover = "group-hover:ml-[20px] md:group-hover:ml-[25px] lg:group-hover:ml-[30px] group-hover:font-medium";
   const activeShell =
     "bg-white text-[#0B1246] rounded-tl-full rounded-bl-full";
   const activeCurveBefore =
@@ -22,11 +32,11 @@ const Navbar = () => {
     "after:content-[''] after:absolute after:right-0 after:-bottom-[50px] after:w-[50px] after:h-[50px] after:rounded-full after:shadow-[35px_-35px_0_10px_#ffffff]";
 
   return (
-    <aside className="fixed w-[21vw] h-screen bg-gradient-to-b from-[#1A2DAC] to-[#0B1246] rounded-r-[40px] flex flex-col justify-between">
-      <div className="flex flex-col text-white overflow-hidden py-[30px] gap-[60px]">
-        <div className="text-center -mt-[10px] -mb-[40px]">
+    <aside className="fixed w-[200px] sm:w-[220px] md:w-[240px] lg:w-[260px] xl:w-[280px] 2xl:w-[300px] 3xl:w-[320px] 4xl:w-[360px] h-screen bg-gradient-to-b from-[#1A2DAC] to-[#0B1246] rounded-r-[20px] md:rounded-r-[30px] lg:rounded-r-[40px] flex flex-col justify-between z-50">
+      <div className="flex flex-col text-white overflow-hidden py-[20px] md:py-[25px] lg:py-[30px] gap-[40px] md:gap-[50px] lg:gap-[60px]">
+        <div className="text-center -mt-[5px] md:-mt-[10px] -mb-[30px] md:-mb-[40px]">
           <img
-            className="w-[100px] h-[100px] mx-auto md:w-[100px] md:h-[100px] w-[60px] h-[60px]"
+            className="w-[60px] h-[60px] sm:w-[70px] sm:h-[70px] md:w-[80px] md:h-[80px] lg:w-[90px] lg:h-[90px] xl:w-[100px] xl:h-[100px] mx-auto"
             src="/img/Logo-SmartAudit.png"
             alt="smartAudit-logo"
           />
@@ -48,10 +58,10 @@ const Navbar = () => {
                 isActive("/dashboard") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <div className="flex items-center justify-center w-6 h-6">
-                <FaChartBar className="text-[20px]" />
+              <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6">
+                <FaChartBar className="text-[16px] md:text-[18px] lg:text-[20px]" />
               </div>
-              <span className="menu-label hidden md:inline">Dashboard</span>
+              <span className="menu-label text-xs md:text-sm lg:text-base">Dashboard</span>
             </Link>
           </li>
 
@@ -69,10 +79,10 @@ const Navbar = () => {
                 isActive("/activeVisitor") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <div className="flex items-center justify-center w-6 h-6">
-                <FaUser className="text-[18px]" />
+              <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6">
+                <FaUser className="text-[16px] md:text-[17px] lg:text-[18px]" />
               </div>
-              <span className="menu-label hidden md:inline">Active Visitor</span>
+              <span className="menu-label text-xs md:text-sm lg:text-base">Active Visitor</span>
             </Link>
           </li>
 
@@ -90,10 +100,10 @@ const Navbar = () => {
                 isActive("/userManagement") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <div className="flex items-center justify-center w-6 h-6">
-                <FaUserEdit className="text-[18px]" />
+              <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6">
+                <FaUserEdit className="text-[16px] md:text-[17px] lg:text-[18px]" />
               </div>
-              <span className="menu-label hidden md:inline">User Management</span>
+              <span className="menu-label text-xs md:text-sm lg:text-base">User Management</span>
             </Link>
           </li>
 
@@ -114,10 +124,10 @@ const Navbar = () => {
               }`}
             >
 
-              <div className="flex items-center justify-center w-6 h-6">
-                <FaDesktop className="text-[20px]" />
+              <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6">
+                <FaDesktop className="text-[16px] md:text-[18px] lg:text-[20px]" />
               </div>
-              <span className="menu-label hidden md:inline">Device Management</span>
+              <span className="menu-label text-xs md:text-sm lg:text-base">Device Management</span>
             </Link>
           </li>
 
@@ -137,10 +147,10 @@ const Navbar = () => {
                   : ""
               }`}
             >
-              <div className="flex items-center justify-center w-6 h-6">
-                <FaUsers className="text-[20px]" />
+              <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6">
+                <FaUsers className="text-[16px] md:text-[18px] lg:text-[20px]" />
               </div>
-              <span className="menu-label hidden md:inline">Department</span>
+              <span className="menu-label text-xs md:text-sm lg:text-base">Department</span>
             </Link>
           </li>
 
@@ -158,10 +168,10 @@ const Navbar = () => {
                 isActive("/video") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <div className="flex items-center justify-center w-6 h-6">
-                <FaVideo className="text-[20px]" />
+              <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6">
+                <FaVideo className="text-[16px] md:text-[18px] lg:text-[20px]" />
               </div>
-              <span className="menu-label hidden md:inline">Activity Video</span>
+              <span className="menu-label text-xs md:text-sm lg:text-base">Activity Video</span>
             </Link>
           </li>
 
@@ -179,10 +189,10 @@ const Navbar = () => {
                 isActive("/setting") ? "!text-[#0B1246]" : ""
               }`}
             >
-              <div className="flex items-center justify-center w-6 h-6">
-                <FaCog className="text-[20px]" />
+              <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6">
+                <FaCog className="text-[16px] md:text-[18px] lg:text-[20px]" />
               </div>
-              <span className="menu-label hidden md:inline">Setting</span>
+              <span className="menu-label text-xs md:text-sm lg:text-base">Setting</span>
             </Link>
           </li>
         </ul>
@@ -190,15 +200,15 @@ const Navbar = () => {
 
       </div>
 
-      <ul className="list-none text-center m-[50px] mb-[50px]">
+      <ul className="list-none text-center m-[30px] md:m-[40px] lg:m-[50px] mb-[30px] md:mb-[40px] lg:mb-[50px]">
         <li>
-          <Link
-            to="/"
-            className="text-white no-underline flex items-center justify-center gap-2 hover:underline font-extralight"
+          <button
+            onClick={handleLogout}
+            className="text-white no-underline flex items-center justify-center gap-2 hover:underline font-extralight text-sm md:text-base bg-transparent border-none cursor-pointer w-full"
           >
-            <FaSignOutAlt className="icon text-[24px]" />
-            <span className="menu-label hidden md:inline">Logout</span>
-          </Link>
+            <FaSignOutAlt className="icon text-[18px] md:text-[20px] lg:text-[24px]" />
+            <span className="menu-label">{MESSAGES.LOGOUT}</span>
+          </button>
         </li>
       </ul>
     </aside>

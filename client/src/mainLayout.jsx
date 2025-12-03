@@ -1,37 +1,38 @@
 import React from "react";
 import Navbar from "./navbar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { STORAGE_KEYS, ROUTES } from './constants';
 
 const MainLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const admin = JSON.parse(localStorage.getItem("admin"));
+  const admin = JSON.parse(localStorage.getItem(STORAGE_KEYS.ADMIN) || 'null');
   const companyName = admin?.company || "Company";
 
-  const hideProfileBar = ["/profile", "/dashboard"].includes(location.pathname);
+  const hideProfileBar = [ROUTES.PROFILE, ROUTES.DASHBOARD].includes(location.pathname);
 
   return (
     <div className="relative w-full min-h-screen flex">
       <Navbar />
 
       {!hideProfileBar && (
-        <div className="absolute top-5 right-5 flex items-center gap-2 z-10">
-          <span className="font-semibold text-[16px] text-black">{companyName}</span>
+        <div className="absolute top-3 md:top-4 lg:top-5 right-3 md:right-4 lg:right-5 flex items-center gap-2 z-10">
+          <span className="font-semibold text-xs sm:text-sm md:text-base lg:text-[16px] text-black hidden sm:inline">{companyName}</span>
           <button
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate(ROUTES.PROFILE)}
             className="inline-flex items-center justify-center rounded-full overflow-hidden"
           >
             <img
               src={process.env.PUBLIC_URL + "/img/default-profile.jpg"}
               alt="Profile"
-              className="w-[35px] h-[35px] rounded-full object-cover"
+              className="w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] md:w-[35px] md:h-[35px] rounded-full object-cover"
             />
           </button>
         </div>
       )}
 
-      <main className="flex-1 ml-[21vw] p-6">
+      <main className="flex-1 ml-[200px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[280px] 2xl:ml-[300px] 3xl:ml-[320px] 4xl:ml-[360px] p-3 sm:p-4 md:p-5 lg:p-6">
         <Outlet />
       </main>
     </div>
