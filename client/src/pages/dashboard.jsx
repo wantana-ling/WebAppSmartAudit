@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import UserChart from "../components/UserChart";
 import HistoryTimeline from "../components/HistoryTimeline";
 import { FaUser } from "react-icons/fa";
@@ -46,24 +46,20 @@ const Dashboard = () => {
   const [year, setYear] = useState(now.getFullYear());
   const navigate = useNavigate();
 
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
-
   useEffect(() => {
     let cancelled = false;
 
     const fetchAll = async () => {
       try {
         const [statsRes, historyRes, chartRes, yearsRes] = await Promise.all([
-          axios.get(`${apiBase}/api/dashboard/stats`, { withCredentials: true }),
-          axios.get(`${apiBase}/api/dashboard/history`, {
-            withCredentials: true,
+          api.get('/api/dashboard/stats'),
+          api.get('/api/dashboard/history', {
             params: { month, year },
           }),
-          axios.get(`${apiBase}/api/dashboard/users`, {
-            withCredentials: true,
+          api.get('/api/dashboard/users', {
             params: { month, year },
           }),
-          axios.get(`${apiBase}/api/dashboard/years`, { withCredentials: true }),
+          api.get('/api/dashboard/years'),
         ]);
 
         if (cancelled) return;
@@ -78,7 +74,7 @@ const Dashboard = () => {
 
     fetchAll();
     return () => { cancelled = true; };
-  }, [apiBase, month, year]);
+  }, [month, year]);
 
   if (!stats) return <div className="py-20 text-center text-gray-500">Loading dashboard…</div>;
 

@@ -163,6 +163,20 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
         )
 
     try:
+        # ตรวจสอบว่า user_id ซ้ำหรือไม่ (เฉพาะที่ยังมีอยู่ในระบบ)
+        async with db.cursor(aiomysql.DictCursor) as cur:
+            await cur.execute(
+                "SELECT user_id FROM users WHERE user_id = %s",
+                (str(user_id).strip(),),
+            )
+            existing = await cur.fetchone()
+            
+            if existing:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"User ID {user_id} already exists",
+                )
+
         hashed_password = bcrypt.hashpw(
             password.encode("utf-8"),
             bcrypt.gensalt(),
@@ -193,11 +207,26 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
             "message": "User created successfully",
             "userId": insert_id,
         }
+    except HTTPException:
+        raise
     except Exception as err:
         print("POST /api/users error:", err)
+        error_msg = str(err).lower()
+        # ตรวจสอบว่าเป็น duplicate key error หรือไม่
+        if "duplicate" in error_msg or "1062" in error_msg:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"User ID {user_id} already exists. Please use a different ID.",
+            )
+        # ตรวจสอบว่าเป็น foreign key constraint error หรือไม่
+        if "foreign key" in error_msg or "1452" in error_msg:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid department_id or foreign key constraint violation",
+            )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Database error",
+            detail=f"Database error: {str(err)}",
         )
 
 

@@ -1,23 +1,35 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
+import AlertModal from "../components/AlertModal";
 
 const AddDepartment = () => {
   const [departmentName, setDepartmentName] = useState("");
   const navigate = useNavigate();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   const handleSave = () => {
-    if (!departmentName.trim()) return alert("กรุณากรอกชื่อแผนก");
-    axios
-      .post(`${apiBase}/api/departments`, { name: departmentName })
+    if (!departmentName.trim()) {
+      setAlertModal({ isOpen: true, type: "warning", title: "Warning", message: "Please enter department name" });
+      return;
+    }
+    api
+      .post('/api/departments', { name: departmentName })
       .then(() => {
-        alert("✅ บันทึกสำเร็จ");
-        navigate("/department");
+        setAlertModal({ 
+          isOpen: true, 
+          type: "success", 
+          title: "Success", 
+          message: "Saved successfully",
+          onClose: () => {
+            setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+            navigate("/department");
+          }
+        });
       })
       .catch((err) => {
         console.error("❌ บันทึกไม่สำเร็จ:", err);
-        alert("เกิดข้อผิดพลาด");
+        setAlertModal({ isOpen: true, type: "error", title: "Error", message: "An error occurred" });
       });
   };
 
@@ -54,6 +66,17 @@ const AddDepartment = () => {
           </button>
         </div>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          if (alertModal.onClose) alertModal.onClose();
+        }}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+      />
     </div>
   );
 };

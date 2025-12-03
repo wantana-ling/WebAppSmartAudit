@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import { SlArrowDown } from "react-icons/sl";
+import AlertModal from "../components/AlertModal";
 
 const AddDevice = () => {
   const navigate = useNavigate();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   // ฟอร์มเหมือนไฟล์เดิม แต่ย้ายมาใช้ Tailwind + placeholder ครบ
   const [form, setForm] = useState({
@@ -16,14 +16,15 @@ const AddDevice = () => {
   });
 
   const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   // dropdown สำหรับ Department (multi-select)
   const [deptOpen, setDeptOpen] = useState(false);
   const deptMenuRef = useRef(null);
 
   useEffect(() => {
-    axios
-      .get(`${apiBase}/api/departments`)
+    api
+      .get('/api/departments')
       .then((res) => setDepartmentOptions(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
@@ -58,7 +59,7 @@ const AddDevice = () => {
     const { device_name, ip, departments, max_users } = form;
 
     if (!device_name || !ip || departments.length === 0 || !max_users) {
-      alert("กรอกข้อมูลให้ครบ");
+      setAlertModal({ isOpen: true, type: "warning", title: "Warning", message: "Please fill in all fields" });
       return;
     }
 
@@ -74,12 +75,20 @@ const AddDevice = () => {
     };
 
     try {
-      await axios.post(`${apiBase}/api/devices`, payload);
-      alert("✅ เพิ่มอุปกรณ์สำเร็จ");
-      navigate("/deviceManagement");
+      await api.post('/api/devices', payload);
+      setAlertModal({ 
+        isOpen: true, 
+        type: "success", 
+        title: "Success", 
+        message: "Device added successfully",
+        onClose: () => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          navigate("/deviceManagement");
+        }
+      });
     } catch (err) {
       console.error("❌ เพิ่ม device ไม่สำเร็จ", err);
-      alert("เกิดข้อผิดพลาดในการเพิ่มอุปกรณ์");
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "Failed to add device" });
     }
   };
 
@@ -231,6 +240,17 @@ const AddDevice = () => {
           </div>
         </form>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          if (alertModal.onClose) alertModal.onClose();
+        }}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+      />
     </div>
   );
 };

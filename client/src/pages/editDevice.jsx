@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
+import AlertModal from "../components/AlertModal";
 
 const EditDevice = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   const [form, setForm] = useState({
     device_name: "",
@@ -15,15 +15,16 @@ const EditDevice = () => {
   });
 
   const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   useEffect(() => {
-    axios.get(`${apiBase}/api/departments`)
+    api.get('/api/departments')
       .then(res => setDepartmentOptions(res.data || []))
       .catch(err => console.error("❌ โหลด department ไม่ได้", err));
   }, []);
 
   useEffect(() => {
-    axios.get(`${apiBase}/api/devices/${id}`)
+    api.get(`/api/devices/${id}`)
       .then(res => {
         const d = res.data;
         setForm({
@@ -35,10 +36,18 @@ const EditDevice = () => {
       })
       .catch(err => {
         console.error("❌ โหลด device ไม่สำเร็จ", err);
-        alert("ไม่พบข้อมูลอุปกรณ์");
-        navigate("/deviceManagement");
+        setAlertModal({ 
+          isOpen: true, 
+          type: "error", 
+          title: "Error", 
+          message: "Device not found",
+          onClose: () => {
+            setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+            navigate("/deviceManagement");
+          }
+        });
       });
-  }, [id]);
+  }, [id, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,22 +69,30 @@ const EditDevice = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.device_name || !form.ip || form.departments.length === 0 || !form.max_users) {
-      alert("กรอกข้อมูลให้ครบ");
+      setAlertModal({ isOpen: true, type: "warning", title: "Warning", message: "Please fill in all fields" });
       return;
     }
 
     try {
-      await axios.put(`${apiBase}/api/devices/${id}`, {
+      await api.put(`/api/devices/${id}`, {
         device_name: form.device_name,
         ip: form.ip,
         department: form.departments.join(", "),
         max_users: form.max_users,
       });
-      alert("✅ แก้ไขข้อมูลสำเร็จ");
-      navigate("/deviceManagement");
+      setAlertModal({ 
+        isOpen: true, 
+        type: "success", 
+        title: "Success", 
+        message: "Device updated successfully",
+        onClose: () => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          navigate("/deviceManagement");
+        }
+      });
     } catch (err) {
       console.error("❌ แก้ไขไม่สำเร็จ", err);
-      alert("เกิดข้อผิดพลาดในการบันทึก");
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "Failed to save changes" });
     }
   };
 
@@ -189,6 +206,17 @@ const EditDevice = () => {
           </div>
         </form>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          if (alertModal.onClose) alertModal.onClose();
+        }}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+      />
     </div>
   );
 };

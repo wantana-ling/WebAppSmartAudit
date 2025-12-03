@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import { SlArrowDown } from "react-icons/sl";
+import AlertModal from "../components/AlertModal";
 
 const EditManageUser = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -18,6 +18,7 @@ const EditManageUser = () => {
 
   const [departments, setDepartments] = useState([]);
   const [invalidId, setInvalidId] = useState(false);
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   const [deptOpen, setDeptOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
@@ -51,8 +52,8 @@ const EditManageUser = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`${apiBase}/api/departments`)
+    api
+      .get('/api/departments')
       .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
@@ -63,8 +64,8 @@ const EditManageUser = () => {
       return;
     }
 
-    axios
-      .get(`${apiBase}/api/users/${id}`)
+    api
+      .get(`/api/users/${id}`)
       .then((res) => {
         const u = res.data || {};
         setFormData({
@@ -92,7 +93,7 @@ const EditManageUser = () => {
     const required = ["firstName", "lastName", "status"];
     for (const field of required) {
       if (!formData[field]) {
-        alert(`กรุณากรอกข้อมูลให้ครบถ้วน (${field})`);
+        setAlertModal({ isOpen: true, type: "warning", title: "Warning", message: `Please fill in all required fields (${field})` });
         return;
       }
     }
@@ -104,7 +105,7 @@ const EditManageUser = () => {
       formData.department === "No Department" ? null : selectedDept?.id || null;
 
     try {
-      await axios.put(`${apiBase}/api/users/${id}`, {
+      await api.put(`/api/users/${id}`, {
         firstname: formData.firstName,
         midname: formData.midName,
         lastname: formData.lastName,
@@ -115,18 +116,26 @@ const EditManageUser = () => {
         status: formData.status,
       });
 
-      alert("✅ อัปเดตผู้ใช้สำเร็จ");
-      navigate("/userManagement");
+      setAlertModal({ 
+        isOpen: true, 
+        type: "success", 
+        title: "Success", 
+        message: "User updated successfully",
+        onClose: () => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          navigate("/userManagement");
+        }
+      });
     } catch (err) {
       console.error("❌ ไม่สามารถอัปเดตผู้ใช้ได้:", err.response?.data || err);
-      alert("❌ เกิดข้อผิดพลาด");
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "An error occurred" });
     }
   };
 
   if (invalidId) {
     return (
       <div className="min-h-[40vh] p-8 text-center text-red-600">
-        ❌ ไม่พบข้อมูลผู้ใช้ หรือ URL ไม่ถูกต้อง
+        ❌ User not found or invalid URL
       </div>
     );
   }
@@ -329,6 +338,17 @@ const EditManageUser = () => {
           </div>
         </form>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          if (alertModal.onClose) alertModal.onClose();
+        }}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+      />
     </div>
   );
 };

@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import axios from "axios";
+import api from "../api";
 import { FaFileVideo, FaTrash } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
 import ConfirmModal from "./deleteDepartment";
-
-const API_BASE = "http://192.168.121.195:3002";
+import AlertModal from "../components/AlertModal";
 
 const Video = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -17,6 +16,7 @@ const Video = () => {
 
   const [selectedIds, setSelectedIds] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   const [rowsOpen, setRowsOpen] = useState(false);
   const rowsMenuRef = useRef(null);
@@ -35,7 +35,7 @@ const Video = () => {
 
   const fetchVideos = useCallback(async () => {
     try {
-      const { data } = await axios.get(`${API_BASE}/api/videos`, {
+      const { data } = await api.get('/api/videos', {
         params: {
           page: currentPage,
           limit: rowsPerPage,
@@ -136,7 +136,7 @@ const Video = () => {
 
             <button
               className="ml-auto inline-flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-600"
-              onClick={() => selectedIds.length ? setShowModal(true) : alert("ยังไม่ได้เลือก")}
+              onClick={() => selectedIds.length ? setShowModal(true) : setAlertModal({ isOpen: true, type: "warning", title: "Warning", message: "Please select at least one item" })}
             >
               <FaTrash /> Delete
             </button>
@@ -162,7 +162,7 @@ const Video = () => {
               <tbody className="block min-h-[500px]">
                 {rows.length === 0 ? (
                   <tr className="grid grid-cols-[6%_12%_12%_12%_24%_22%_12%]">
-                    <td className="col-span-7 py-6 text-center text-gray-500 border-b">ไม่พบข้อมูล</td>
+                    <td className="col-span-7 py-6 text-center text-gray-500 border-b">No data found</td>
                   </tr>
                 ) : (
                   rows.map((s, i) => (
@@ -227,7 +227,7 @@ const Video = () => {
             onCancel={() => setShowModal(false)}
             onConfirm={async () => {
               try {
-                await axios.delete(`${API_BASE}/api/videos`, { data: { ids: selectedIds } });
+                await api.delete('/api/videos', { data: { ids: selectedIds } });
                 setSelectedIds([]);
                 setShowModal(false);
                 fetchVideos();
@@ -238,6 +238,14 @@ const Video = () => {
             }}
           />
         )}
+
+        <AlertModal
+          isOpen={alertModal.isOpen}
+          onClose={() => setAlertModal({ isOpen: false, type: "info", title: "", message: "" })}
+          type={alertModal.type}
+          title={alertModal.title}
+          message={alertModal.message}
+        />
       </div>
     </div>
   );

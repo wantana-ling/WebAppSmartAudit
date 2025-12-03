@@ -1,38 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
+import AlertModal from "../components/AlertModal";
 
 const EditDepartment = () => {
   const [departmentName, setDepartmentName] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   useEffect(() => {
-    axios
-      .get(`${apiBase}/api/departments/${id}`)
+    api
+      .get(`/api/departments/${id}`)
       .then((res) => {
         setDepartmentName(res.data.department_name || "");
       })
       .catch((err) => {
         console.error("❌ โหลด department ล้มเหลว:", err);
-        alert("ไม่พบข้อมูลแผนก");
-        navigate("/department");
+        setAlertModal({ 
+          isOpen: true, 
+          type: "error", 
+          title: "Error", 
+          message: "Department not found",
+          onClose: () => {
+            setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+            navigate("/department");
+          }
+        });
       });
-  }, [id, apiBase, navigate]);
+  }, [id, navigate]);
 
   const handleSave = () => {
-    if (!departmentName.trim()) return alert("กรุณากรอกชื่อแผนก");
+    if (!departmentName.trim()) {
+      setAlertModal({ isOpen: true, type: "warning", title: "Warning", message: "Please enter department name" });
+      return;
+    }
 
-    axios
-      .put(`${apiBase}/api/departments/${id}`, { name: departmentName })
+    api
+      .put(`/api/departments/${id}`, { name: departmentName })
       .then(() => {
-        alert("✅ บันทึกสำเร็จ");
-        navigate("/department");
+        setAlertModal({ 
+          isOpen: true, 
+          type: "success", 
+          title: "Success", 
+          message: "Saved successfully",
+          onClose: () => {
+            setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+            navigate("/department");
+          }
+        });
       })
       .catch((err) => {
         console.error("❌ บันทึกไม่สำเร็จ:", err);
-        alert("เกิดข้อผิดพลาด");
+        setAlertModal({ isOpen: true, type: "error", title: "Error", message: "An error occurred" });
       });
   };
 
@@ -67,6 +87,17 @@ const EditDepartment = () => {
           CANCEL
         </button>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          if (alertModal.onClose) alertModal.onClose();
+        }}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+      />
     </div>
   );
 };

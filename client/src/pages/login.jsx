@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import axios from "axios";
-import { API_BASE, STORAGE_KEYS, MESSAGES, ROUTES, PLACEHOLDERS } from '../constants';
+import api from "../api";
+import { STORAGE_KEYS, MESSAGES, ROUTES, PLACEHOLDERS } from '../constants';
 
 const Login = () => {
   const [user_id, setUserId] = useState("");
@@ -35,11 +35,7 @@ const Login = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.post(
-        `${API_BASE}/api/login`,
-        { user_id, password },
-        { headers: { "Content-Type": "application/json" }, withCredentials: true }
-      );
+      const res = await api.post('/api/login', { user_id, password });
       const adminData = res.data.admin_info;
       if (!adminData) { setError("Invalid response from server"); return; }
       localStorage.setItem(STORAGE_KEYS.USER_ID, adminData.user_id);

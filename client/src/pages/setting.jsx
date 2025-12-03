@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
+import AlertModal from "../components/AlertModal";
 
 const Setting = () => {
   const [adServer, setAdServer] = useState("");
   const navigate = useNavigate();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   useEffect(() => {
-    axios.get(`${apiBase}/api/ad-config`)
+    api.get('/api/ad-config')
       .then(res => {
         if (res.data && res.data.serverip_hostname) {
           setAdServer(res.data.serverip_hostname);
@@ -20,15 +21,18 @@ const Setting = () => {
   }, []);
 
   const handleSave = () => {
-    if (!adServer.trim()) return alert("กรุณากรอก AD Server IP / Host Name");
+    if (!adServer.trim()) {
+      setAlertModal({ isOpen: true, type: "warning", title: "Warning", message: "Please enter AD Server IP / Host Name" });
+      return;
+    }
 
-    axios.post(`${apiBase}/api/ad-config`, { serverip_hostname: adServer })
+    api.post('/api/ad-config', { serverip_hostname: adServer })
       .then(() => {
-        alert("✅ บันทึกสำเร็จ");
+        setAlertModal({ isOpen: true, type: "success", title: "Success", message: "Saved successfully" });
       })
       .catch(err => {
         console.error("❌ บันทึกไม่สำเร็จ:", err);
-        alert("เกิดข้อผิดพลาด");
+        setAlertModal({ isOpen: true, type: "error", title: "Error", message: "An error occurred" });
       });
   };
 
@@ -59,6 +63,14 @@ const Setting = () => {
           </button>
         </div>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => setAlertModal({ isOpen: false, type: "info", title: "", message: "" })}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+      />
     </div>
   );
 };

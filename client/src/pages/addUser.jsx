@@ -1,12 +1,12 @@
 import React, { useState, useEffect,useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import { SlArrowDown } from "react-icons/sl";
+import AlertModal from "../components/AlertModal";
 
 
 const AddUser = () => {
   const navigate = useNavigate();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
   const [deptOpen, setDeptOpen] = useState(false);
   const deptMenuRef = useRef(null);
 
@@ -21,10 +21,11 @@ const AddUser = () => {
   });
 
   const [departments, setDepartments] = useState([]);
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   useEffect(() => {
-    axios
-      .get(`${apiBase}/api/departments`)
+    api
+      .get('/api/departments')
       .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
@@ -45,7 +46,7 @@ const AddUser = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("รหัสผ่านไม่ตรงกัน");
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "Passwords do not match" });
       return;
     }
 
@@ -55,25 +56,34 @@ const AddUser = () => {
     const department_id = selectedDept ? selectedDept.id : null;
 
     if (!department_id) {
-      alert("❌ ไม่พบ department_id จากชื่อแผนก");
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "Department ID not found" });
       return;
     }
 
     try {
-      await axios.post(`${apiBase}/api/users`, {
+      await api.post('/api/users', {
         firstname: formData.firstName,
         midname: formData.midName,
         lastname: formData.lastName,
         department_id,
-        user_id: formData.userId,
+        user_id: parseInt(formData.userId) || formData.userId,
         password: formData.password,
       });
 
-      alert("✅ เพิ่มผู้ใช้สำเร็จ");
-      navigate("/userManagement");
+      setAlertModal({ 
+        isOpen: true, 
+        type: "success", 
+        title: "Success", 
+        message: "User added successfully",
+        onClose: () => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          navigate("/userManagement");
+        }
+      });
     } catch (err) {
       console.error("❌ ไม่สามารถเพิ่มผู้ใช้ได้:", err);
-      alert("❌ เกิดข้อผิดพลาด");
+      const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: errorMessage });
     }
   };
 
@@ -256,6 +266,17 @@ const AddUser = () => {
           </div>
         </form>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => {
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          if (alertModal.onClose) alertModal.onClose();
+        }}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+      />
     </div>
   );
 };

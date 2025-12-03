@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
-import axios from "axios";
+import api from "../api";
 import ConfirmModal from "./deleteDevice";
 
 const DeviceManagement = () => {
@@ -22,7 +22,6 @@ const DeviceManagement = () => {
   const [selectedId, setSelectedId] = useState(null);
 
   const navigate = useNavigate();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   useEffect(() => {
     const handler = (e) => {
@@ -34,8 +33,8 @@ const DeviceManagement = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`${apiBase}/api/devices`).then(r => setDevices(r.data || [])).catch(console.error);
-    axios.get(`${apiBase}/api/departments`).then(r => setDepartments(r.data || [])).catch(console.error);
+    api.get('/api/devices').then(r => setDevices(r.data || [])).catch(console.error);
+    api.get('/api/departments').then(r => setDepartments(r.data || [])).catch(console.error);
   }, []);
 
   const filtered = devices
@@ -58,10 +57,10 @@ const DeviceManagement = () => {
   const confirmDelete = async () => {
     if (!selectedId) return;
     try {
-      await axios.delete(`${apiBase}/api/devices/${selectedId}`);
+      await api.delete(`/api/devices/${selectedId}`);
       setShowModal(false);
       setSelectedId(null);
-      const r = await axios.get(`${apiBase}/api/devices`);
+      const r = await api.get('/api/devices');
       setDevices(r.data || []);
     } catch (e) {
       console.error(e);
@@ -210,7 +209,7 @@ const DeviceManagement = () => {
               <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
                 {pageData.length === 0 ? (
                   <tr className="table w-full table-fixed">
-                    <td colSpan={7} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
+                    <td colSpan={7} className="py-6 text-center text-gray-500">No data found</td>
                   </tr>
                 ) : (
                   pageData.map((d, i) => (

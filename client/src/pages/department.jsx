@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
-import axios from "axios";
+import api from "../api";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "./deleteDepartment";
 
@@ -19,11 +19,10 @@ const Department = () => {
   const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   const fetchDepartments = () => {
-    axios
-      .get(`${apiBase}/api/departments`)
+    api
+      .get('/api/departments')
       .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้", err));
   };
@@ -57,8 +56,8 @@ const Department = () => {
   };
   const confirmDelete = () => {
     if (!selectedId) return;
-    axios
-      .delete(`${apiBase}/api/departments/${selectedId}`)
+    api
+      .delete(`/api/departments/${selectedId}`)
       .then(() => { setShowModal(false); setSelectedId(null); fetchDepartments(); })
       .catch((err) => { console.error("❌ ลบไม่สำเร็จ:", err); setShowModal(false); });
   };
@@ -159,7 +158,7 @@ const Department = () => {
               <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
                 {pageData.length === 0 ? (
                   <tr className="table w-full table-fixed">
-                    <td colSpan={4} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
+                    <td colSpan={4} className="py-6 text-center text-gray-500">No data found</td>
                   </tr>
                 ) : (
                   pageData.map((d, i) => (

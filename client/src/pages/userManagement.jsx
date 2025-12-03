@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
@@ -28,7 +28,6 @@ const UserManagement = () => {
 
 
   const navigate = useNavigate();
-  const apiBase = process.env.REACT_APP_API_URL || "http://192.168.121.195:3002";
 
   // close dropdowns when clicking outside
   useEffect(() => {
@@ -41,11 +40,11 @@ const UserManagement = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`${apiBase}/api/users`)
+    api.get('/api/users')
       .then((res) => setUsers(res.data || []))
       .catch((err) => console.error("❌ ไม่สามารถดึงข้อมูล user:", err));
 
-    axios.get(`${apiBase}/api/departments`)
+    api.get('/api/departments')
       .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
@@ -74,8 +73,8 @@ const UserManagement = () => {
 
   const confirmDelete = () => {
   if (!selectedUserId) return;
-  axios.delete(`${apiBase}/api/users/${selectedUserId}`)
-    .then(() => axios.get(`${apiBase}/api/users`))
+  api.delete(`/api/users/${selectedUserId}`)
+    .then(() => api.get('/api/users'))
     .then(res => setUsers(res.data || []))
     .catch(err => console.error("❌ ลบไม่สำเร็จ:", err))
     .finally(() => { setShowModal(false); setSelectedUserId(null); });
@@ -292,7 +291,7 @@ const UserManagement = () => {
               <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
                 {visibleUsers.length === 0 ? (
                   <tr className="table w-full table-fixed">
-                    <td colSpan={7} className="py-6 text-center text-gray-500">ไม่พบข้อมูล</td>
+                    <td colSpan={7} className="py-6 text-center text-gray-500">No data found</td>
                   </tr>
                 ) : (
                   visibleUsers.map((u, idx) => (
