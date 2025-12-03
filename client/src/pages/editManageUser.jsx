@@ -59,7 +59,8 @@ const EditManageUser = () => {
   }, []);
 
   useEffect(() => {
-    if (!id || id === "undefined") {
+    // Check if id is valid (not undefined, null, or string "undefined")
+    if (!id || id === "undefined" || id === "null") {
       setInvalidId(true);
       return;
     }
@@ -128,7 +129,8 @@ const EditManageUser = () => {
       });
     } catch (err) {
       console.error("❌ ไม่สามารถอัปเดตผู้ใช้ได้:", err.response?.data || err);
-      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "An error occurred" });
+      const errorMessage = err.response?.data?.detail || err.message || "An error occurred while updating user";
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: errorMessage });
     }
   };
 

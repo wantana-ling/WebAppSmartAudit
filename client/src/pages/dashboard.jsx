@@ -40,6 +40,7 @@ const Dashboard = () => {
   const [userChart, setUserChart] = useState([]);
   const [historyTimeline, setHistoryTimeline] = useState([]);
   const [years, setYears] = useState([]);
+  const [error, setError] = useState(null);
 
   const now = new Date();
   const [month, setMonth] = useState(now.getMonth() + 1);
@@ -67,8 +68,12 @@ const Dashboard = () => {
         setHistoryTimeline(historyRes.data || []);
         setUserChart(chartRes.data || []);
         setYears(yearsRes.data || []);
+        setError(null); // Clear any previous errors
       } catch (e) {
         console.error("Dashboard fetch error:", e);
+        if (!cancelled) {
+          setError("Failed to load dashboard data. Please try again later.");
+        }
       }
     };
 
@@ -76,6 +81,20 @@ const Dashboard = () => {
     return () => { cancelled = true; };
   }, [month, year]);
 
+  if (error) {
+    return (
+      <div className="py-20 text-center">
+        <div className="text-red-600 mb-4">{error}</div>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+  
   if (!stats) return <div className="py-20 text-center text-gray-500">Loading dashboard…</div>;
 
   const accessTrend = stats.accessTrend ?? -1.55;

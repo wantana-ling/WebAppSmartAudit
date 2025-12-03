@@ -7,6 +7,7 @@ Router หลักของ FastAPI สำหรับ SmartAudit:
 - รวมทุก sub-router ของแต่ละโมดูล
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,10 +22,23 @@ from .users import router as users_router
 from .videos import router as videos_router
 
 
+# ---------- DB pool lifespan handler ----------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """จัดการ MySQL connection pool lifecycle (startup / shutdown)"""
+    # Startup: สร้าง MySQL connection pool
+    await init_pool()
+    yield
+    # Shutdown: ปิด MySQL connection pool
+    await close_pool()
+# ----------------------------------------------
+
+
 # ---------- สร้าง FastAPI app ----------
 app = FastAPI(
     title="SmartAudit API",
     version="1.0.0",
+    lifespan=lifespan,  # ใช้ lifespan แทน on_event (deprecated)
 )
 # --------------------------------------
 
@@ -46,20 +60,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 # ----------------------------------
-
-
-# ---------- DB pool startup / shutdown ----------
-@app.on_event("startup")
-async def on_startup() -> None:
-    """สร้าง MySQL connection pool ตอนแอปรันขึ้นมา"""
-    await init_pool()
-
-
-@app.on_event("shutdown")
-async def on_shutdown() -> None:
-    """ปิด MySQL connection pool ตอนแอปดับ"""
-    await close_pool()
-# ------------------------------------------------
 
 
 # ---------- รวม router ทั้งหมด ----------

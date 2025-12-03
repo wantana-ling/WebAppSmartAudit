@@ -35,7 +35,7 @@ print("ENV VALUES:", DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT)
 pool: aiomysql.Pool | None = None
 
 
-async def init_pool(loop=None):
+async def init_pool():
     """สร้าง MySQL connection pool ตอนแอปเริ่มทำงาน."""
     global pool
     if pool is not None:
@@ -60,8 +60,7 @@ async def init_pool(loop=None):
         autocommit=True,
         charset="utf8mb4",
     )
-    if loop is not None:
-        kwargs["loop"] = loop
+    # Note: loop parameter is deprecated in aiomysql, removed for compatibility
 
     pool = await aiomysql.create_pool(**kwargs)
     print(f"POOL READY: {DB_USER}@{DB_HOST}/{DB_NAME}")

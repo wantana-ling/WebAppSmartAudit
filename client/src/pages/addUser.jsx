@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { SlArrowDown } from "react-icons/sl";
@@ -50,23 +50,33 @@ const AddUser = () => {
       return;
     }
 
+    // Validate department selection
+    if (!formData.department) {
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "Please select a department" });
+      return;
+    }
+
     const selectedDept = departments.find(
       (d) => d.department_name === formData.department
     );
     const department_id = selectedDept ? selectedDept.id : null;
 
     if (!department_id) {
-      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "Department ID not found" });
+      setAlertModal({ isOpen: true, type: "error", title: "Error", message: "Department ID not found. Please select a valid department." });
       return;
     }
 
     try {
+      // Convert user_id to number, handling edge cases like "0" or "000"
+      const userIdNum = parseInt(formData.userId, 10);
+      const userId = isNaN(userIdNum) ? formData.userId : userIdNum;
+      
       await api.post('/api/users', {
         firstname: formData.firstName,
         midname: formData.midName,
         lastname: formData.lastName,
         department_id,
-        user_id: parseInt(formData.userId) || formData.userId,
+        user_id: userId,
         password: formData.password,
       });
 
