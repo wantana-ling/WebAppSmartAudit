@@ -64,6 +64,7 @@ class VideoDelete(BaseModel):
 
 
 # GET /api/videos
+@router.get("")
 @router.get("/")
 async def list_videos(
     page: int = Query(1, ge=1),
@@ -137,6 +138,7 @@ async def list_videos(
 
 
 # POST /api/videos
+@router.post("")
 @router.post("/")
 async def create_video(payload: VideoCreate, db=Depends(get_db)):
     """
@@ -192,6 +194,7 @@ async def create_video(payload: VideoCreate, db=Depends(get_db)):
 
 
 # DELETE /api/videos
+@router.delete("")
 @router.delete("/")
 async def delete_videos(payload: VideoDelete, db=Depends(get_db)):
     """

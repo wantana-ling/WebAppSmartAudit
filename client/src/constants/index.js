@@ -1,5 +1,5 @@
 // API Configuration
-export const API_BASE = process.env.REACT_APP_API_URL?.trim() || 'http://localhost:8000';
+export const API_BASE = process.env.REACT_APP_API_URL?.trim() || 'http://localhost:8000/api';
 export const VIDEO_SERVER_URL = process.env.REACT_APP_VIDEO_SERVER_URL || 'http://localhost:3050';
 
 // Pagination

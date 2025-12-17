@@ -3,6 +3,7 @@
 Endpoints สำหรับจัดการแผนก (departments):
 
 - GET    /api/departments          : รายการทุกแผนก
+- GET    /api/departments/{id}     : ดึงข้อมูลแผนกตาม id
 - POST   /api/departments          : เพิ่มแผนกใหม่
 - PUT    /api/departments/{id}     : แก้ไขชื่อแผนก
 - DELETE /api/departments/{id}     : ลบแผนก
@@ -40,6 +41,7 @@ def _trim_name(name: str | None) -> str:
 
 
 # GET /api/departments
+@router.get("")
 @router.get("/")
 async def get_departments(db=Depends(get_db)):
     """ดึงรายการทุกแผนก."""
@@ -56,7 +58,37 @@ async def get_departments(db=Depends(get_db)):
         )
 
 
+# GET /api/departments/{id}
+@router.get("/{dept_id}")
+async def get_department_by_id(dept_id: int, db=Depends(get_db)):
+    """ดึงข้อมูลแผนกตาม id."""
+    try:
+        async with db.cursor(aiomysql.DictCursor) as cur:
+            await cur.execute(
+                "SELECT id, department_name FROM department WHERE id = %s",
+                (dept_id,),
+            )
+            row = await cur.fetchone()
+
+        if not row:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Department not found",
+            )
+
+        return row
+    except HTTPException:
+        raise
+    except Exception as err:
+        print("GET /api/departments/{id} failed:", err)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database error",
+        )
+
+
 # POST /api/departments
+@router.post("", status_code=status.HTTP_201_CREATED)
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_department(payload: DepartmentCreate, db=Depends(get_db)):
     """สร้างแผนกใหม่."""

@@ -10,6 +10,7 @@ Endpoint สำหรับจัดการการล็อกอินข�
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import Response
 from pydantic import BaseModel
 import bcrypt
 import aiomysql
@@ -21,6 +22,22 @@ router = APIRouter(
     prefix="/api",   # ทำให้ path เป็น /api/login
     tags=["auth"],
 )
+
+
+@router.options("/login", include_in_schema=False)
+async def login_options():
+    """Handle CORS preflight request for login endpoint - must return 200 without redirect"""
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "http://localhost:3000",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept, Origin, X-Requested-With",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Max-Age": "3600",
+        },
+        content=""
+    )
 
 
 class LoginRequest(BaseModel):

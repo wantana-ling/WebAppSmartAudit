@@ -68,7 +68,7 @@ const Department = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start">
-      <div className="mx-auto w-full max-w-[1080px] pt-10 lg:pt-20">
+      <div className="mx-auto w-full max-w-[900px] pt-6 lg:pt-10 px-4">
         {/* Search + Filters (สไตล์ ActiveVisitor) */}
         <div className="mb-4 flex flex-col gap-3">
           <div className="flex items-center gap-3">
@@ -100,18 +100,18 @@ const Department = () => {
                 aria-haspopup="listbox"
                 aria-expanded={rowsOpen}
                 aria-controls="rows-menu"
-                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
               >
                 <span className="font-medium">Show row</span>
                 <span className="text-gray-600">{rowsPerPage}</span>
-                <SlArrowDown className={`transition ${rowsOpen ? "rotate-180" : ""}`} />
+                <SlArrowDown className={`transition-transform duration-200 ${rowsOpen ? "rotate-180" : ""}`} />
               </button>
 
               {rowsOpen && (
                 <ul
                   id="rows-menu"
                   role="listbox"
-                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease]"
                 >
                   {[10, 50, 100].map((n) => (
                     <li
@@ -119,8 +119,8 @@ const Department = () => {
                       role="option"
                       aria-selected={rowsPerPage === n}
                       onClick={() => { setRowsPerPage(n); setCurrentPage(1); setRowsOpen(false); }}
-                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm hover:bg-indigo-50 ${
-                        rowsPerPage === n ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                        rowsPerPage === n ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                       }`}
                     >
                       {n}
@@ -143,22 +143,22 @@ const Department = () => {
         </div>
 
         {/* การ์ดตาราง (หัว sticky + เลื่อน tbody) */}
-        <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
-          <div className="w-full max-h-[640px] overflow-y-auto">
+        <div className="mx-auto w-full max-w-[900px] rounded-xl bg-white shadow-md ring-1 ring-gray-200 overflow-hidden border border-gray-100">
+          <div className="w-full max-h-[500px] overflow-y-auto">
             <table className="w-full h-full border-collapse text-sm table-fixed">
-              <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200"> {/*แก้*/}
+              <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
                 <tr className="table w-full table-fixed">
-                  <th className="w-[13%] py-3 text-center font-semibold">No.</th>
-                  <th className="w-[40%] py-3 text-center font-semibold">Department Name</th>
-                  <th className="w-[20%] py-3 text-center font-semibold">Edit</th>
-                  <th className="w-[20%] py-3 text-center font-semibold">Delete</th>
+                  <th className="w-[13%] py-2.5 text-center px-2 font-medium text-xs">No.</th>
+                  <th className="w-[40%] py-2.5 text-center px-3 font-medium text-xs">Department Name</th>
+                  <th className="w-[23%] py-2.5 text-center px-2 font-medium text-xs">Edit</th>
+                  <th className="w-[24%] py-2.5 text-center px-2 font-medium text-xs">Delete</th>
                 </tr>
               </thead>
 
-              <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
+              <tbody className="block min-h-[400px] max-h-[500px] overflow-y-auto">
                 {pageData.length === 0 ? (
                   <tr className="table w-full table-fixed">
-                    <td colSpan={4} className="py-6 text-center text-gray-500">No data found</td>
+                    <td colSpan={4} className="py-8 text-center text-gray-500 text-sm">No data found</td>
                   </tr>
                 ) : (
                   pageData.map((d, i) => (
@@ -166,22 +166,24 @@ const Department = () => {
                       key={d.id}
                       className="table w-full table-fixed border-b border-gray-200 odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
                     >
-                      <td className="w-[13%] px-4 py-3 text-center">{startIndex + i + 1}</td>
-                      <td className="w-[40%] px-4 py-3 text-center">{d.department_name}</td>
-                      <td className="w-[20%] px-4 py-3 text-center">
+                      <td className="w-[13%] px-2 py-2.5 text-center align-middle text-xs">{startIndex + i + 1}</td>
+                      <td className="w-[40%] px-3 py-2.5 text-center align-middle text-xs truncate">{d.department_name}</td>
+                      <td className="w-[23%] px-2 py-2.5 text-center align-middle">
                         <button
-                          className="rounded-full p-2 text-blue-600 hover:bg-blue-50"
+                          className="text-blue-600 hover:text-blue-700"
                           onClick={() => navigate(`/editDepartment/${d.id}`)}
+                          aria-label="Edit"
                         >
-                          <FaEdit />
+                          <FaEdit className="mx-auto text-sm" />
                         </button>
                       </td>
-                      <td className="w-[20%] px-4 py-3 text-center">
+                      <td className="w-[24%] px-2 py-2.5 text-center align-middle">
                         <button
-                          className="rounded-full p-2 text-red-600 hover:bg-red-50"
+                          className="text-red-600 hover:text-red-700"
                           onClick={() => handleDeleteClick(d.id)}
+                          aria-label="Delete"
                         >
-                          <FaTrash />
+                          <FaTrash className="mx-auto text-sm" />
                         </button>
                       </td>
                     </tr>
@@ -193,19 +195,19 @@ const Department = () => {
         </div>
 
 
-        {/* Pagination (โทนเดียวกับ ActiveVisitor) */}
-        <div className="mx-auto mt-5 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
+        {/* Pagination */}
+        <div className="mx-auto mt-4 flex max-w-[900px] flex-wrap items-center justify-center gap-1.5">
           <button
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {"<<"}
           </button>
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {"<"}
           </button>
@@ -214,10 +216,10 @@ const Department = () => {
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm transition hover:bg-[#0DA5D8] hover:text-white ${
+              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:shadow-md ${
                 page === currentPage
-                  ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold"
-                  : "bg-white border-gray-300"
+                  ? "bg-gradient-to-r from-[#0DA5D8] to-[#1A2DAC] text-white border-[#0DA5D8] font-semibold shadow-md"
+                  : "bg-white border-gray-300 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8]"
               }`}
             >
               {page}
@@ -227,14 +229,14 @@ const Department = () => {
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {">"}
           </button>
           <button
             onClick={() => setCurrentPage(totalPages)}
             disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {">>"}
           </button>

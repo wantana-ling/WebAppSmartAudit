@@ -92,7 +92,7 @@ const UserManagement = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start">
-      <div className="mx-auto w-full max-w-[1080px] pt-10 lg:pt-20">  
+      <div className="mx-auto w-full max-w-[900px] pt-6 lg:pt-10 px-4">  
         {/* Search + Filters (โคลนโทนจาก ActiveVisitor) */}
         <div className="flex flex-col gap-3 mb-4">
           <div className="flex items-center gap-3">
@@ -124,27 +124,27 @@ const UserManagement = () => {
                 aria-haspopup="listbox"
                 aria-expanded={rowsOpen}
                 aria-controls="rows-menu"
-                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
               >
                 <span className="font-medium">Show row</span>
                 <span className="text-gray-600">{rowsPerPage}</span>
-                <SlArrowDown className={`transition ${rowsOpen ? "rotate-180" : ""}`} />
+                <SlArrowDown className={`transition-transform duration-200 ${rowsOpen ? "rotate-180" : ""}`} />
               </button>
 
               {rowsOpen && (
                 <ul
                   id="rows-menu"
                   role="listbox"
-                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease]"
                 >
                   {[10, 50, 100].map(n => (
                     <li
                       key={n}
                       role="option"
                       aria-selected={rowsPerPage === n}
-                      onClick={() => { setRowsPerPage(n); setRowsOpen(false); }}
-                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm hover:bg-indigo-50 ${
-                        rowsPerPage === n ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      onClick={() => { setRowsPerPage(n); setCurrentPage(1); setRowsOpen(false); }}
+                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                        rowsPerPage === n ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                       }`}
                     >
                       {n}
@@ -154,7 +154,7 @@ const UserManagement = () => {
               )}
             </div>
 
-            {/* department dropdown (สไตล์เดียวกับ ActiveVisitor) */}
+            {/* department dropdown */}
             <div className="relative inline-flex items-center gap-2" ref={deptMenuRef}>
               <button
                 type="button"
@@ -162,27 +162,27 @@ const UserManagement = () => {
                 aria-haspopup="listbox"
                 aria-expanded={deptOpen}
                 aria-controls="dept-menu"
-                className="inline-flex h-10 min-w-[240px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+                className="inline-flex h-10 min-w-[240px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
               >
                 <span className="font-medium">Department</span>
-                <span className="truncate">
+                <span className="truncate text-gray-600">
                   {departmentFilter === "all" ? "All" : departmentFilter}
                 </span>
-                <SlArrowDown className={`transition ${deptOpen ? "rotate-180" : ""}`} />
+                <SlArrowDown className={`transition-transform duration-200 ${deptOpen ? "rotate-180" : ""}`} />
               </button>
 
               {deptOpen && (
                 <ul
                   id="dept-menu"
                   role="listbox"
-                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[240px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[240px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease] scrollbar-thin"
                 >
                   <li
                     role="option"
                     aria-selected={departmentFilter === "all"}
-                    onClick={() => { setDepartmentFilter("all"); setDeptOpen(false); }}
-                    className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                      departmentFilter === "all" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                    onClick={() => { setDepartmentFilter("all"); setCurrentPage(1); setDeptOpen(false); }}
+                    className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                      departmentFilter === "all" ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                     }`}
                   >
                     All
@@ -192,9 +192,9 @@ const UserManagement = () => {
                       key={d.id || d.department_name}
                       role="option"
                       aria-selected={departmentFilter === d.department_name}
-                      onClick={() => { setDepartmentFilter(d.department_name); setDeptOpen(false); }}
-                      className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                        departmentFilter === d.department_name ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      onClick={() => { setDepartmentFilter(d.department_name); setCurrentPage(1); setDeptOpen(false); }}
+                      className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                        departmentFilter === d.department_name ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                       }`}
                     >
                       {d.department_name}
@@ -204,7 +204,7 @@ const UserManagement = () => {
               )}
             </div>
 
-            {/* status (คง select ไว้ แต่ปรับโทนให้กลมกลืน) */}
+            {/* status */}
             <div className="relative inline-flex items-center gap-2" ref={statusMenuRef}>
               <button
                 type="button"
@@ -212,27 +212,27 @@ const UserManagement = () => {
                 aria-haspopup="listbox"
                 aria-expanded={statusOpen}
                 aria-controls="status-menu"
-                className="inline-flex h-10 min-w-[160px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+                className="inline-flex h-10 min-w-[160px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
               >
                 <span className="font-medium">Status</span>
-                <span className="truncate">
+                <span className="truncate text-gray-600">
                   {statusFilter === "" ? "All" : statusFilter.toUpperCase()}
                 </span>
-                <SlArrowDown className={`transition ${statusOpen ? "rotate-180" : ""}`} />
+                <SlArrowDown className={`transition-transform duration-200 ${statusOpen ? "rotate-180" : ""}`} />
               </button>
 
               {statusOpen && (
                 <ul
                   id="status-menu"
                   role="listbox"
-                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[160px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[160px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease]"
                 >
                   <li
                     role="option"
                     aria-selected={statusFilter === ""}
-                    onClick={() => { setStatusFilter(""); setStatusOpen(false); }}
-                    className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                      statusFilter === "" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                    onClick={() => { setStatusFilter(""); setCurrentPage(1); setStatusOpen(false); }}
+                    className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                      statusFilter === "" ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                     }`}
                   >
                     All
@@ -240,9 +240,9 @@ const UserManagement = () => {
                   <li
                     role="option"
                     aria-selected={statusFilter === "active"}
-                    onClick={() => { setStatusFilter("active"); setStatusOpen(false); }}
-                    className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                      statusFilter === "active" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                    onClick={() => { setStatusFilter("active"); setCurrentPage(1); setStatusOpen(false); }}
+                    className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                      statusFilter === "active" ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                     }`}
                   >
                     ACTIVE
@@ -250,9 +250,9 @@ const UserManagement = () => {
                   <li
                     role="option"
                     aria-selected={statusFilter === "inactive"}
-                    onClick={() => { setStatusFilter("inactive"); setStatusOpen(false); }}
-                    className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                      statusFilter === "inactive" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                    onClick={() => { setStatusFilter("inactive"); setCurrentPage(1); setStatusOpen(false); }}
+                    className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                      statusFilter === "inactive" ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                     }`}
                   >
                     INACTIVE
@@ -272,26 +272,26 @@ const UserManagement = () => {
         </div>
 
         {/* Table (หัวตาราง sticky, โทนเดียวกับ ActiveVisitor) */}
-        <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
-          <div className="w-full max-h-[640px] overflow-y-auto">
+        <div className="mx-auto w-full max-w-[900px] rounded-xl bg-white shadow-md ring-1 ring-gray-200 overflow-hidden border border-gray-100">
+          <div className="w-full max-h-[500px] overflow-y-auto">
             <table className="w-full h-full border-collapse text-sm table-fixed">
               <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
                 <tr className="table w-full table-fixed">
-                  <th className="w-[8%]  py-3.5 text-center px-3 font-medium">No.</th>
-                  <th className="w-[12%] py-3.5 text-left  px-4 font-medium">UserID</th>
-                  <th className="w-[24%] py-3.5 text-left  px-3 font-medium">Department</th>
-                  <th className="w-[30%] py-3.5 text-left  px-3 font-medium">Name</th>
-                  <th className="w-[10%] py-3.5 text-left  px-3 font-medium">Status</th>
-                  <th className="w-[8%]  py-3.5 text-center px-3 font-medium">Edit</th>
-                  <th className="w-[8%]  py-3.5 text-center px-3 font-medium">Delete</th>
+                  <th className="w-[8%] py-2.5 text-center px-2 font-medium text-xs">No.</th>
+                  <th className="w-[12%] py-2.5 text-left px-3 font-medium text-xs">UserID</th>
+                  <th className="w-[22%] py-2.5 text-left px-3 font-medium text-xs">Department</th>
+                  <th className="w-[28%] py-2.5 text-left px-3 font-medium text-xs">Name</th>
+                  <th className="w-[12%] py-2.5 text-left px-2 font-medium text-xs">Status</th>
+                  <th className="w-[9%] py-2.5 text-center px-2 font-medium text-xs">Edit</th>
+                  <th className="w-[9%] py-2.5 text-center px-2 font-medium text-xs">Delete</th>
                 </tr>
               </thead>
 
               {/* ล็อคความสูง ~10 แถวเหมือน activevisitor */}
-              <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
+              <tbody className="block min-h-[400px] max-h-[500px] overflow-y-auto">
                 {visibleUsers.length === 0 ? (
                   <tr className="table w-full table-fixed">
-                    <td colSpan={7} className="py-6 text-center text-gray-500">No data found</td>
+                    <td colSpan={7} className="py-8 text-center text-gray-500 text-sm">No data found</td>
                   </tr>
                 ) : (
                   visibleUsers.map((u, idx) => (
@@ -299,33 +299,33 @@ const UserManagement = () => {
                       key={u.user_id ?? u.userId ?? idx}
                       className="table w-full table-fixed border-b border-gray-200 odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
                     >
-                      <td className="w-[8%]  px-3 py-4 text-center align-middle">{startIndex + idx + 1}</td>
-                      <td className="w-[12%] px-4 py-4 align-middle">{u.user_id ?? u.userId}</td>
-                      <td className="w-[24%] px-3 py-4 align-middle">{u.department}</td>
-                      <td className="w-[30%] px-3 py-4 align-middle">{u.name ?? `${u.firstname || ""} ${u.midname || ""} ${u.lastname || ""}`}</td>
-                      <td className="w-[10%] px-3 py-4 align-middle">
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold
+                      <td className="w-[8%] px-2 py-2.5 text-center align-middle text-xs">{startIndex + idx + 1}</td>
+                      <td className="w-[12%] px-3 py-2.5 align-middle text-xs">{u.user_id ?? u.userId}</td>
+                      <td className="w-[22%] px-3 py-2.5 align-middle text-xs truncate">{u.department}</td>
+                      <td className="w-[28%] px-3 py-2.5 align-middle text-xs truncate">{u.name ?? `${u.firstname || ""} ${u.midname || ""} ${u.lastname || ""}`.trim()}</td>
+                      <td className="w-[12%] px-2 py-2.5 align-middle">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold
                           ${String(u.status).toLowerCase() === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
-                          <svg viewBox="0 0 8 8" className="w-2 h-2 fill-current"><circle cx="4" cy="4" r="4"/></svg>
+                          <svg viewBox="0 0 8 8" className="w-1.5 h-1.5 fill-current"><circle cx="4" cy="4" r="4"/></svg>
                           {String(u.status).toUpperCase()}
                         </span>
                       </td>
-                      <td className="w-[8%]  px-3 py-4 text-center align-middle">
+                      <td className="w-[9%] px-2 py-2.5 text-center align-middle">
                         <button
                           onClick={() => navigate(`/editManageUser/${u.user_id}`)}
                           className="text-blue-600 hover:text-blue-700"
                           aria-label="Edit"
                         >
-                          <FaEdit className="mx-auto" />
+                          <FaEdit className="mx-auto text-sm" />
                         </button>
                       </td>
-                      <td className="w-[8%]  px-3 py-4 text-center align-middle">
+                      <td className="w-[9%] px-2 py-2.5 text-center align-middle">
                         <button
                           onClick={() => handleDelete(u.user_id)}
                           className="text-red-600 hover:text-red-700"
                           aria-label="Delete"
                         >
-                          <FaTrash className="mx-auto" />
+                          <FaTrash className="mx-auto text-sm" />
                         </button>
                       </td>
                     </tr>
@@ -343,29 +343,31 @@ const UserManagement = () => {
           </div>
         </div>
 
-        {/* Pagination (โทนเดียวกัน) */}
-        <div className="mx-auto mt-5 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
+        {/* Pagination */}
+        <div className="mx-auto mt-4 flex max-w-[900px] flex-wrap items-center justify-center gap-1.5">
           <button
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {"<<"}
           </button>
           <button
-            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {"<"}
           </button>
 
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm transition hover:bg-[#0DA5D8] hover:text-white ${
-                page === currentPage ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold" : "bg-white border-gray-300"
+              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:shadow-md ${
+                page === currentPage
+                  ? "bg-gradient-to-r from-[#0DA5D8] to-[#1A2DAC] text-white border-[#0DA5D8] font-semibold shadow-md"
+                  : "bg-white border-gray-300 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8]"
               }`}
             >
               {page}
@@ -373,16 +375,16 @@ const UserManagement = () => {
           ))}
 
           <button
-            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {">"}
           </button>
           <button
             onClick={() => setCurrentPage(totalPages)}
             disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {">>"}
           </button>

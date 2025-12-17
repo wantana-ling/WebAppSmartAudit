@@ -70,7 +70,7 @@ const DeviceManagement = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start">
-      <div className="mx-auto w-full max-w-[1080px] pt-10 lg:pt-20">
+      <div className="mx-auto w-full max-w-[900px] pt-6 lg:pt-10 px-4">
         <div className="mb-4 flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <div className="relative w-full max-w-[520px]">
@@ -102,18 +102,18 @@ const DeviceManagement = () => {
                 aria-haspopup="listbox"
                 aria-expanded={rowsOpen}
                 aria-controls="rows-menu"
-                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+                className="inline-flex h-10 min-w-[130px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
               >
                 <span className="font-medium">Show row</span>
                 <span className="text-gray-600">{rowsPerPage}</span>
-                <SlArrowDown className={`transition ${rowsOpen ? "rotate-180" : ""}`} />
+                <SlArrowDown className={`transition-transform duration-200 ${rowsOpen ? "rotate-180" : ""}`} />
               </button>
 
               {rowsOpen && (
                 <ul
                   id="rows-menu"
                   role="listbox"
-                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease]"
                 >
                   {[10, 50, 100].map(n => (
                     <li
@@ -121,8 +121,8 @@ const DeviceManagement = () => {
                       role="option"
                       aria-selected={rowsPerPage === n}
                       onClick={() => { setRowsPerPage(n); setCurrentPage(1); setRowsOpen(false); }}
-                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm hover:bg-indigo-50 ${
-                        rowsPerPage === n ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      className={`flex h-9 cursor-pointer items-center justify-between px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                        rowsPerPage === n ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                       }`}
                     >
                       {n}
@@ -139,27 +139,27 @@ const DeviceManagement = () => {
                 aria-haspopup="listbox"
                 aria-expanded={deptOpen}
                 aria-controls="dept-menu"
-                className="inline-flex h-10 min-w-[240px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-400"
+                className="inline-flex h-10 min-w-[240px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
               >
                 <span className="font-medium">Department</span>
-                <span className="truncate">
+                <span className="truncate text-gray-600">
                   {filterDept === "all" ? "All" : filterDept}
                 </span>
-                <SlArrowDown className={`transition ${deptOpen ? "rotate-180" : ""}`} />
+                <SlArrowDown className={`transition-transform duration-200 ${deptOpen ? "rotate-180" : ""}`} />
               </button>
 
               {deptOpen && (
                 <ul
                   id="dept-menu"
                   role="listbox"
-                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[240px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-[calc(100%+6px)] z-30 w-[240px] max-h-60 overflow-y-auto list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease] scrollbar-thin"
                 >
                   <li
                     role="option"
                     aria-selected={filterDept === "all"}
                     onClick={() => { setFilterDept("all"); setCurrentPage(1); setDeptOpen(false); }}
-                    className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                      filterDept === "all" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                    className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                      filterDept === "all" ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                     }`}
                   >
                     All
@@ -170,8 +170,8 @@ const DeviceManagement = () => {
                       role="option"
                       aria-selected={filterDept === d.department_name}
                       onClick={() => { setFilterDept(d.department_name); setCurrentPage(1); setDeptOpen(false); }}
-                      className={`flex h-9 cursor-pointer items-center px-3 text-sm hover:bg-indigo-50 ${
-                        filterDept === d.department_name ? "bg-indigo-50 font-semibold text-indigo-700" : "text-gray-800"
+                      className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                        filterDept === d.department_name ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
                       }`}
                     >
                       {d.department_name}
@@ -191,25 +191,25 @@ const DeviceManagement = () => {
             </div>
           </div>
         </div>
-        <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
-          <div className="w-full max-h-[640px] overflow-y-auto">
+        <div className="mx-auto w-full max-w-[900px] rounded-xl bg-white shadow-md ring-1 ring-gray-200 overflow-hidden border border-gray-100">
+          <div className="w-full max-h-[500px] overflow-y-auto">
             <table className="w-full h-full border-collapse text-sm table-fixed">
               <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
                 <tr className="table w-full table-fixed">
-                  <th className="w-[8%]  py-3.5 text-center px-3 font-medium">No.</th>
-                  <th className="w-[20%] py-3.5 text-left  px-3 font-medium">Server / Device Name</th>
-                  <th className="w-[20%] py-3.5 text-left  px-3 font-medium">IP / Hostname</th>
-                  <th className="w-[20%] py-3.5 text-left  px-3 font-medium">Department</th>
-                  <th className="w-[15%] py-3.5 text-center px-3 font-medium">Active Users</th>
-                  <th className="w-[6%]  py-3.5 text-center px-3 font-medium">Edit</th>
-                  <th className="w-[10%]  py-3.5 text-center px-3 font-medium">Delete</th>
+                  <th className="w-[8%] py-2.5 text-center px-2 font-medium text-xs">No.</th>
+                  <th className="w-[20%] py-2.5 text-left px-3 font-medium text-xs">Server / Device Name</th>
+                  <th className="w-[18%] py-2.5 text-left px-3 font-medium text-xs">IP / Hostname</th>
+                  <th className="w-[20%] py-2.5 text-left px-3 font-medium text-xs">Department</th>
+                  <th className="w-[14%] py-2.5 text-center px-2 font-medium text-xs">Active Users</th>
+                  <th className="w-[10%] py-2.5 text-center px-2 font-medium text-xs">Edit</th>
+                  <th className="w-[10%] py-2.5 text-center px-2 font-medium text-xs">Delete</th>
                 </tr>
               </thead>
 
-              <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
+              <tbody className="block min-h-[400px] max-h-[500px] overflow-y-auto">
                 {pageData.length === 0 ? (
                   <tr className="table w-full table-fixed">
-                    <td colSpan={7} className="py-6 text-center text-gray-500">No data found</td>
+                    <td colSpan={7} className="py-8 text-center text-gray-500 text-sm">No data found</td>
                   </tr>
                 ) : (
                   pageData.map((d, i) => (
@@ -217,27 +217,27 @@ const DeviceManagement = () => {
                       key={d.id}
                       className="table w-full table-fixed border-b border-gray-200 odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
                     >
-                      <td className="w-[8%]  px-3 py-4 text-center align-middle">{startIdx + i + 1}</td>
-                      <td className="w-[20%] px-3 py-4 align-middle">{d.name}</td>
-                      <td className="w-[20%] px-3 py-4 align-middle">{d.ip}</td>
-                      <td className="w-[20%] px-3 py-4 align-middle">{d.department}</td>
-                      <td className="w-[15%] px-3 py-4 text-center align-middle">{d.active_users}</td>
-                      <td className="w-[6%]  px-3 py-4 text-center align-middle">
+                      <td className="w-[8%] px-2 py-2.5 text-center align-middle text-xs">{startIdx + i + 1}</td>
+                      <td className="w-[20%] px-3 py-2.5 align-middle text-xs truncate">{d.name}</td>
+                      <td className="w-[18%] px-3 py-2.5 align-middle text-xs truncate">{d.ip}</td>
+                      <td className="w-[20%] px-3 py-2.5 align-middle text-xs truncate">{d.department}</td>
+                      <td className="w-[14%] px-2 py-2.5 text-center align-middle text-xs">{d.active_users}</td>
+                      <td className="w-[10%] px-2 py-2.5 text-center align-middle">
                         <button
                           className="text-blue-600 hover:text-blue-700"
                           onClick={() => navigate(`/editDevice/${d.id}`)}
                           aria-label="Edit"
                         >
-                          <FaEdit className="mx-auto" />
+                          <FaEdit className="mx-auto text-sm" />
                         </button>
                       </td>
-                      <td className="w-[10%]  px-3 py-4 text-center align-middle">
+                      <td className="w-[10%] px-2 py-2.5 text-center align-middle">
                         <button
                           className="text-red-600 hover:text-red-700"
                           onClick={() => handleDeleteClick(d.id)}
                           aria-label="Delete"
                         >
-                          <FaTrash className="mx-auto" />
+                          <FaTrash className="mx-auto text-sm" />
                         </button>
                       </td>
                     </tr>
@@ -248,28 +248,31 @@ const DeviceManagement = () => {
           </div>
         </div>
 
-        <div className="mx-auto mt-5 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
+        {/* Pagination */}
+        <div className="mx-auto mt-4 flex max-w-[900px] flex-wrap items-center justify-center gap-1.5">
           <button
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {"<<"}
           </button>
           <button
-            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {"<"}
           </button>
 
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm transition hover:bg-[#0DA5D8] hover:text-white ${
-                page === currentPage ? "bg-[#0DA5D8] text-white border-[#0DA5D8] font-semibold" : "bg-white border-gray-300"
+              className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:shadow-md ${
+                page === currentPage
+                  ? "bg-gradient-to-r from-[#0DA5D8] to-[#1A2DAC] text-white border-[#0DA5D8] font-semibold shadow-md"
+                  : "bg-white border-gray-300 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8]"
               }`}
             >
               {page}
@@ -277,16 +280,16 @@ const DeviceManagement = () => {
           ))}
 
           <button
-            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {">"}
           </button>
           <button
             onClick={() => setCurrentPage(totalPages)}
             disabled={currentPage === totalPages}
-            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white"
+            className="min-w-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#0DA5D8] hover:text-white hover:border-[#0DA5D8] hover:shadow-md disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-300 disabled:hover:shadow-none"
           >
             {">>"}
           </button>

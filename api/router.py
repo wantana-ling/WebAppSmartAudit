@@ -39,11 +39,13 @@ app = FastAPI(
     title="SmartAudit API",
     version="1.0.0",
     lifespan=lifespan,  # ใช้ lifespan แทน on_event (deprecated)
+    redirect_slashes=False,  # ป้องกัน redirect trailing slash ที่ทำให้ CORS preflight fail
 )
 # --------------------------------------
 
 
 # ---------- CORS settings ----------
+# ใส่ CORS middleware ก่อน include router เพื่อให้ทำงานก่อน
 ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -56,8 +58,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,  # เผื่ออนาคตใช้ cookie / session
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With", "X-CSRFToken"],
+    expose_headers=["*"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 # ----------------------------------
 

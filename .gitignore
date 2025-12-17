@@ -46,4 +46,20 @@ Thumbs.db
 .env
 .env.local
 .env.test
+.env.production
+
+# Tests (exclude from deployment)
+tests/
+*.test.js
+*.test.jsx
+*.test.py
+*_test.py
+test_*.py
+pytest.ini
+requirements-test.txt
+run-tests.sh
+
+# Test results and coverage
+test-results/
+test-reports/
 

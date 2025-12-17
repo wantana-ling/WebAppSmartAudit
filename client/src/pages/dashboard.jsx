@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import api from "../api";
 import UserChart from "../components/UserChart";
 import HistoryTimeline from "../components/HistoryTimeline";
 import { FaUser } from "react-icons/fa";
+import { SlArrowDown } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
 
 const Trend = ({ value }) => {
@@ -45,7 +46,25 @@ const Dashboard = () => {
   const now = new Date();
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
+  const [monthOpen, setMonthOpen] = useState(false);
+  const [yearOpen, setYearOpen] = useState(false);
+  const monthMenuRef = useRef(null);
+  const yearMenuRef = useRef(null);
   const navigate = useNavigate();
+
+  // Handle click outside for dropdowns
+  useEffect(() => {
+    const onClick = (e) => {
+      if (monthMenuRef.current && !monthMenuRef.current.contains(e.target)) {
+        setMonthOpen(false);
+      }
+      if (yearMenuRef.current && !yearMenuRef.current.contains(e.target)) {
+        setYearOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -172,27 +191,46 @@ const Dashboard = () => {
                   {new Date(2000, month - 1, 1).toLocaleString(undefined, { month: "long" })},{" "}
                   {year}
                 </span>
-                <div className="relative inline-block">
-                  <select
-                    value={month}
-                    onChange={(e) => setMonth(Number(e.target.value))}
-                    className="bg-white border border-gray-300 rounded-lg md:rounded-xl px-3 py-1.5 md:px-4 md:py-2 pr-8 md:pr-10 text-xs md:text-sm text-gray-700 font-medium focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] outline-none shadow-sm hover:shadow-md hover:border-gray-400 transition-all duration-200 cursor-pointer appearance-none"
+                <div className="relative inline-flex items-center gap-2" ref={monthMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setMonthOpen(v => !v)}
+                    aria-haspopup="listbox"
+                    aria-expanded={monthOpen}
+                    aria-controls="month-menu"
+                    className="inline-flex h-10 min-w-[100px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
                   >
-                  {Array.from({ length: 12 }, (_, i) => {
-                    const monthDate = new Date(2000, i, 1);
-                    const monthName = monthDate.toLocaleString(undefined, { month: "short" });
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {monthName}
-                      </option>
-                    );
-                  })}
-                  </select>
-                  <div className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg className="w-3 h-3 md:w-4 md:h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
+                    <span className="font-medium text-xs md:text-sm">
+                      {new Date(2000, month - 1, 1).toLocaleString(undefined, { month: "short" })}
+                    </span>
+                    <SlArrowDown className={`transition-transform duration-200 ${monthOpen ? "rotate-180" : ""}`} />
+                  </button>
+
+                  {monthOpen && (
+                    <ul
+                      id="month-menu"
+                      role="listbox"
+                      className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease] max-h-60 overflow-y-auto"
+                    >
+                      {Array.from({ length: 12 }, (_, i) => {
+                        const monthDate = new Date(2000, i, 1);
+                        const monthName = monthDate.toLocaleString(undefined, { month: "short" });
+                        return (
+                          <li
+                            key={i + 1}
+                            role="option"
+                            aria-selected={month === i + 1}
+                            onClick={() => { setMonth(i + 1); setMonthOpen(false); }}
+                            className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                              month === i + 1 ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
+                            }`}
+                          >
+                            {monthName}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
                 </div>
               </div>
             }
@@ -207,23 +245,40 @@ const Dashboard = () => {
             right={
               <div className="flex items-center gap-2 md:gap-3">
                 <span className="text-xs md:text-sm text-gray-500 font-medium">Year:</span>
-                <div className="relative inline-block">
-                  <select
-                    value={year}
-                    onChange={(e) => setYear(Number(e.target.value))}
-                    className="bg-white border border-gray-300 rounded-lg md:rounded-xl px-3 py-1.5 md:px-4 md:py-2 pr-8 md:pr-10 text-xs md:text-sm text-gray-700 font-medium focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] outline-none shadow-sm hover:shadow-md hover:border-gray-400 transition-all duration-200 cursor-pointer appearance-none"
+                <div className="relative inline-flex items-center gap-2" ref={yearMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setYearOpen(v => !v)}
+                    aria-haspopup="listbox"
+                    aria-expanded={yearOpen}
+                    aria-controls="year-menu"
+                    className="inline-flex h-10 min-w-[80px] items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm hover:shadow-md outline-none focus:ring-2 focus:ring-[#0DA5D8] focus:border-[#0DA5D8] transition-all duration-200"
                   >
-                  {years.map((y, idx) => (
-                    <option key={idx} value={y}>
-                      {y}
-                    </option>
-                  ))}
-                  </select>
-                  <div className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg className="w-3 h-3 md:w-4 md:h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
+                    <span className="font-medium text-xs md:text-sm">{year}</span>
+                    <SlArrowDown className={`transition-transform duration-200 ${yearOpen ? "rotate-180" : ""}`} />
+                  </button>
+
+                  {yearOpen && (
+                    <ul
+                      id="year-menu"
+                      role="listbox"
+                      className="absolute left-0 top-[calc(100%+6px)] z-30 w-full list-none rounded-xl border border-gray-200 bg-white py-1 shadow-lg animate-[pop-in_0.2s_ease] max-h-60 overflow-y-auto"
+                    >
+                      {years.map((y, idx) => (
+                        <li
+                          key={idx}
+                          role="option"
+                          aria-selected={year === y}
+                          onClick={() => { setYear(y); setYearOpen(false); }}
+                          className={`flex h-9 cursor-pointer items-center px-3 text-sm transition-colors duration-150 hover:bg-[#0DA5D8]/10 ${
+                            year === y ? "bg-[#0DA5D8]/20 font-semibold text-[#0DA5D8]" : "text-gray-800"
+                          }`}
+                        >
+                          {y}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             }

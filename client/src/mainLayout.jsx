@@ -32,7 +32,7 @@ const MainLayout = () => {
         </div>
       )}
 
-      <main className="flex-1 ml-[200px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[280px] 2xl:ml-[300px] 3xl:ml-[320px] 4xl:ml-[360px] p-3 sm:p-4 md:p-5 lg:p-6">
+      <main className="flex-1 ml-[200px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] p-3 sm:p-4 md:p-5">
         <Outlet />
       </main>
     </div>

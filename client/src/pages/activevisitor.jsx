@@ -94,7 +94,7 @@ const ActiveVisitor = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start">
-      <div className="mx-auto w-full max-w-[1080px] pt-10 lg:pt-20">
+      <div className="mx-auto w-full max-w-[900px] pt-6 lg:pt-10 px-4">
 
 
         {/* Search + Filters */}
@@ -222,25 +222,25 @@ const ActiveVisitor = () => {
         </div>
 
 
-        <div className="mx-auto w-full max-w-[1080px] rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 overflow-hidden border border-gray-100">
-          <div className="w-full max-h-[640px] overflow-y-auto">
+        <div className="mx-auto w-full max-w-[900px] rounded-xl bg-white shadow-md ring-1 ring-gray-200 overflow-hidden border border-gray-100">
+          <div className="w-full max-h-[500px] overflow-y-auto">
             <table className="w-full h-full border-collapse text-sm table-fixed">
               <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
                 <tr className="table w-full table-fixed">
-                  <th className="w-[8%] py-3.5 text-center px-3 font-medium">No.</th>
-                  <th className="w-[10%] py-3.5 text-left  px-4 font-medium">UserID</th>
-                  <th className="w-[24%] py-3.5 text-left  px-3 font-medium">Department</th>
-                  <th className="w-[16%] py-3.5 text-left  px-3 font-medium">Device</th>
-                  <th className="w-[22%] py-3.5 text-left  px-3 font-medium">Name</th>
-                  <th className="w-[12%] py-3.5 text-left  px-3 font-medium">Duration</th>
-                  <th className="w-[8%]  py-3.5 text-center px-3 font-medium">View</th>
+                  <th className="w-[8%] py-2.5 text-center px-2 font-medium text-xs">No.</th>
+                  <th className="w-[12%] py-2.5 text-left px-3 font-medium text-xs">UserID</th>
+                  <th className="w-[22%] py-2.5 text-left px-3 font-medium text-xs">Department</th>
+                  <th className="w-[18%] py-2.5 text-left px-3 font-medium text-xs">Device</th>
+                  <th className="w-[22%] py-2.5 text-left px-3 font-medium text-xs">Name</th>
+                  <th className="w-[10%] py-2.5 text-left px-2 font-medium text-xs">Duration</th>
+                  <th className="w-[8%] py-2.5 text-center px-2 font-medium text-xs">View</th>
                 </tr>
               </thead>
 
-              <tbody className="block min-h-[500px] max-h-[640px] overflow-y-auto">
+              <tbody className="block min-h-[400px] max-h-[500px] overflow-y-auto">
                 {paginatedData.length === 0 ? (
                   <tr className="table w-full table-fixed">
-                    <td colSpan={7} className="py-6 text-center text-gray-500">{MESSAGES.NO_DATA}</td>
+                    <td colSpan={7} className="py-8 text-center text-gray-500 text-sm">{MESSAGES.NO_DATA}</td>
                   </tr>
                 ) : (
                   paginatedData.map((item, index) => (
@@ -248,18 +248,18 @@ const ActiveVisitor = () => {
                       key={item.userId}
                       className="table w-full table-fixed border-b border-gray-200 odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
                     >
-                      <td className="w-[8%]  px-3 py-4 text-center align-middle">
+                      <td className="w-[8%] px-2 py-2.5 text-center align-middle text-xs">
                         {(currentPage - 1) * rowsPerPage + index + 1}
                       </td>
-                      <td className="w-[10%] px-4 py-4 align-middle">{item.userId}</td>
-                      <td className="w-[24%] px-3 py-4 align-middle">{item.department}</td>
-                      <td className="w-[16%] px-3 py-4 align-middle">{PLACEHOLDERS.DEVICE_IP}</td>
-                      <td className="w-[22%] px-3 py-4 align-middle">{item.username}</td>
-                      <td className="w-[12%] px-3 py-4 align-middle">{item.duration}</td>
-                      <td className="w-[8%]  px-3 py-4 text-center align-middle">
+                      <td className="w-[12%] px-3 py-2.5 align-middle text-xs">{item.userId}</td>
+                      <td className="w-[22%] px-3 py-2.5 align-middle text-xs truncate">{item.department}</td>
+                      <td className="w-[18%] px-3 py-2.5 align-middle text-xs">{PLACEHOLDERS.DEVICE_IP}</td>
+                      <td className="w-[22%] px-3 py-2.5 align-middle text-xs truncate">{item.username}</td>
+                      <td className="w-[10%] px-2 py-2.5 align-middle text-xs">{item.duration}</td>
+                      <td className="w-[8%] px-2 py-2.5 text-center align-middle">
                         <FaEye
                           onClick={() => handleViewClick(item)}
-                          className="mx-auto cursor-pointer text-[#0DA5D8] hover:brightness-110"
+                          className="mx-auto cursor-pointer text-[#0DA5D8] hover:brightness-110 text-sm"
                         />
                       </td>
                     </tr>
@@ -272,7 +272,7 @@ const ActiveVisitor = () => {
 
 
         {/* Pagination */}
-        <div className="mx-auto mt-6 flex max-w-[980px] flex-wrap items-center justify-center gap-1.5">
+        <div className="mx-auto mt-4 flex max-w-[900px] flex-wrap items-center justify-center gap-1.5">
           <button
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}

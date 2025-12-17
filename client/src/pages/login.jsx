@@ -69,6 +69,7 @@ const Login = () => {
                   value={user_id}
                   onChange={(e) => setUserId(e.target.value)}
                   required
+                  autoComplete="username"
                   placeholder={PLACEHOLDERS.USERNAME}
                   className="w-full px-4 py-3 md:px-5 md:py-4 lg:py-5 rounded-xl md:rounded-2xl bg-[#F1F3FF] text-sm md:text-base text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#4DB1D6]"
                 />
@@ -79,6 +80,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    autoComplete="current-password"
                     placeholder={PLACEHOLDERS.PASSWORD}
                     className="w-full px-4 py-3 md:px-5 md:py-4 lg:py-5 rounded-xl md:rounded-2xl bg-[#F1F3FF] text-sm md:text-base text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#4DB1D6] pr-10 md:pr-12"
                   />
