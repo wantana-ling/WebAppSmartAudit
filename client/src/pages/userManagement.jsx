@@ -54,11 +54,11 @@ const UserManagement = () => {
     .filter((u) => {
       const matchDept = departmentFilter === "all" || u.department?.includes(departmentFilter);
       const matchStatus = !statusFilter || String(u.status).toLowerCase() === statusFilter.toLowerCase();
-      const key = `${u.firstname || ""} ${u.lastname || ""} ${u.name || ""} ${u.user_id || ""}`.toLowerCase();
+      const key = `${u.firstname || ""} ${u.lastname || ""} ${u.name || ""} ${u.username || ""}`.toLowerCase();
       const matchSearch = key.includes(searchText.toLowerCase());
       return matchDept && matchStatus && matchSearch;
     })
-    .sort((a, b) => Number(a.user_id) - Number(b.user_id))
+    .sort((a, b) => Number(a.username) - Number(b.username))
     .map((u, idx) => ({ ...u, no: idx + 1 }));
 
   const totalData = filteredUsers.length;
@@ -296,11 +296,11 @@ const UserManagement = () => {
                 ) : (
                   visibleUsers.map((u, idx) => (
                     <tr
-                      key={u.user_id ?? u.userId ?? idx}
+                      key={u.username ?? u.userId ?? idx}
                       className="table w-full table-fixed border-b border-gray-200 odd:bg-white even:bg-[#FBFCFD] hover:bg-[#F7FAFC] transition-colors"
                     >
                       <td className="w-[8%] px-2 py-2.5 text-center align-middle text-xs">{startIndex + idx + 1}</td>
-                      <td className="w-[12%] px-3 py-2.5 align-middle text-xs">{u.user_id ?? u.userId}</td>
+                      <td className="w-[12%] px-3 py-2.5 align-middle text-xs">{u.username ?? u.userId}</td>
                       <td className="w-[22%] px-3 py-2.5 align-middle text-xs truncate">{u.department}</td>
                       <td className="w-[28%] px-3 py-2.5 align-middle text-xs truncate">{u.name ?? `${u.firstname || ""} ${u.midname || ""} ${u.lastname || ""}`.trim()}</td>
                       <td className="w-[12%] px-2 py-2.5 align-middle">
@@ -312,7 +312,7 @@ const UserManagement = () => {
                       </td>
                       <td className="w-[9%] px-2 py-2.5 text-center align-middle">
                         <button
-                          onClick={() => navigate(`/editManageUser/${u.user_id}`)}
+                          onClick={() => navigate(`/editManageUser/${u.username}`)}
                           className="text-blue-600 hover:text-blue-700"
                           aria-label="Edit"
                         >
@@ -321,7 +321,7 @@ const UserManagement = () => {
                       </td>
                       <td className="w-[9%] px-2 py-2.5 text-center align-middle">
                         <button
-                          onClick={() => handleDelete(u.user_id)}
+                          onClick={() => handleDelete(u.username)}
                           className="text-red-600 hover:text-red-700"
                           aria-label="Delete"
                         >

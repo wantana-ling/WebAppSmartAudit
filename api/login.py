@@ -2,7 +2,7 @@
 """
 Endpoint สำหรับจัดการการล็อกอินของผู้ดูแลระบบ (admin)
 
-- รับ user_id และ password จาก frontend
+- รับ username และ password จาก frontend
 - ตรวจสอบว่ามี user นี้ในตาราง admin หรือไม่
 - ตรวจสอบรหัสผ่านโดยใช้ bcrypt (เทียบกับ hash ใน DB)
 - ถ้าไม่ผ่าน → คืน 401 Invalid credentials
@@ -41,7 +41,7 @@ async def login_options():
 
 
 class LoginRequest(BaseModel):
-    user_id: str
+    username: str
     password: str
 
 
@@ -50,24 +50,24 @@ async def login(payload: LoginRequest, db=Depends(get_db)) -> dict:
     """
     ตรวจสอบสิทธิ์การเข้าสู่ระบบของ admin
 
-    - payload.user_id: รหัสผู้ใช้ admin
+    - payload.username: รหัสผู้ใช้ admin
     - payload.password: รหัสผ่าน plain text จาก frontend
     """
-    user_id = (payload.user_id or "").strip()
+    username = (payload.username or "").strip()
     password = payload.password or ""
 
     # ---- ตรวจสอบ input ว่าครบไหม ----
-    if not user_id or not password:
+    if not username or not password:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing user_id or password",
+            detail="Missing username or password",
         )
 
     # ---- ดึงข้อมูล admin จากฐานข้อมูล ----
     async with db.cursor(aiomysql.DictCursor) as cur:
         await cur.execute(
-            "SELECT * FROM admin WHERE user_id = %s",
-            (user_id,),
+            "SELECT * FROM admin WHERE username = %s",
+            (username,),
         )
         admin = await cur.fetchone()
 
@@ -96,7 +96,7 @@ async def login(payload: LoginRequest, db=Depends(get_db)) -> dict:
         "success": True,
         "message": "Login successful",
         "admin_info": {
-            "user_id": admin["user_id"],
+            "username": admin["username"],
             "company": admin.get("company"),
         },
     }

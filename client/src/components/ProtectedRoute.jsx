@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children }) => {
   
   // ตรวจสอบว่ามี admin ใน localStorage หรือไม่
   const admin = localStorage.getItem(STORAGE_KEYS.ADMIN);
-  const userId = localStorage.getItem(STORAGE_KEYS.USER_ID);
+  const userId = localStorage.getItem(STORAGE_KEYS.username);
 
   // ถ้ายังไม่ login ให้ redirect ไปหน้า login พร้อมเก็บ path ที่พยายามเข้าถึง
   if (!admin || !userId) {

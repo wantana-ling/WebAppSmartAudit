@@ -50,7 +50,7 @@ const ActiveVisitor = () => {
   const transformedUsers = users
     .filter((user) => user.status === 'active')
     .map((user) => ({
-      userId: String(user.user_id),
+      userId: String(user.username),
       department: user.department || 'N/A',
       username: `${user.firstname || ''} ${user.midname || ''} ${user.lastname || ''}`.trim() || 'N/A',
       duration: '00:00:00', // Placeholder - would need API endpoint for actual duration

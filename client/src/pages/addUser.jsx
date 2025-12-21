@@ -67,7 +67,7 @@ const AddUser = () => {
     }
 
     try {
-      // Convert user_id to number, handling edge cases like "0" or "000"
+      // Convert username to number, handling edge cases like "0" or "000"
       const userIdNum = parseInt(formData.userId, 10);
       const userId = isNaN(userIdNum) ? formData.userId : userIdNum;
       
@@ -76,7 +76,7 @@ const AddUser = () => {
         midname: formData.midName,
         lastname: formData.lastName,
         department_id,
-        user_id: userId,
+        username: userId,
         password: formData.password,
       });
 

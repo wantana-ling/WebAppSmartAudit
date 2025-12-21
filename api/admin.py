@@ -22,22 +22,22 @@ router = APIRouter(
 async def get_admin_me(db=Depends(get_db)):
     """
     คืนข้อมูล admin คนแรก:
-    - user_id
+    - username
     - company
 
     ถ้าไม่มีข้อมูลในตาราง admin:
     คืน default:
-        { "user_id": "admin", "company": "SmartAudit" }
+        { "username": "admin", "company": "SmartAudit" }
     """
     try:
         async with db.cursor(aiomysql.DictCursor) as cur:
             await cur.execute(
-                "SELECT user_id, company FROM admin LIMIT 1"
+                "SELECT username, company FROM admin LIMIT 1"
             )
             row = await cur.fetchone()
 
         return row or {
-            "user_id": "admin",
+            "username": "admin",
             "company": "SmartAudit",
         }
 
@@ -45,6 +45,6 @@ async def get_admin_me(db=Depends(get_db)):
         print("Error fetching admin info:", err)
         # ยังไม่เคยเจอเคสนี้ แต่ป้องกันไว้เพื่อความปลอดภัย
         return {
-            "user_id": "admin",
+            "username": "admin",
             "company": "SmartAudit",
         }

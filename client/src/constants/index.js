@@ -8,7 +8,7 @@ export const DEFAULT_ROWS_PER_PAGE = 10;
 
 // Local Storage Keys
 export const STORAGE_KEYS = {
-  USER_ID: 'user_id',
+  username: 'username',
   ADMIN: 'admin',
 };
 

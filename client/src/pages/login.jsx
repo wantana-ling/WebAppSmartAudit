@@ -5,7 +5,7 @@ import api from "../api";
 import { STORAGE_KEYS, MESSAGES, ROUTES, PLACEHOLDERS } from '../constants';
 
 const Login = () => {
-  const [user_id, setUserId] = useState("");
+  const [username, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
@@ -16,7 +16,7 @@ const Login = () => {
   useEffect(() => {
     // ตรวจสอบว่าถ้า login แล้วให้ redirect ไป dashboard
     const admin = localStorage.getItem(STORAGE_KEYS.ADMIN);
-    const userId = localStorage.getItem(STORAGE_KEYS.USER_ID);
+    const userId = localStorage.getItem(STORAGE_KEYS.username);
     
     if (admin && userId) {
       // ถ้ามี path ที่พยายามเข้าถึงก่อนหน้า ให้ไปที่ path นั้น
@@ -26,7 +26,7 @@ const Login = () => {
     }
 
     setError("");
-    localStorage.removeItem(STORAGE_KEYS.USER_ID);
+    localStorage.removeItem(STORAGE_KEYS.username);
     localStorage.removeItem(STORAGE_KEYS.ADMIN);
   }, [navigate, location]);
 
@@ -35,15 +35,15 @@ const Login = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await api.post('/api/login', { user_id, password });
+      const res = await api.post('/api/login', { username, password });
       const adminData = res.data.admin_info;
       if (!adminData) { setError("Invalid response from server"); return; }
-      localStorage.setItem(STORAGE_KEYS.USER_ID, adminData.user_id);
+      localStorage.setItem(STORAGE_KEYS.username, adminData.username);
       localStorage.setItem(STORAGE_KEYS.ADMIN, JSON.stringify(adminData));
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
       if (err.response?.status === 429) setError("Too many attempts. Please wait a moment.");
-      else if (err.response?.status === 401) setError("Invalid user_id or password");
+      else if (err.response?.status === 401) setError("Invalid username or password");
       else setError("Login failed. Please try again.");
     } finally {
       setLoading(false);
@@ -66,7 +66,7 @@ const Login = () => {
               <div className="flex flex-col gap-4 md:gap-5">
                 <input
                   type="text"
-                  value={user_id}
+                  value={username}
                   onChange={(e) => setUserId(e.target.value)}
                   required
                   autoComplete="username"

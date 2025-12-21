@@ -3,10 +3,10 @@
 Endpoints จัดการข้อมูลผู้ใช้ (users):
 
 - GET   /api/users              : รายชื่อผู้ใช้ทั้งหมด (join department)
-- GET   /api/users/{user_id}    : รายละเอียดผู้ใช้ตาม user_id
+- GET   /api/users/{username}    : รายละเอียดผู้ใช้ตาม username
 - POST  /api/users              : เพิ่มผู้ใช้ใหม่ (admin only)
-- PUT   /api/users/{user_id}    : แก้ไขข้อมูลผู้ใช้ (รวมสถานะ / แผนก)
-- DELETE /api/users/{user_id}   : ลบผู้ใช้
+- PUT   /api/users/{username}    : แก้ไขข้อมูลผู้ใช้ (รวมสถานะ / แผนก)
+- DELETE /api/users/{username}   : ลบผู้ใช้
 - PUT   /api/users/profile/{id} : ผู้ใช้แก้ไขชื่อ-นามสกุล + password ของตัวเอง
 """
 
@@ -36,7 +36,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    user_id: int = Field(..., description="user_id must be integer")
+    username: int = Field(..., description="username must be integer")
     password: str = Field(
         ...,
         min_length=6,
@@ -81,7 +81,7 @@ async def get_users(db=Depends(get_db)):
             await cur.execute(
                 """
                 SELECT
-                  u.user_id,
+                  u.username,
                   u.firstname,
                   u.midname,
                   u.lastname,
@@ -90,7 +90,7 @@ async def get_users(db=Depends(get_db)):
                   u.department_id
                 FROM users u
                 LEFT JOIN department d ON u.department_id = d.id
-                ORDER BY u.user_id ASC
+                ORDER BY u.username ASC
                 """
             )
             rows = await cur.fetchall()
@@ -104,15 +104,15 @@ async def get_users(db=Depends(get_db)):
 
 
 # GET /api/users/:id
-@router.get("/{user_id}")
-async def get_user_by_id(user_id: int, db=Depends(get_db)):
-    """ดึงข้อมูลผู้ใช้ทีละคนตาม user_id."""
+@router.get("/{username}")
+async def get_user_by_id(username: int, db=Depends(get_db)):
+    """ดึงข้อมูลผู้ใช้ทีละคนตาม username."""
     try:
         async with db.cursor(aiomysql.DictCursor) as cur:
             await cur.execute(
                 """
                 SELECT
-                  u.user_id,
+                  u.username,
                   u.firstname,
                   u.midname,
                   u.lastname,
@@ -121,9 +121,9 @@ async def get_user_by_id(user_id: int, db=Depends(get_db)):
                   u.department_id
                 FROM users u
                 LEFT JOIN department d ON u.department_id = d.id
-                WHERE u.user_id = %s
+                WHERE u.username = %s
                 """,
-                (user_id,),
+                (username,),
             )
             row = await cur.fetchone()
 
@@ -155,7 +155,7 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
     department_id = (
         payload.department_id if isinstance(payload.department_id, int) else None
     )
-    user_id = int(payload.user_id)
+    username = int(payload.username)
     password = _trim(payload.password)
 
     if not firstname or not lastname:
@@ -165,18 +165,18 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
         )
 
     try:
-        # ตรวจสอบว่า user_id ซ้ำหรือไม่ (เฉพาะที่ยังมีอยู่ในระบบ)
+        # ตรวจสอบว่า username ซ้ำหรือไม่ (เฉพาะที่ยังมีอยู่ในระบบ)
         async with db.cursor(aiomysql.DictCursor) as cur:
             await cur.execute(
-                "SELECT user_id FROM users WHERE user_id = %s",
-                (str(user_id).strip(),),
+                "SELECT username FROM users WHERE username = %s",
+                (str(username).strip(),),
             )
             existing = await cur.fetchone()
             
             if existing:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"User ID {user_id} already exists",
+                    detail=f"User ID {username} already exists",
                 )
 
         hashed_password = bcrypt.hashpw(
@@ -188,13 +188,13 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
             await cur.execute(
                 """
                 INSERT INTO users (
-                  user_id, firstname, midname, lastname,
+                  username, firstname, midname, lastname,
                   department_id, password, status
                 )
                 VALUES (%s, %s, %s, %s, %s, %s, 'active')
                 """,
                 (
-                    str(user_id).strip(),
+                    str(username).strip(),
                     firstname,
                     midname,
                     lastname,
@@ -218,7 +218,7 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
         if "duplicate" in error_msg or "1062" in error_msg:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"User ID {user_id} already exists. Please use a different ID.",
+                detail=f"User ID {username} already exists. Please use a different ID.",
             )
         # ตรวจสอบว่าเป็น foreign key constraint error หรือไม่
         if "foreign key" in error_msg or "1452" in error_msg:
@@ -233,8 +233,8 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
 
 
 # PUT /api/users/:id
-@router.put("/{user_id}")
-async def update_user(user_id: int, payload: UserUpdate, db=Depends(get_db)):
+@router.put("/{username}")
+async def update_user(username: int, payload: UserUpdate, db=Depends(get_db)):
     """อัปเดตข้อมูลผู้ใช้ (รวมสถานะ / แผนก / password)."""
     firstname = _trim(payload.firstname)
     lastname = _trim(payload.lastname)
@@ -255,8 +255,8 @@ async def update_user(user_id: int, payload: UserUpdate, db=Depends(get_db)):
         if not payload.password or not _trim(payload.password):
             async with db.cursor(aiomysql.DictCursor) as cur:
                 await cur.execute(
-                    "SELECT password FROM users WHERE user_id = %s",
-                    (user_id,),
+                    "SELECT password FROM users WHERE username = %s",
+                    (username,),
                 )
                 row = await cur.fetchone()
 
@@ -283,7 +283,7 @@ async def update_user(user_id: int, payload: UserUpdate, db=Depends(get_db)):
                     password  = %s,
                     department_id = %s,
                     status    = %s
-                WHERE user_id = %s
+                WHERE username = %s
                 """,
                 (
                     firstname,
@@ -292,7 +292,7 @@ async def update_user(user_id: int, payload: UserUpdate, db=Depends(get_db)):
                     password_final,
                     department_id,
                     status_str,
-                    user_id,
+                    username,
                 ),
             )
 
@@ -317,14 +317,14 @@ async def update_user(user_id: int, payload: UserUpdate, db=Depends(get_db)):
 
 
 # DELETE /api/users/:id
-@router.delete("/{user_id}")
-async def delete_user(user_id: int, db=Depends(get_db)):
+@router.delete("/{username}")
+async def delete_user(username: int, db=Depends(get_db)):
     """ลบผู้ใช้จากระบบ."""
     try:
         async with db.cursor() as cur:
             affected = await cur.execute(
-                "DELETE FROM users WHERE user_id = %s",
-                (user_id,),
+                "DELETE FROM users WHERE username = %s",
+                (username,),
             )
 
         if affected == 0:
@@ -348,9 +348,9 @@ async def delete_user(user_id: int, db=Depends(get_db)):
 
 
 # PUT /api/users/profile/:id
-@router.put("/profile/{user_id}")
+@router.put("/profile/{username}")
 async def update_profile(
-    user_id: int,
+    username: int,
     payload: UserProfileUpdate,
     db=Depends(get_db),
 ):
@@ -380,9 +380,9 @@ async def update_profile(
                     midname   = %s,
                     lastname  = %s,
                     password  = %s
-                WHERE user_id = %s
+                WHERE username = %s
                 """,
-                (firstname, midname, lastname, hashed_password, user_id),
+                (firstname, midname, lastname, hashed_password, username),
             )
 
         if affected == 0:

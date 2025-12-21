@@ -64,7 +64,7 @@ const AddDevice = () => {
     }
 
     const user = JSON.parse(localStorage.getItem("user"));
-    const create_by = user?.user_id;
+    const create_by = user?.username;
 
     const payload = {
       device_name,

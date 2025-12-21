@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     // ลบข้อมูลใน localStorage
-    localStorage.removeItem(STORAGE_KEYS.USER_ID);
+    localStorage.removeItem(STORAGE_KEYS.username);
     localStorage.removeItem(STORAGE_KEYS.ADMIN);
     // Redirect ไปหน้า login
     navigate(ROUTES.LOGIN, { replace: true });

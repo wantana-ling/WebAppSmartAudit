@@ -45,7 +45,7 @@ const Profile = () => {
             <tbody>
               <tr className="border-b border-gray-200">
                 <th className="text-left text-[#0018c7] font-medium py-2 sm:py-2.5 md:py-3 px-3 sm:px-4 text-xs sm:text-sm md:text-base w-[100px] sm:w-[120px]">User ID</th>
-                <td className="text-gray-500 text-xs sm:text-sm py-2 sm:py-2.5 md:py-3 px-3 sm:px-4">{admin.user_id}</td>
+                <td className="text-gray-500 text-xs sm:text-sm py-2 sm:py-2.5 md:py-3 px-3 sm:px-4">{admin.username}</td>
               </tr>
               <tr>
                 <th className="text-left text-[#0018c7] font-medium py-2 sm:py-2.5 md:py-3 px-3 sm:px-4 text-xs sm:text-sm md:text-base">Password</th>
