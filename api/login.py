@@ -64,9 +64,13 @@ async def login(payload: LoginRequest, db=Depends(get_db)) -> dict:
         )
 
     # ---- ดึงข้อมูล admin จากฐานข้อมูล ----
+    # ตรวจสอบ schema ของตาราง admin ก่อน:
+    # ถ้าใช้ column 'user_id' ให้เปลี่ยน WHERE username เป็น WHERE user_id
+    # หรือใช้ column อื่นที่อยู่ในตาราง admin จริงๆ
     async with db.cursor(aiomysql.DictCursor) as cur:
+        # ลองใช้ user_id ก่อน (ตาม api_test/login.py)
         await cur.execute(
-            "SELECT * FROM admin WHERE username = %s",
+            "SELECT * FROM admin WHERE user_id = %s",
             (username,),
         )
         admin = await cur.fetchone()
@@ -92,11 +96,12 @@ async def login(payload: LoginRequest, db=Depends(get_db)) -> dict:
         )
 
     # ---- สำเร็จ: คืนข้อมูลเท่าที่จำเป็นกลับไปให้ frontend ----
+    # ใช้ user_id หรือ username ตามที่ตารางมี
     return {
         "success": True,
         "message": "Login successful",
         "admin_info": {
-            "username": admin["username"],
+            "username": admin.get("username") or admin.get("user_id") or username,
             "company": admin.get("company"),
         },
     }

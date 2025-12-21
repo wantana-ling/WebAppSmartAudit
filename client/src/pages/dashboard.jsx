@@ -10,7 +10,7 @@ const Trend = ({ value }) => {
   const isUp = Number(value) >= 0;
   return (
     <div className={`text-xs font-medium ${isUp ? "text-green-600" : "text-red-500"}`}>
-      {isUp ? "↑" : "↓"} {Math.abs(Number(value)).toFixed(2)}%
+      
     </div>
   );
 };

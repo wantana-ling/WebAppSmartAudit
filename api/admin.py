@@ -31,15 +31,23 @@ async def get_admin_me(db=Depends(get_db)):
     """
     try:
         async with db.cursor(aiomysql.DictCursor) as cur:
+            # ลองใช้ user_id แทน username (ตาม api_test/login.py)
             await cur.execute(
-                "SELECT username, company FROM admin LIMIT 1"
+                "SELECT user_id, username, company FROM admin LIMIT 1"
             )
             row = await cur.fetchone()
 
-        return row or {
-            "username": "admin",
-            "company": "SmartAudit",
-        }
+        if row:
+            # ใช้ username ถ้ามี ถ้าไม่มีใช้ user_id
+            return {
+                "username": row.get("username") or row.get("user_id") or "admin",
+                "company": row.get("company") or "SmartAudit",
+            }
+        else:
+            return {
+                "username": "admin",
+                "company": "SmartAudit",
+            }
 
     except Exception as err:
         print("Error fetching admin info:", err)

@@ -68,7 +68,7 @@ const Navbar = () => {
           {/* Active Visitor */}
           <li
             className={`${liBase} ${
-              isActive("/activeVisitor")
+              ["/activeVisitor", "/liveScreen"].includes(location.pathname)
                 ? `${activeShell} ${activeCurveBefore} ${activeCurveAfter}`
                 : ""
             }`}
@@ -76,7 +76,9 @@ const Navbar = () => {
             <Link
               to="/activeVisitor"
               className={`${linkBase} ${linkHover} ${
-                isActive("/activeVisitor") ? "!text-[#0B1246]" : ""
+                ["/activeVisitor", "/liveScreen"].includes(location.pathname)
+                  ? "!text-[#0B1246]"
+                  : ""
               }`}
             >
               <div className="flex items-center justify-center w-4 h-4 md:w-5 md:h-5">
