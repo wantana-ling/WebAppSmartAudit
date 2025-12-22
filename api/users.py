@@ -36,7 +36,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    username: int = Field(..., description="username must be integer")
+    username: str = Field(..., description="username must be string")
     password: str = Field(
         ...,
         min_length=6,
@@ -104,7 +104,7 @@ async def get_users(db=Depends(get_db)):
 
 # GET /api/users/:id
 @router.get("/{username}")
-async def get_user_by_id(username: int, db=Depends(get_db)):
+async def get_user_by_id(username: str, db=Depends(get_db)):
     """ดึงข้อมูลผู้ใช้ทีละคนตาม username."""
     try:
         async with db.cursor(aiomysql.DictCursor) as cur:
@@ -153,7 +153,7 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
     department_id = (
         payload.department_id if isinstance(payload.department_id, int) else None
     )
-    username = int(payload.username)
+    username = _trim(payload.username)
     password = _trim(payload.password)
 
     if not firstname or not lastname:
@@ -167,7 +167,7 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
         async with db.cursor(aiomysql.DictCursor) as cur:
             await cur.execute(
                 "SELECT username FROM users WHERE username = %s",
-                (str(username).strip(),),
+                (username,),
             )
             existing = await cur.fetchone()
             
@@ -192,7 +192,7 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
                 VALUES (%s, %s, %s, %s, %s, %s, 'active')
                 """,
                 (
-                    str(username).strip(),
+                    username,
                     firstname,
                     midname,
                     lastname,
@@ -232,7 +232,7 @@ async def create_user(payload: UserCreate, db=Depends(get_db)):
 
 # PUT /api/users/:id
 @router.put("/{username}")
-async def update_user(username: int, payload: UserUpdate, db=Depends(get_db)):
+async def update_user(username: str, payload: UserUpdate, db=Depends(get_db)):
     """อัปเดตข้อมูลผู้ใช้ (รวมสถานะ / แผนก / password)."""
     firstname = _trim(payload.firstname)
     lastname = _trim(payload.lastname)
@@ -316,7 +316,7 @@ async def update_user(username: int, payload: UserUpdate, db=Depends(get_db)):
 
 # DELETE /api/users/:id
 @router.delete("/{username}")
-async def delete_user(username: int, db=Depends(get_db)):
+async def delete_user(username: str, db=Depends(get_db)):
     """ลบผู้ใช้จากระบบ."""
     try:
         async with db.cursor() as cur:
@@ -348,7 +348,7 @@ async def delete_user(username: int, db=Depends(get_db)):
 # PUT /api/users/profile/:id
 @router.put("/profile/{username}")
 async def update_profile(
-    username: int,
+    username: str,
     payload: UserProfileUpdate,
     db=Depends(get_db),
 ):
