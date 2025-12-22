@@ -40,11 +40,11 @@ const UserManagement = () => {
   }, []);
 
   useEffect(() => {
-    api.get('/api/users')
+    api.get('/api/users/')
       .then((res) => setUsers(res.data || []))
       .catch((err) => console.error("❌ ไม่สามารถดึงข้อมูล user:", err));
 
-    api.get('/api/departments')
+    api.get('/api/departments/')
       .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
@@ -278,7 +278,7 @@ const UserManagement = () => {
               <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
                 <tr className="table w-full table-fixed">
                   <th className="w-[8%] py-2.5 text-center px-2 font-medium text-xs">No.</th>
-                  <th className="w-[12%] py-2.5 text-left px-3 font-medium text-xs">UserID</th>
+                  <th className="w-[12%] py-2.5 text-left px-3 font-medium text-xs">Username</th>
                   <th className="w-[22%] py-2.5 text-left px-3 font-medium text-xs">Department</th>
                   <th className="w-[28%] py-2.5 text-left px-3 font-medium text-xs">Name</th>
                   <th className="w-[12%] py-2.5 text-left px-2 font-medium text-xs">Status</th>

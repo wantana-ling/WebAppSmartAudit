@@ -9,7 +9,7 @@ const Setting = () => {
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   useEffect(() => {
-    api.get('/api/ad-config')
+    api.get('/api/ad-config/')
       .then(res => {
         if (res.data && res.data.serverip_hostname) {
           setAdServer(res.data.serverip_hostname);
@@ -26,7 +26,7 @@ const Setting = () => {
       return;
     }
 
-    api.post('/api/ad-config', { serverip_hostname: adServer })
+    api.post('/api/ad-config/', { serverip_hostname: adServer })
       .then(() => {
         setAlertModal({ isOpen: true, type: "success", title: "Success", message: "Saved successfully" });
       })

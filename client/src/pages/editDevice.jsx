@@ -18,7 +18,7 @@ const EditDevice = () => {
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
 
   useEffect(() => {
-    api.get('/api/departments')
+    api.get('/api/departments/')
       .then(res => setDepartmentOptions(res.data || []))
       .catch(err => console.error("❌ โหลด department ไม่ได้", err));
   }, []);

@@ -72,7 +72,6 @@ def _trim(s: Optional[str]) -> str:
 
 
 # GET /api/users
-@router.get("")
 @router.get("/")
 async def get_users(db=Depends(get_db)):
     """ดึงรายชื่อผู้ใช้ทั้งหมด พร้อมชื่อแผนก."""
@@ -145,7 +144,6 @@ async def get_user_by_id(username: int, db=Depends(get_db)):
 
 
 # POST /api/users
-@router.post("")
 @router.post("/")
 async def create_user(payload: UserCreate, db=Depends(get_db)):
     """สร้างผู้ใช้ใหม่ (admin ใช้)."""

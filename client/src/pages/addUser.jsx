@@ -25,7 +25,7 @@ const AddUser = () => {
 
   useEffect(() => {
     api
-      .get('/api/departments')
+      .get('/api/departments/')
       .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
@@ -71,7 +71,7 @@ const AddUser = () => {
       const userIdNum = parseInt(formData.userId, 10);
       const userId = isNaN(userIdNum) ? formData.userId : userIdNum;
       
-      await api.post('/api/users', {
+      await api.post('/api/users/', {
         firstname: formData.firstName,
         midname: formData.midName,
         lastname: formData.lastName,
@@ -92,6 +92,7 @@ const AddUser = () => {
       });
     } catch (err) {
       console.error("❌ ไม่สามารถเพิ่มผู้ใช้ได้:", err);
+      console.log("DATA:", err.response?.data);
       const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
       setAlertModal({ isOpen: true, type: "error", title: "Error", message: errorMessage });
     }
@@ -210,7 +211,7 @@ const AddUser = () => {
           <div className={rowCls}>
             <div className="w-full">
               <label className={labelCls}>
-                UserID <span className="text-red-500">*</span>
+                Username <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"

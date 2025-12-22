@@ -22,7 +22,7 @@ const Department = () => {
 
   const fetchDepartments = () => {
     api
-      .get('/api/departments')
+      .get('/api/departments/')
       .then((res) => setDepartments(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้", err));
   };

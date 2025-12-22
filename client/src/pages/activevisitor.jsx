@@ -30,8 +30,8 @@ const ActiveVisitor = () => {
       try {
         setLoading(true);
         const [usersRes, deptRes] = await Promise.all([
-          api.get('/api/users'),
-          api.get('/api/departments'),
+          api.get('/api/users/'),
+          api.get('/api/departments/'),
         ]);
         setUsers(usersRes.data || []);
         setDepartments(deptRes.data || []);
@@ -228,7 +228,7 @@ const ActiveVisitor = () => {
               <thead className="sticky top-0 z-10 bg-[#eef2fa] text-[#1B2880] border-b border-gray-200 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)]">
                 <tr className="table w-full table-fixed">
                   <th className="w-[8%] py-2.5 text-center px-2 font-medium text-xs">No.</th>
-                  <th className="w-[12%] py-2.5 text-left px-3 font-medium text-xs">UserID</th>
+                  <th className="w-[12%] py-2.5 text-left px-3 font-medium text-xs">Username</th>
                   <th className="w-[22%] py-2.5 text-left px-3 font-medium text-xs">Department</th>
                   <th className="w-[18%] py-2.5 text-left px-3 font-medium text-xs">Device</th>
                   <th className="w-[22%] py-2.5 text-left px-3 font-medium text-xs">Name</th>

@@ -23,7 +23,6 @@ class ADConfigUpdate(BaseModel):
 
 
 # ---- GET /api/ad-config ----
-@router.get("")
 @router.get("/")
 async def get_ad_config(db=Depends(get_db)):
     """
@@ -49,7 +48,6 @@ async def get_ad_config(db=Depends(get_db)):
 
 
 # ---- POST /api/ad-config ----
-@router.post("")
 @router.post("/")
 async def update_ad_config(payload: ADConfigUpdate, db=Depends(get_db)):
     """

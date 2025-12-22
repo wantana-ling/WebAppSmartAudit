@@ -41,7 +41,6 @@ def _trim_name(name: str | None) -> str:
 
 
 # GET /api/departments
-@router.get("")
 @router.get("/")
 async def get_departments(db=Depends(get_db)):
     """ดึงรายการทุกแผนก."""
@@ -88,7 +87,6 @@ async def get_department_by_id(dept_id: int, db=Depends(get_db)):
 
 
 # POST /api/departments
-@router.post("", status_code=status.HTTP_201_CREATED)
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_department(payload: DepartmentCreate, db=Depends(get_db)):
     """สร้างแผนกใหม่."""

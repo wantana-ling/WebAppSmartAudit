@@ -14,7 +14,7 @@ const AddDepartment = () => {
       return;
     }
     api
-      .post('/api/departments', { name: departmentName })
+      .post('/api/departments/', { name: departmentName })
       .then(() => {
         setAlertModal({ 
           isOpen: true, 

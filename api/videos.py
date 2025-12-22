@@ -22,11 +22,9 @@ router = APIRouter(
 )
 
 
-# ------- Helpers (เหมือน toHMS / diffHMS เดิม) -------
-
+# ------- Helpers -------
 
 def to_hms(sec: int) -> str:
-    """แปลงวินาทีเป็น HH:MM:SS (zero-padded)."""
     sec = max(0, int(sec))
     h = str(sec // 3600).zfill(2)
     m = str((sec % 3600) // 60).zfill(2)
@@ -35,7 +33,6 @@ def to_hms(sec: int) -> str:
 
 
 def diff_hms(start: str, stop: str) -> str:
-    """รับเวลาเริ่ม-สิ้นสุด (HH:MM:SS) แล้วคืนผลต่างเป็น HH:MM:SS."""
     sh, sm, ss = [int(x) for x in start.split(":")]
     eh, em, es = [int(x) for x in stop.split(":")]
     t1 = sh * 3600 + sm * 60 + ss
@@ -45,7 +42,6 @@ def diff_hms(start: str, stop: str) -> str:
 
 # ------- Models -------
 
-
 class VideoCreate(BaseModel):
     user: str
     target: str
@@ -53,7 +49,7 @@ class VideoCreate(BaseModel):
     date: str
     start: str
     stop: str
-    duration: Optional[str] = None  # ส่งมาเองหรือให้ backend คำนวณก็ได้
+    duration: Optional[str] = None
 
 
 class VideoDelete(BaseModel):
@@ -62,9 +58,6 @@ class VideoDelete(BaseModel):
 
 # ------- Routes -------
 
-
-# GET /api/videos
-@router.get("")
 @router.get("/")
 async def list_videos(
     page: int = Query(1, ge=1),
@@ -72,13 +65,6 @@ async def list_videos(
     search: Optional[str] = Query(None, alias="search"),
     db=Depends(get_db),
 ):
-    """
-    ดึงรายการวิดีโอแบบแบ่งหน้า + ค้นหา
-
-    - page: หน้าที่ต้องการ (เริ่ม 1)
-    - limit: จำนวนรายการต่อหน้า
-    - search: ค้นหาใน user / target / recording_path
-    """
     offset = (page - 1) * limit
     q = (search or "").strip()
 
@@ -91,13 +77,11 @@ async def list_videos(
             like = f"%{q}%"
             params.extend([like, like, like])
 
-        # นับ total
         async with db.cursor(aiomysql.DictCursor) as cur:
             await cur.execute(f"SELECT COUNT(*) AS total {base_sql}", params)
             row = await cur.fetchone()
             total = row["total"] if row else 0
 
-            # ดึงรายการตามหน้า
             await cur.execute(
                 f"""
                 SELECT
@@ -131,21 +115,11 @@ async def list_videos(
         }
     except Exception as err:
         print("fetch videos:", err)
-        return JSONResponse(
-            status_code=500,
-            content={"ok": False, "error": "Database error"},
-        )
+        return JSONResponse(status_code=500, content={"ok": False, "error": "Database error"})
 
 
-# POST /api/videos
-@router.post("")
 @router.post("/")
 async def create_video(payload: VideoCreate, db=Depends(get_db)):
-    """
-    เพิ่มรายการวิดีโอใหม่
-
-    ถ้า duration ไม่ได้ส่งมา จะถูกคำนวณจาก start/stop ให้อัตโนมัติ
-    """
     user = (payload.user or "").strip()
     target = (payload.target or "").strip()
     recording_path = (payload.recording_path or "").strip()
@@ -154,14 +128,9 @@ async def create_video(payload: VideoCreate, db=Depends(get_db)):
     stop = (payload.stop or "").strip()
     dur = (payload.duration or "").strip() if payload.duration else ""
 
-    # เช็คฟิลด์บังคับ
     if not (user and target and recording_path and date and start and stop):
-        return JSONResponse(
-            status_code=400,
-            content={"ok": False, "error": "Missing required fields"},
-        )
+        return JSONResponse(status_code=400, content={"ok": False, "error": "Missing required fields"})
 
-    # ถ้าไม่ส่ง duration → คำนวณจาก start/stop
     if not dur:
         dur = diff_hms(start, stop)
 
@@ -170,13 +139,7 @@ async def create_video(payload: VideoCreate, db=Depends(get_db)):
             await cur.execute(
                 """
                 INSERT INTO videos (
-                  `user`,
-                  `target`,
-                  recording_path,
-                  `date`,
-                  `start`,
-                  `stop`,
-                  duration
+                  `user`, `target`, recording_path, `date`, `start`, `stop`, duration
                 )
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
@@ -187,25 +150,14 @@ async def create_video(payload: VideoCreate, db=Depends(get_db)):
         return {"ok": True, "id": insert_id}
     except Exception as err:
         print("insert videos:", err)
-        return JSONResponse(
-            status_code=500,
-            content={"ok": False, "error": "Database error"},
-        )
+        return JSONResponse(status_code=500, content={"ok": False, "error": "Database error"})
 
 
-# DELETE /api/videos
-@router.delete("")
 @router.delete("/")
 async def delete_videos(payload: VideoDelete, db=Depends(get_db)):
-    """
-    ลบรายการวิดีโอตาม ids หลายตัวในครั้งเดียว.
-    """
     ids = payload.ids
     if not isinstance(ids, list) or len(ids) == 0:
-        return JSONResponse(
-            status_code=400,
-            content={"ok": False, "error": "No ids provided"},
-        )
+        return JSONResponse(status_code=400, content={"ok": False, "error": "No ids provided"})
 
     try:
         placeholders = ",".join(["%s"] * len(ids))
@@ -218,7 +170,4 @@ async def delete_videos(payload: VideoDelete, db=Depends(get_db)):
         return {"ok": True, "deleted": affected}
     except Exception as err:
         print("delete videos:", err)
-        return JSONResponse(
-            status_code=500,
-            content={"ok": False, "error": "Database error"},
-        )
+        return JSONResponse(status_code=500, content={"ok": False, "error": "Database error"})

@@ -24,7 +24,7 @@ const AddDevice = () => {
 
   useEffect(() => {
     api
-      .get('/api/departments')
+      .get('/api/departments/')
       .then((res) => setDepartmentOptions(res.data || []))
       .catch((err) => console.error("❌ โหลด department ไม่ได้:", err));
   }, []);
@@ -75,7 +75,7 @@ const AddDevice = () => {
     };
 
     try {
-      await api.post('/api/devices', payload);
+      await api.post('/api/devices/', payload);
       setAlertModal({ 
         isOpen: true, 
         type: "success", 

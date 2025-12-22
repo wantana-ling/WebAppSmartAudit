@@ -33,8 +33,8 @@ const DeviceManagement = () => {
   }, []);
 
   useEffect(() => {
-    api.get('/api/devices').then(r => setDevices(r.data || [])).catch(console.error);
-    api.get('/api/departments').then(r => setDepartments(r.data || [])).catch(console.error);
+    api.get('/api/devices/').then(r => setDevices(r.data || [])).catch(console.error);
+    api.get('/api/departments/').then(r => setDepartments(r.data || [])).catch(console.error);
   }, []);
 
   const filtered = devices
