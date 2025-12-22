@@ -33,7 +33,7 @@ const Video = () => {
 
   const fetchVideos = useCallback(async () => {
     try {
-      const { data } = await api.get('/api/videos', {
+      const { data } = await api.get('/api/videos/', {
         params: {
           page: currentPage,
           limit: rowsPerPage,
@@ -41,11 +41,56 @@ const Video = () => {
         },
       });
 
+      // Check if response has error
+      if (data?.ok === false) {
+        throw new Error(data?.error || 'Failed to fetch videos');
+      }
+
       const list = Array.isArray(data?.data) ? data.data.map(normalizeVideo) : [];
       setRows(list);
       setTotalPages(data?.totalPages ?? Math.max(1, Math.ceil((data?.total ?? list.length) / rowsPerPage)));
     } catch (err) {
       console.error("fetch /api/videos error:", err);
+      
+      // Handle different error types
+      let errorMessage = "Failed to load videos";
+      
+      // Handle 404 Not Found
+      if (err.response?.status === 404) {
+        errorMessage = "Videos API endpoint not found. Please check server configuration.";
+      }
+      // Handle FastAPI validation errors (422)
+      else if (err.response?.status === 422 && err.response?.data?.detail) {
+        const detail = err.response.data.detail;
+        if (Array.isArray(detail)) {
+          errorMessage = detail.map((e) => `${e.loc?.join('.') || ''}: ${e.msg || ''}`).join('\n');
+        } else if (typeof detail === 'string') {
+          errorMessage = detail;
+        }
+      }
+      // Handle backend error response
+      else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      }
+      // Handle FastAPI detail (string)
+      else if (err.response?.data?.detail && typeof err.response.data.detail === 'string') {
+        errorMessage = err.response.data.detail;
+      }
+      // Handle network errors
+      else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      // Only show error modal for non-404 errors (404 might be expected if API is not available)
+      if (err.response?.status !== 404) {
+        setAlertModal({ 
+          isOpen: true, 
+          type: "error", 
+          title: "Error", 
+          message: errorMessage 
+        });
+      }
+      
       setRows([]);
       setTotalPages(1);
     }
@@ -262,13 +307,47 @@ const Video = () => {
             onCancel={() => setShowModal(false)}
             onConfirm={async () => {
               try {
-                await api.delete('/api/videos', { data: { ids: selectedIds } });
+                const response = await api.delete('/api/videos/', { data: { ids: selectedIds } });
+                
+                // Check if response has error
+                if (response.data?.ok === false) {
+                  throw new Error(response.data?.error || 'Failed to delete videos');
+                }
+                
                 setSelectedIds([]);
                 setShowModal(false);
+                setAlertModal({ 
+                  isOpen: true, 
+                  type: "success", 
+                  title: "Success", 
+                  message: "Videos deleted successfully" 
+                });
                 fetchVideos();
               } catch (e) {
                 console.error("delete error:", e);
+                
+                // Handle FastAPI validation errors
+                let errorMessage = "Failed to delete videos";
+                if (e.response?.data?.detail) {
+                  const detail = e.response.data.detail;
+                  if (Array.isArray(detail)) {
+                    errorMessage = detail.map((err) => `${err.loc?.join('.') || ''}: ${err.msg || ''}`).join('\n');
+                  } else if (typeof detail === 'string') {
+                    errorMessage = detail;
+                  } else if (e.response.data.error) {
+                    errorMessage = e.response.data.error;
+                  }
+                } else if (e.message) {
+                  errorMessage = e.message;
+                }
+                
                 setShowModal(false);
+                setAlertModal({ 
+                  isOpen: true, 
+                  type: "error", 
+                  title: "Error", 
+                  message: errorMessage 
+                });
               }
             }}
           />

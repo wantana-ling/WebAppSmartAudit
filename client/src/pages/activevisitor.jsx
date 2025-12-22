@@ -68,7 +68,7 @@ const ActiveVisitor = () => {
                          item.userId.includes(searchQuery);
       return matchDepartment && matchSearch;
     })
-    .sort((a, b) => Number(a.userId) - Number(b.userId))
+    .sort((a, b) => String(a.userId || '').localeCompare(String(b.userId || '')))
     .map((item, index) => ({ ...item, no: index + 1 }));
 
     const totalData = filteredData.length;

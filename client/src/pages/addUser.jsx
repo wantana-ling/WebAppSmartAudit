@@ -67,16 +67,13 @@ const AddUser = () => {
     }
 
     try {
-      // Convert username to number, handling edge cases like "0" or "000"
-      const userIdNum = parseInt(formData.userId, 10);
-      const userId = isNaN(userIdNum) ? formData.userId : userIdNum;
-      
+      // Send username as string (backend expects str, not int)
       await api.post('/api/users/', {
         firstname: formData.firstName,
         midname: formData.midName,
         lastname: formData.lastName,
         department_id,
-        username: userId,
+        username: formData.userId.trim(), // Send as string
         password: formData.password,
       });
 
@@ -93,7 +90,23 @@ const AddUser = () => {
     } catch (err) {
       console.error("❌ ไม่สามารถเพิ่มผู้ใช้ได้:", err);
       console.log("DATA:", err.response?.data);
-      const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
+      
+      // Handle FastAPI validation errors (array format)
+      let errorMessage = "An error occurred";
+      if (err.response?.data?.detail) {
+        const detail = err.response.data.detail;
+        if (Array.isArray(detail)) {
+          // FastAPI validation errors are arrays
+          errorMessage = detail.map((e) => `${e.loc?.join('.') || ''}: ${e.msg || ''}`).join('\n');
+        } else if (typeof detail === 'string') {
+          errorMessage = detail;
+        } else {
+          errorMessage = JSON.stringify(detail);
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
       setAlertModal({ isOpen: true, type: "error", title: "Error", message: errorMessage });
     }
   };

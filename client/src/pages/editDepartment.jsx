@@ -52,7 +52,23 @@ const EditDepartment = () => {
       })
       .catch((err) => {
         console.error("❌ บันทึกไม่สำเร็จ:", err);
-        setAlertModal({ isOpen: true, type: "error", title: "Error", message: "An error occurred" });
+        
+        // Handle FastAPI validation errors (array format)
+        let errorMessage = "An error occurred";
+        if (err.response?.data?.detail) {
+          const detail = err.response.data.detail;
+          if (Array.isArray(detail)) {
+            errorMessage = detail.map((e) => `${e.loc?.join('.') || ''}: ${e.msg || ''}`).join('\n');
+          } else if (typeof detail === 'string') {
+            errorMessage = detail;
+          } else {
+            errorMessage = JSON.stringify(detail);
+          }
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        
+        setAlertModal({ isOpen: true, type: "error", title: "Error", message: errorMessage });
       });
   };
 

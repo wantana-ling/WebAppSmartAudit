@@ -129,7 +129,23 @@ const EditManageUser = () => {
       });
     } catch (err) {
       console.error("❌ ไม่สามารถอัปเดตผู้ใช้ได้:", err.response?.data || err);
-      const errorMessage = err.response?.data?.detail || err.message || "An error occurred while updating user";
+      
+      // Handle FastAPI validation errors (array format)
+      let errorMessage = "An error occurred while updating user";
+      if (err.response?.data?.detail) {
+        const detail = err.response.data.detail;
+        if (Array.isArray(detail)) {
+          // FastAPI validation errors are arrays
+          errorMessage = detail.map((e) => `${e.loc?.join('.') || ''}: ${e.msg || ''}`).join('\n');
+        } else if (typeof detail === 'string') {
+          errorMessage = detail;
+        } else {
+          errorMessage = JSON.stringify(detail);
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
       setAlertModal({ isOpen: true, type: "error", title: "Error", message: errorMessage });
     }
   };

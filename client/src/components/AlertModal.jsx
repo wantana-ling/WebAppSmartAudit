@@ -66,9 +66,9 @@ const AlertModal = ({ isOpen, onClose, type = "info", title, message }) => {
         )}
 
         {/* Message */}
-        <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-6">
+        <div className="text-gray-600 text-sm md:text-base leading-relaxed mb-6 whitespace-pre-wrap break-words">
           {message}
-        </p>
+        </div>
 
         {/* Button */}
         <div className="flex justify-center">

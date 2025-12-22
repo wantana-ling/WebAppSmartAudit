@@ -58,7 +58,7 @@ const UserManagement = () => {
       const matchSearch = key.includes(searchText.toLowerCase());
       return matchDept && matchStatus && matchSearch;
     })
-    .sort((a, b) => Number(a.username) - Number(b.username))
+    .sort((a, b) => String(a.username || '').localeCompare(String(b.username || '')))
     .map((u, idx) => ({ ...u, no: idx + 1 }));
 
   const totalData = filteredUsers.length;
