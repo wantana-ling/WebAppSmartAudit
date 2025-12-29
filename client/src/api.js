@@ -4,7 +4,7 @@ const API_BASE = process.env.REACT_APP_API_URL?.trim();
 
 const api = axios.create({
   baseURL: API_BASE,
-  withCredentials: true,
+  withCredentials: false,
   headers: {
     'Content-Type': 'application/json'
   }

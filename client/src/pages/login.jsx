@@ -2,24 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import api from "../api";
-import { STORAGE_KEYS, MESSAGES, ROUTES, PLACEHOLDERS } from '../constants';
+import { STORAGE_KEYS, MESSAGES, ROUTES, PLACEHOLDERS } from "../constants";
 
 const Login = () => {
-  const [username, setUserId] = useState("");
+  const [user_id, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    // ตรวจสอบว่าถ้า login แล้วให้ redirect ไป dashboard
     const admin = localStorage.getItem(STORAGE_KEYS.ADMIN);
-    const userId = localStorage.getItem(STORAGE_KEYS.username);
-    
-    if (admin && userId) {
-      // ถ้ามี path ที่พยายามเข้าถึงก่อนหน้า ให้ไปที่ path นั้น
+    const savedUserId = localStorage.getItem(STORAGE_KEYS.username); // เก็บ key เดิมไว้ไม่พังหน้าที่เหลือ
+
+    if (admin && savedUserId) {
       const from = location.state?.from?.pathname || ROUTES.DASHBOARD;
       navigate(from, { replace: true });
       return;
@@ -34,16 +33,28 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
-      const res = await api.post('/api/login', { username, password });
-      const adminData = res.data.admin_info;
-      if (!adminData) { setError("Invalid response from server"); return; }
+      // ✅ backend รับชื่อ field = username (แต่ค่าข้างในคือ user_id ของมึง)
+      const res = await api.post("/api/login", {
+        username: user_id,
+        password,
+      });
+
+      const adminData = res.data?.admin_info;
+      if (!adminData) {
+        setError("Invalid response from server");
+        return;
+      }
+
+      // ✅ เก็บเหมือนเดิมเพื่อไม่กระทบหน้าอื่น
       localStorage.setItem(STORAGE_KEYS.username, adminData.username);
       localStorage.setItem(STORAGE_KEYS.ADMIN, JSON.stringify(adminData));
+
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
       if (err.response?.status === 429) setError("Too many attempts. Please wait a moment.");
-      else if (err.response?.status === 401) setError("Invalid username or password");
+      else if (err.response?.status === 401) setError("Invalid userID or password");
       else setError("Login failed. Please try again.");
     } finally {
       setLoading(false);
@@ -54,7 +65,11 @@ const Login = () => {
     <div className="w-full h-screen">
       <div className="h-full flex flex-col md:flex-row justify-between items-center py-6 sm:py-8 md:py-10 overflow-hidden">
         <div className="w-full md:min-w-[50vw] text-center px-4 sm:px-6 md:px-8 py-6 md:py-0">
-          <img src="../img/company_logo.JPG" alt="company_logo" className="w-2/3 sm:w-3/5 md:w-3/5 mx-auto max-w-[300px] md:max-w-none" />
+          <img
+            src="../img/company_logo.JPG"
+            alt="company_logo"
+            className="w-2/3 sm:w-3/5 md:w-3/5 mx-auto max-w-[300px] md:max-w-none"
+          />
         </div>
 
         <div className="min-w-[50vw] h-full rounded-l-[60px] bg-gradient-to-b from-[#1A2DAC] to-[#0B1246] flex justify-center px-6">
@@ -66,11 +81,11 @@ const Login = () => {
               <div className="flex flex-col gap-4 md:gap-5">
                 <input
                   type="text"
-                  value={username}
+                  value={user_id}
                   onChange={(e) => setUserId(e.target.value)}
                   required
                   autoComplete="username"
-                  placeholder={PLACEHOLDERS.USERNAME}
+                  placeholder="User ID" // หรือ PLACEHOLDERS.USERNAME ก็ได้
                   className="w-full px-4 py-3 md:px-5 md:py-4 lg:py-5 rounded-xl md:rounded-2xl bg-[#F1F3FF] text-sm md:text-base text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#4DB1D6]"
                 />
 

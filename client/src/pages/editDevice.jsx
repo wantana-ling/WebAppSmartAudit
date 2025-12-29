@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api";
 import AlertModal from "../components/AlertModal";
@@ -7,60 +7,78 @@ const EditDevice = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  // ✅ ใช้ name ให้ตรงกับ API
   const [form, setForm] = useState({
-    device_name: "",
+    name: "",
     ip: "",
     departments: [],
     max_users: "",
   });
 
   const [departmentOptions, setDepartmentOptions] = useState([]);
-  const [alertModal, setAlertModal] = useState({ isOpen: false, type: "info", title: "", message: "" });
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    type: "info",
+    title: "",
+    message: "",
+    onClose: null,
+  });
 
   useEffect(() => {
-    api.get('/api/departments/')
-      .then(res => setDepartmentOptions(res.data || []))
-      .catch(err => console.error("❌ โหลด department ไม่ได้", err));
+    api
+      .get("/api/departments/")
+      .then((res) => setDepartmentOptions(res.data || []))
+      .catch((err) => console.error("❌ โหลด department ไม่ได้", err));
   }, []);
 
   useEffect(() => {
-    api.get(`/api/devices/${id}`)
-      .then(res => {
-        const d = res.data;
+    api
+      .get(`/api/devices/${id}`)
+      .then((res) => {
+        const d = res.data || {};
+        const deptArr =
+          typeof d.department === "string" && d.department.trim()
+            ? d.department.split(",").map((x) => x.trim()).filter(Boolean)
+            : [];
+
         setForm({
-          device_name: d.device_name || "",
-          ip: d.ip || "",
-          departments: d.department ? d.department.split(",").map(x => x.trim()) : [],
-          max_users: d.max_users || "",
+          // ✅ ดึงจาก name เป็นหลัก (fallback เผื่อของเก่า)
+          name: (d.name ?? d.device_name ?? "").toString(),
+          ip: (d.ip ?? "").toString(),
+          departments: deptArr,
+          max_users:
+            d.max_users !== undefined && d.max_users !== null
+              ? String(d.max_users)
+              : "",
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("❌ โหลด device ไม่สำเร็จ", err);
-        setAlertModal({ 
-          isOpen: true, 
-          type: "error", 
-          title: "Error", 
+        setAlertModal({
+          isOpen: true,
+          type: "error",
+          title: "Error",
           message: "Device not found",
           onClose: () => {
-            setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+            setAlertModal({ isOpen: false, type: "info", title: "", message: "", onClose: null });
             navigate("/deviceManagement");
-          }
+          },
         });
       });
   }, [id, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const toggleDepartment = (value) => {
-    setForm(prev => {
+    setForm((prev) => {
       const has = prev.departments.includes(value);
       return {
         ...prev,
         departments: has
-          ? prev.departments.filter(d => d !== value)
+          ? prev.departments.filter((d) => d !== value)
           : [...prev.departments, value],
       };
     });
@@ -68,38 +86,47 @@ const EditDevice = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.device_name || !form.ip || form.departments.length === 0 || !form.max_users) {
-      setAlertModal({ isOpen: true, type: "warning", title: "Warning", message: "Please fill in all fields" });
+
+    if (!form.name || !form.ip || form.departments.length === 0 || !form.max_users) {
+      setAlertModal({
+        isOpen: true,
+        type: "warning",
+        title: "Warning",
+        message: "Please fill in all fields",
+        onClose: null,
+      });
       return;
     }
 
     try {
       await api.put(`/api/devices/${id}`, {
-        device_name: form.device_name,
+        device_name: form.name,
         ip: form.ip,
         department: form.departments.join(", "),
-        max_users: form.max_users,
+        max_users: Number(form.max_users),
       });
-      setAlertModal({ 
-        isOpen: true, 
-        type: "success", 
-        title: "Success", 
+
+      setAlertModal({
+        isOpen: true,
+        type: "success",
+        title: "Success",
         message: "Device updated successfully",
         onClose: () => {
-          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "", onClose: null });
           navigate("/deviceManagement");
-        }
+        },
       });
     } catch (err) {
       console.error("❌ แก้ไขไม่สำเร็จ", err);
-      
-      // Handle FastAPI validation errors (array format)
+
       let errorMessage = "Failed to save changes";
       if (err.response?.data?.detail) {
         const detail = err.response.data.detail;
         if (Array.isArray(detail)) {
-          errorMessage = detail.map((e) => `${e.loc?.join('.') || ''}: ${e.msg || ''}`).join('\n');
-        } else if (typeof detail === 'string') {
+          errorMessage = detail
+            .map((e) => `${e.loc?.join(".") || ""}: ${e.msg || ""}`)
+            .join("\n");
+        } else if (typeof detail === "string") {
           errorMessage = detail;
         } else {
           errorMessage = JSON.stringify(detail);
@@ -107,12 +134,17 @@ const EditDevice = () => {
       } else if (err.message) {
         errorMessage = err.message;
       }
-      
-      setAlertModal({ isOpen: true, type: "error", title: "Error", message: errorMessage });
+
+      setAlertModal({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: errorMessage,
+        onClose: null,
+      });
     }
   };
 
-  // class reuse
   const labelCls = "text-[#002f6c] font-medium mb-1";
   const inputCls =
     "w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#0DA5D8]";
@@ -124,7 +156,6 @@ const EditDevice = () => {
         <h1 className="mb-6 text-xl font-semibold text-gray-800">Edit Device</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Row 1 */}
           <div className={rowCls}>
             <div className="flex-1 min-w-[240px]">
               <label className={labelCls}>
@@ -132,8 +163,8 @@ const EditDevice = () => {
               </label>
               <input
                 type="text"
-                name="device_name"
-                value={form.device_name}
+                name="name"              // ✅ เปลี่ยนเป็น name
+                value={form.name}        // ✅ ใช้ form.name
                 onChange={handleChange}
                 required
                 placeholder="Enter device name"
@@ -157,7 +188,6 @@ const EditDevice = () => {
             </div>
           </div>
 
-          {/* Row 2 — Department multi-select */}
           <div className={rowCls}>
             <div className="w-full">
               <label className={labelCls}>
@@ -186,7 +216,6 @@ const EditDevice = () => {
             </div>
           </div>
 
-          {/* Row 3 */}
           <div className={rowCls}>
             <div className="w-full md:max-w-[320px]">
               <label className={labelCls}>
@@ -204,7 +233,6 @@ const EditDevice = () => {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <button
               type="submit"
@@ -226,8 +254,9 @@ const EditDevice = () => {
       <AlertModal
         isOpen={alertModal.isOpen}
         onClose={() => {
-          setAlertModal({ isOpen: false, type: "info", title: "", message: "" });
-          if (alertModal.onClose) alertModal.onClose();
+          const cb = alertModal.onClose;
+          setAlertModal({ isOpen: false, type: "info", title: "", message: "", onClose: null });
+          if (cb) cb();
         }}
         type={alertModal.type}
         title={alertModal.title}

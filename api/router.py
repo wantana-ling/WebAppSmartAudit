@@ -57,7 +57,7 @@ ALLOWED_ORIGINS = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,  # เผื่ออนาคตใช้ cookie / session
+    allow_credentials=False,  # เผื่ออนาคตใช้ cookie / session
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With", "X-CSRFToken"],
     expose_headers=["*"],

@@ -232,7 +232,7 @@ const AddUser = () => {
                 value={formData.userId}
                 onChange={handleChange}
                 required
-                placeholder="Enter user ID"
+                placeholder="Enter username"
                 className={inputCls}
               />
             </div>

@@ -74,7 +74,7 @@ const UserManagement = () => {
   const confirmDelete = () => {
   if (!selectedUserId) return;
   api.delete(`/api/users/${selectedUserId}`)
-    .then(() => api.get('/api/users'))
+    .then(() => api.get('/api/users/'))
     .then(res => setUsers(res.data || []))
     .catch(err => console.error("❌ ลบไม่สำเร็จ:", err))
     .finally(() => { setShowModal(false); setSelectedUserId(null); });
