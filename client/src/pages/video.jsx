@@ -19,6 +19,9 @@ const Video = () => {
 
   const [rowsOpen, setRowsOpen] = useState(false);
   const rowsMenuRef = useRef(null);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
 
   // --- helpers ---
   const normalizeVideo = (v) => ({
@@ -30,6 +33,29 @@ const Video = () => {
     file: v.file ?? v.recording_path ?? "",           // map path -> file
     duration: v.duration ?? "",
   });
+
+  // Handle video icon click - เปิด modal และดึง video
+  const handleVideoClick = (e, video) => {
+    e.preventDefault();
+    
+    // ตั้งค่า video ที่เลือก
+    setSelectedVideo(video);
+    
+    // ใช้ไฟล์จาก folder video_test ก่อน (สำหรับทดสอบ)
+    // TODO: เปลี่ยนกลับไปใช้ API เมื่อพร้อม
+    // const API_BASE = process.env.REACT_APP_API_URL?.trim() || '';
+    // const url = `${API_BASE}/api/videos/${video.id}/file`;
+    
+    // ใช้ไฟล์ test จาก video_test folder
+    const url = '/video_test/test_123.mp4'; // หรือใช้ path ที่ถูกต้อง
+    
+    // ถ้าไฟล์อยู่ใน src/video_test/ ต้อง copy ไปที่ public/video_test/ หรือใช้ import
+    // สำหรับตอนนี้ใช้ path จาก public folder
+    setVideoUrl(url);
+    
+    // เปิด modal
+    setShowVideoModal(true);
+  };
 
   const fetchVideos = useCallback(async () => {
     try {
@@ -228,8 +254,9 @@ const Video = () => {
                         {s.file ? (
                           <a
                             href="#!"
+                            onClick={(e) => handleVideoClick(e, s)}
                             title={s.file}
-                            className="inline-flex items-center justify-center hover:text-[#0DA5D8]"
+                            className="inline-flex items-center justify-center hover:text-[#0DA5D8] cursor-pointer"
                           >
                             <FaFileVideo className="text-sm" />
                           </a>
@@ -360,6 +387,65 @@ const Video = () => {
           title={alertModal.title}
           message={alertModal.message}
         />
+
+        {/* Video Player Modal */}
+        {showVideoModal && videoUrl && selectedVideo && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+            <div className="relative w-full max-w-4xl mx-4 bg-white rounded-lg shadow-xl">
+              <div className="flex justify-between items-center p-4 border-b">
+                <h3 className="text-lg font-semibold">Video Player</h3>
+                <button
+                  onClick={() => {
+                    setShowVideoModal(false);
+                    setVideoUrl(null);
+                    setSelectedVideo(null);
+                  }}
+                  className="text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 flex items-center justify-center"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-4">
+                <video
+                  controls
+                  autoPlay
+                  className="w-full h-auto max-h-[50vh] bg-black rounded"
+                  src={videoUrl}
+                >
+                  Your browser does not support the video tag.
+                </video>
+                {selectedVideo && (
+                  <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-semibold">User:</span> {selectedVideo.user || "-"}
+                    </div>
+                    <div>
+                      <span className="font-semibold">Date:</span> {selectedVideo.date || "-"}
+                    </div>
+                    <div>
+                      <span className="font-semibold">Time In:</span> {selectedVideo.timeIn || "-"}
+                    </div>
+                    <div>
+                      <span className="font-semibold">Time Out:</span> {selectedVideo.timeOut || "-"}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="p-4 border-t bg-gray-50 flex justify-between items-center">
+                <p className="text-sm text-gray-600">
+                  If the video cannot be played, please download the file to view it.
+                </p>
+                <a
+                  href={videoUrl}
+                  download
+                  className="px-4 py-2 bg-[#0DA5D8] text-white rounded hover:bg-[#1A2DAC] transition-colors text-sm"
+                >
+                  Download Video
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -8,10 +8,12 @@ Endpoints สำหรับจัดการข้อมูลวิดีโ�
 """
 
 from typing import List, Optional
+import os
+from pathlib import Path
 
 import aiomysql
-from fastapi import APIRouter, Depends, Query
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel
 
 from .connectdb import get_db
@@ -151,6 +153,68 @@ async def create_video(payload: VideoCreate, db=Depends(get_db)):
     except Exception as err:
         print("insert videos:", err)
         return JSONResponse(status_code=500, content={"ok": False, "error": "Database error"})
+
+
+@router.get("/{video_id}/file")
+async def get_video_file(video_id: int, db=Depends(get_db)):
+    """
+    ดึงไฟล์ video ตาม ID
+    - ถ้าไฟล์มีอยู่: ส่งไฟล์กลับไป
+    - ถ้าไฟล์ไม่มี: ส่ง 404
+    """
+    try:
+        async with db.cursor(aiomysql.DictCursor) as cur:
+            await cur.execute(
+                "SELECT recording_path FROM videos WHERE id = %s",
+                (video_id,),
+            )
+            row = await cur.fetchone()
+
+        if not row or not row.get("recording_path"):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Video not found or no file path"
+            )
+
+        file_path = row["recording_path"]
+        
+        # ตรวจสอบว่าไฟล์มีอยู่จริงหรือไม่
+        if not os.path.exists(file_path):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Video file not found at: {file_path}"
+            )
+
+        # กำหนด media type ตาม extension
+        file_ext = Path(file_path).suffix.lower()
+        media_types = {
+            '.mp4': 'video/mp4',
+            '.avi': 'video/x-msvideo',
+            '.mov': 'video/quicktime',
+            '.mkv': 'video/x-matroska',
+            '.webm': 'video/webm',
+            '.flv': 'video/x-flv',
+            '.wmv': 'video/x-ms-wmv',
+            '.wrm': 'application/octet-stream',
+        }
+        
+        media_type = media_types.get(file_ext, 'video/mp4')
+
+        # ส่ง video file กลับไป
+        return FileResponse(
+            file_path,
+            media_type=media_type,
+            filename=Path(file_path).name
+        )
+
+    except HTTPException:
+        raise
+    except Exception as err:
+        print(f"get_video_file error: {err}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve video file"
+        )
 
 
 @router.delete("/")
