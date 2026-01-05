@@ -55,7 +55,6 @@ def _trim(s: Optional[str]) -> str:
 
 
 # GET /api/devices
-@router.get("")
 @router.get("/")
 async def get_devices(db=Depends(get_db)):
     """ดึงรายการ devices ทั้งหมด."""
@@ -132,7 +131,6 @@ async def get_device_by_id(device_id: int, db=Depends(get_db)):
 
 
 # POST /api/devices
-@router.post("", status_code=status.HTTP_201_CREATED)
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_device(payload: DeviceCreate, db=Depends(get_db)):
     """
